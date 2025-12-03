@@ -99,6 +99,7 @@ function initControls() {
     $('#analyzeBtn').on('click', toggleAnalysis);
     $('#resignBtn').on('click', resignGame);
     $('#sendBtn').on('click', sendMessage);
+    $('#fullscreenBtn').on('click', toggleFullscreen);
     $('#chatInput').on('keypress', function (e) {
         if (e.which === 13) sendMessage();
     });
@@ -881,6 +882,72 @@ function getBotChatResponse(userMessage) {
 
     return generalResponses[Math.floor(Math.random() * generalResponses.length)];
 }
+
+// ===== ПОЛНОЭКРАННЫЙ РЕЖИМ =====
+
+function toggleFullscreen() {
+    const $boardSection = $('.board-section');
+    const $btn = $('#fullscreenBtn');
+
+    if ($boardSection.hasClass('fullscreen')) {
+        // Выход из полноэкранного режима
+        $boardSection.removeClass('fullscreen');
+        $btn.text('⛶');
+        $btn.attr('title', 'Полноэкранный режим');
+
+        // Выход из браузерного fullscreen
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) {
+            document.webkitExitFullscreen();
+        } else if (document.mozCancelFullScreen) {
+            document.mozCancelFullScreen();
+        } else if (document.msExitFullscreen) {
+            document.msExitFullscreen();
+        }
+    } else {
+        // Вход в полноэкранный режим
+        $boardSection.addClass('fullscreen');
+        $btn.text('✕');
+        $btn.attr('title', 'Выход из полноэкранного режима');
+
+        // Браузерный fullscreen
+        const elem = document.documentElement;
+        if (elem.requestFullscreen) {
+            elem.requestFullscreen();
+        } else if (elem.webkitRequestFullscreen) {
+            elem.webkitRequestFullscreen();
+        } else if (elem.mozRequestFullScreen) {
+            elem.mozRequestFullScreen();
+        } else if (elem.msRequestFullscreen) {
+            elem.msRequestFullscreen();
+        }
+    }
+
+    // Обновляем размер доски
+    setTimeout(() => {
+        board.resize();
+    }, 100);
+}
+
+// Выход из fullscreen по ESC
+$(document).on('keydown', function (e) {
+    if (e.key === 'Escape' && $('.board-section').hasClass('fullscreen')) {
+        toggleFullscreen();
+    }
+});
+
+// Обработка выхода из браузерного fullscreen
+$(document).on('fullscreenchange webkitfullscreenchange mozfullscreenchange msfullscreenchange', function () {
+    if (!document.fullscreenElement && !document.webkitFullscreenElement &&
+        !document.mozFullScreenElement && !document.msFullscreenElement) {
+        if ($('.board-section').hasClass('fullscreen')) {
+            $('.board-section').removeClass('fullscreen');
+            $('#fullscreenBtn').text('⛶').attr('title', 'Полноэкранный режим');
+            setTimeout(() => board.resize(), 100);
+        }
+    }
+});
 
 console.log('♟️ Multiplayer готов!');
 

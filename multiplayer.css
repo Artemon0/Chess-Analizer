@@ -43,6 +43,63 @@ h1 {
     padding: 20px;
     border-radius: 15px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    position: relative;
+}
+
+/* Кнопка полноэкранного режима */
+.fullscreen-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(0, 0, 0, 0.1);
+    border: none;
+    border-radius: 8px;
+    width: 40px;
+    height: 40px;
+    font-size: 24px;
+    cursor: pointer;
+    z-index: 100;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.fullscreen-btn:hover {
+    background: rgba(0, 0, 0, 0.2);
+    transform: scale(1.1);
+}
+
+.fullscreen-btn:active {
+    transform: scale(0.95);
+}
+
+/* Полноэкранный режим */
+.board-section.fullscreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 9999;
+    border-radius: 0;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: auto;
+}
+
+.board-section.fullscreen .chessboard {
+    width: min(90vw, 90vh, 600px);
+    height: min(90vw, 90vh, 600px);
+}
+
+.board-section.fullscreen .fullscreen-btn {
+    font-size: 28px;
+    width: 50px;
+    height: 50px;
 }
 
 .chessboard {
@@ -793,4 +850,43 @@ h3 {
     .square-55d63 {
         cursor: pointer;
     }
+}
+
+/* По
+лноэкранный режим на мобильных */
+@media (max-width: 768px) {
+    .board-section.fullscreen {
+        padding: 10px;
+    }
+
+    .board-section.fullscreen .chessboard {
+        width: min(95vw, 95vh);
+        height: min(95vw, 95vh);
+    }
+
+    .board-section.fullscreen .controls {
+        flex-wrap: wrap;
+        gap: 5px;
+    }
+
+    .board-section.fullscreen .btn {
+        font-size: 12px;
+        padding: 8px 12px;
+    }
+
+    .board-section.fullscreen .game-info {
+        font-size: 14px;
+    }
+
+    .board-section.fullscreen .time-control {
+        display: none;
+        /* Скрываем выбор времени в fullscreen */
+    }
+}
+
+/* Предотвращаем зум при двойном тапе на доске */
+.chessboard {
+    touch-action: manipulation;
+    -webkit-user-select: none;
+    user-select: none;
 }
