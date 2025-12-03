@@ -789,9 +789,11 @@ async function makeBotMove() {
 
     $('#gameStatus').html('🤖 Бот думает...');
 
+    // Сохраняем позицию ДО хода бота
+    const fenBefore = game.fen();
+
     // Получаем лучший ход от Cloud Eval
-    const fen = game.fen();
-    const result = await getCloudEval(fen);
+    const result = await getCloudEval(fenBefore);
 
     setTimeout(() => {
         let botMove = null;
@@ -818,10 +820,10 @@ async function makeBotMove() {
             board.position(game.fen());
             updateStatus();
             updateMovesDisplay();
-            renderAnnotations();
 
+            // Анализируем ход бота
             if (autoAnalyze) {
-                analyzePosition();
+                setTimeout(() => analyzeMadeMove(botMove, fenBefore), 100);
             }
 
             // Случайные сообщения от бота
@@ -1052,6 +1054,9 @@ function handleOpponentJoined(data) {
 }
 
 function handleOpponentMove(data) {
+    // Сохраняем позицию ДО хода противника
+    const fenBefore = game.fen();
+
     const move = game.move({
         from: data.move.from,
         to: data.move.to,
@@ -1062,10 +1067,10 @@ function handleOpponentMove(data) {
         board.position(game.fen());
         updateStatus();
         updateMovesDisplay();
-        renderAnnotations();
 
+        // Анализируем ход противника
         if (autoAnalyze) {
-            analyzePosition();
+            setTimeout(() => analyzeMadeMove(move, fenBefore), 100);
         }
     }
 }

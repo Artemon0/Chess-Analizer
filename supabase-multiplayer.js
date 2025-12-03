@@ -88,9 +88,9 @@ function handlePeerMessage(data) {
 }
 
 function handleOpponentMovePeer(moveData) {
-    clearAnnotations();
-
+    // Сохраняем позицию ДО хода противника
     const fenBefore = game.fen();
+
     const move = game.move({
         from: moveData.from,
         to: moveData.to,
@@ -102,6 +102,7 @@ function handleOpponentMovePeer(moveData) {
         updateStatus();
         updateMovesDisplay();
 
+        // Анализируем ход противника
         if (autoAnalyze) {
             setTimeout(() => analyzeMadeMove(move, fenBefore), 100);
         }
