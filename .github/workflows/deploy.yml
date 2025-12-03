@@ -25,6 +25,18 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Copy files to docs
+        run: |
+          mkdir -p docs
+          cp index.html docs/
+          cp multiplayer.html docs/
+          cp multiplayer.css docs/
+          cp multiplayer.js docs/
+          cp puzzles.js docs/
+          cp supabase-multiplayer.js docs/
+          cp 404.html docs/
+          cp .nojekyll docs/
+
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
