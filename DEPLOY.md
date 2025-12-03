@@ -38,15 +38,17 @@ git push origin main
 
 2. **Включаем GitHub Pages:**
    - Зайдите в **Settings** → **Pages**
-   - Source: **Deploy from a branch**
-   - Branch: **main** → **/ (root)**
-   - Нажмите **Save**
+   - Source: **GitHub Actions**
+   - Сохранится автоматически
 
-3. **Готово!** Ссылка будет: `https://ваш-username.github.io/название-репо/`
+3. **Готово!** 
+   - GitHub Actions автоматически задеплоит из папки `docs/`
+   - Ссылка будет: `https://ваш-username.github.io/название-репо/`
+   - Статус деплоя смотрите во вкладке **Actions**
 
 ### Автоматический деплой:
 
-GitHub Pages автоматически обновляется при каждом push в main ветку.
+GitHub Actions автоматически деплоит при каждом push в main ветку. Файлы берутся из папки `docs/`.
 
 ---
 
