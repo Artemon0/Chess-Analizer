@@ -771,10 +771,14 @@ function sendMessage() {
     }
     // Умный ответ бота
     else if (playingWithBot) {
+        console.log('🤖 Бот отвечает на:', message);
         setTimeout(() => {
             const botResponse = getBotChatResponse(message);
+            console.log('🤖 Ответ бота:', botResponse);
             addChatMessage('opponent', botResponse);
         }, 800 + Math.random() * 1200);
+    } else {
+        console.log('⚠️ Ни онлайн, ни бот. playingWithBot:', playingWithBot, 'isOnlineGame:', isOnlineGame);
     }
 }
 
