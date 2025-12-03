@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>♟️ Lichess Multiplayer + Analysis</title>
+    <link rel="stylesheet" href="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.css">
+    <link rel="stylesheet" href="multiplayer.css">
+</head>
+<body>
+    <div class="container">
+        <h1>♟️ Lichess Multiplayer</h1>
+        <p class="subtitle">Играй онлайн + анализ в реальном времени</p>
+        
+        <div class="main-layout">
+            <!-- Доска -->
+            <div class="board-section">
+                <div id="board" class="chessboard"></div>
+                
+                <div class="time-control">
+                    <h3>⏱️ Контроль времени</h3>
+                    <div class="time-buttons">
+                        <button class="time-btn" data-time="60">⚡ Bullet (1 мин)</button>
+                        <button class="time-btn" data-time="180">🏃 Blitz (3 мин)</button>
+                        <button class="time-btn active" data-time="600">🎯 Rapid (10 мин)</button>
+                        <button class="time-btn" data-time="1800">🐢 Classical (30 мин)</button>
+                        <button class="time-btn" data-time="0">♾️ Без времени</button>
+                    </div>
+                </div>
+
+                <div class="controls">
+                    <button id="createGameBtn" class="btn btn-primary">🎮 Создать игру</button>
+                    <button id="joinGameBtn" class="btn btn-success">🔗 Присоединиться</button>
+                    <button id="playBotBtn" class="btn btn-bot">🤖 Играть с ботом</button>
+                    <button id="puzzleBtn" class="btn btn-puzzle">🧩 Задачи</button>
+                    <button id="clearBtn" class="btn btn-secondary">🗑️ Очистить</button>
+                    <button id="analyzeBtn" class="btn btn-warning">🔍 Анализ ВЫКЛ</button>
+                    <button id="resignBtn" class="btn btn-danger" style="display:none;">🏳️ Сдаться</button>
+                </div>
+
+                <div class="game-info">
+                    <div class="status-box">
+                        <div id="gameStatus">Создайте или присоединитесь к игре</div>
+                        <div id="gameLink" class="game-link hidden"></div>
+                    </div>
+                    
+                    <div class="players">
+                        <div class="player white">
+                            <span class="player-icon">♔</span>
+                            <div class="player-info">
+                                <span id="whitePlayer">Белые</span>
+                                <div class="timer" id="whiteTimer">10:00</div>
+                            </div>
+                        </div>
+                        <div class="player black">
+                            <span class="player-icon">♚</span>
+                            <div class="player-info">
+                                <span id="blackPlayer">Черные</span>
+                                <div class="timer" id="blackTimer">10:00</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Анализ -->
+            <div class="analysis-section">
+                <div class="eval-bar-container">
+                    <div class="eval-bar">
+                        <div id="evalBarWhite" class="eval-bar-white"></div>
+                        <div class="eval-score" id="evalScore">0.0</div>
+                    </div>
+                </div>
+
+                <div class="analysis-info">
+                    <h3>📊 Анализ позиции</h3>
+                    <div id="analysisStatus">Включите анализ</div>
+                    <div id="moveQuality" class="move-quality"></div>
+                </div>
+
+                <div class="chat-section">
+                    <h3>💬 Чат</h3>
+                    <div id="chatMessages" class="chat-messages"></div>
+                    <div class="chat-input">
+                        <input type="text" id="chatInput" placeholder="Сообщение...">
+                        <button id="sendBtn" class="btn">📤</button>
+                    </div>
+                </div>
+
+                <div class="quick-chat">
+                    <h3>💬 Быстрый чат</h3>
+                    <div class="quick-chat-buttons">
+                        <button class="quick-chat-btn" data-msg="Хорошая игра!">👍 Хорошая игра</button>
+                        <button class="quick-chat-btn" data-msg="Спасибо!">🙏 Спасибо</button>
+                        <button class="quick-chat-btn" data-msg="Удачи!">🍀 Удачи</button>
+                        <button class="quick-chat-btn" data-msg="Отличный ход!">⭐ Отличный ход</button>
+                        <button class="quick-chat-btn" data-msg="Ничья?">🤝 Ничья?</button>
+                        <button class="quick-chat-btn" data-msg="Ещё партию?">🔄 Ещё партию?</button>
+                    </div>
+                </div>
+
+                <div class="moves-history">
+                    <h3>История партии</h3>
+                    <div id="movesList"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+    <script src="multiplayer.js"></script>
+    <script src="puzzles.js"></script>
+    <script src="supabase-multiplayer.js"></script>
+</body>
+</html>
