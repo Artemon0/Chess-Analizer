@@ -69,16 +69,13 @@ function onDrop(source, target) {
 
     if (move === null) return 'snapback';
 
-    // Очищаем старые аннотации перед новым ходом
-    clearAnnotations();
-
     // Отправляем ход на сервер (симуляция)
     sendMove(move);
 
     updateStatus();
     updateMovesDisplay();
 
-    // Анализируем СДЕЛАННЫЙ ход
+    // Анализируем СДЕЛАННЫЙ ход (только оценка, БЕЗ подсказок)
     if (autoAnalyze) {
         setTimeout(() => analyzeMadeMove(move, fenBefore), 100);
     }
@@ -266,7 +263,7 @@ function toggleAnalysis() {
     }
 }
 
-// Анализ СДЕЛАННОГО хода
+// Анализ СДЕЛАННОГО хода (только оценка, БЕЗ подсказок)
 async function analyzeMadeMove(move, fenBefore) {
     if (game.game_over()) {
         $('#analysisStatus').text('Игра окончена');
@@ -282,8 +279,22 @@ async function analyzeMadeMove(move, fenBefore) {
         const evalAfter = await getCloudEval(game.fen());
 
         if (evalBefore && evalAfter) {
+            // Очищаем старые аннотации
+            clearAnnotations();
+
+            // Оцениваем ход и добавляем аннотацию
             evaluateMadeMove(move, evalBefore, evalAfter);
-            // Только оценка хода, БЕЗ подсказок!
+
+            // Обновляем eval bar
+            const scoreAfter = evalAfter.moves[0].cp !== null ? -evalAfter.moves[0].cp / 100 :
+                (evalAfter.moves[0].mate !== null ? -(evalAfter.moves[0].mate > 0 ? 100 : -100) : 0);
+            updateEvalBar(scoreAfter);
+
+            const evalText = evalAfter.moves[0].mate !== null ?
+                'M' + Math.abs(evalAfter.moves[0].mate) :
+                (scoreAfter > 0 ? '+' : '') + scoreAfter.toFixed(1);
+            $('#evalScore').text(evalText);
+
             $('#analysisStatus').text('✅ Анализ завершен');
         } else {
             $('#analysisStatus').text('⚠️ Анализ недоступен (нет данных)');
@@ -496,11 +507,11 @@ function evaluateMadeMove(move, evalBefore, evalAfter) {
     } else if (wasBestMove || loss < 0.1) {
         quality = 'Лучший ход';
         className = 'best';
-        annotation = '';
-        icon = '✓';
+        annotation = '⭐';
+        icon = '⭐';
         accuracy = 100;
     } else if (loss < -0.5) {
-        quality = 'Изумрудный!';
+        quality = 'Блестящий!';
         className = 'brilliant';
         annotation = '‼️';
         icon = '‼️';
@@ -508,18 +519,18 @@ function evaluateMadeMove(move, evalBefore, evalAfter) {
     } else if (loss < 0.2) {
         quality = 'Отличный';
         className = 'excellent';
-        annotation = '';
-        icon = '✓';
+        annotation = '!';
+        icon = '!';
     } else if (loss < 0.5) {
         quality = 'Хороший';
         className = 'good';
-        annotation = '';
-        icon = '✓';
+        annotation = '!';
+        icon = '!';
     } else if (loss < 1.0) {
         quality = 'Неточность';
         className = 'inaccuracy';
-        annotation = '?!';
-        icon = '?!';
+        annotation = '!?';
+        icon = '!?';
     } else if (loss < 2.0) {
         quality = 'Ошибка';
         className = 'mistake';
@@ -540,10 +551,10 @@ function evaluateMadeMove(move, evalBefore, evalAfter) {
         .html(`${icon} <strong>${quality}</strong>${accuracyText}${lossText}`)
         .attr('class', 'move-quality ' + className);
 
-    // Аннотация на доске
+    // Аннотация на доске (только на клетку КУДА пошла фигура)
     if (annotation) {
         addMoveAnnotation(move.to, annotation);
-        setTimeout(() => renderAnnotations(), 200);
+        setTimeout(() => renderAnnotations(), 50);
     }
 
     console.log(`${icon} ${quality} ${accuracyText} ${lossText}`);
@@ -579,6 +590,24 @@ function renderAnnotations() {
             // Делаем клетку relative
             $square.css('position', 'relative');
 
+            // Цвет фона в зависимости от аннотации
+            let bgColor = 'rgba(255, 255, 255, 0.95)';
+            let textColor = '#000';
+
+            if (annotation === '⭐') {
+                bgColor = 'rgba(76, 175, 80, 0.95)'; // Зеленый для лучшего хода
+                textColor = '#fff';
+            } else if (annotation === '‼️' || annotation === '!') {
+                bgColor = 'rgba(33, 150, 243, 0.95)'; // Синий для хороших ходов
+                textColor = '#fff';
+            } else if (annotation === '??' || annotation === '?') {
+                bgColor = 'rgba(244, 67, 54, 0.95)'; // Красный для ошибок
+                textColor = '#fff';
+            } else if (annotation === '!?' || annotation === '?!') {
+                bgColor = 'rgba(255, 152, 0, 0.95)'; // Оранжевый для неточностей
+                textColor = '#fff';
+            }
+
             const $annotation = $('<div>')
                 .addClass('piece-annotation')
                 .text(annotation)
@@ -586,14 +615,16 @@ function renderAnnotations() {
                     position: 'absolute',
                     top: '5px',
                     right: '5px',
-                    fontSize: '22px',
+                    fontSize: '24px',
                     fontWeight: 'bold',
-                    textShadow: '0 0 4px white, 0 0 8px white',
+                    textShadow: '0 2px 4px rgba(0,0,0,0.3)',
                     zIndex: 1000,
                     pointerEvents: 'none',
-                    background: 'rgba(255, 255, 255, 0.9)',
-                    padding: '2px 6px',
-                    borderRadius: '4px'
+                    background: bgColor,
+                    color: textColor,
+                    padding: '4px 8px',
+                    borderRadius: '6px',
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.2)'
                 });
             $square.append($annotation);
             console.log('✅ Аннотация добавлена на', square);
@@ -907,59 +938,6 @@ onDrop = function (source, target) {
     }
 
     return result;
-};
-
-// Улучшенная функция рендеринга аннотаций
-const originalRenderAnnotations = renderAnnotations;
-renderAnnotations = function () {
-    // Удаляем старые аннотации
-    $('.piece-annotation').remove();
-    $('.best-move-hint').removeClass('best-move-hint');
-
-    if (!autoAnalyze) return;
-
-    // Добавляем аннотации на фигуры
-    Object.keys(moveAnnotations).forEach(square => {
-        const annotation = moveAnnotations[square];
-        const $square = $(`[data-square="${square}"]`);
-
-        if ($square.length && annotation) {
-            const $annotation = $('<div>')
-                .addClass('piece-annotation')
-                .text(annotation);
-            $square.append($annotation);
-
-            // Подсветка лучшего хода
-            if (annotation === '‼️' || annotation === '⭐') {
-                $square.addClass('best-move-hint');
-            }
-        }
-    });
-};
-
-// Обновляем displayAnalysis для постоянных аннотаций
-const originalDisplayAnalysis = displayAnalysis;
-displayAnalysis = function (cloudEval) {
-    originalDisplayAnalysis(cloudEval);
-
-    // Добавляем аннотацию на лучший ход
-    if (cloudEval.moves.length > 0) {
-        const bestMove = cloudEval.moves[0];
-        const uciMove = bestMove.moves[0];
-        const toSquare = uciMove.substring(2, 4);
-
-        let annotation = '⭐'; // Лучший ход
-
-        if (bestMove.cp !== null) {
-            const score = Math.abs(bestMove.cp / 100);
-            if (score > 5) annotation = '‼️';
-            else if (score > 3) annotation = '!';
-            else if (score > 1.5) annotation = '!?';
-        }
-
-        moveAnnotations[toSquare] = annotation;
-        renderAnnotations();
-    }
 };
 
 console.log('✅ Бот, таймер и аннотации готовы!');
