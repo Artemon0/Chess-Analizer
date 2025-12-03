@@ -890,3 +890,96 @@ h3 {
     -webkit-user-select: none;
     user-select: none;
 }
+
+
+/* ===== СИСТЕМА КЛИКОВ - ПОДСВЕТКА ХОДОВ ===== */
+
+/* Выбранная фигура */
+.square-55d63.selected-square {
+    box-shadow: inset 0 0 0 3px rgba(255, 255, 0, 0.8) !important;
+    background-color: rgba(255, 255, 0, 0.3) !important;
+}
+
+/* Доступные ходы */
+.square-55d63.possible-move {
+    cursor: pointer !important;
+}
+
+/* Точка для обычного хода */
+.move-hint {
+    position: absolute;
+    width: 25%;
+    height: 25%;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 10;
+}
+
+/* Кружок для взятия */
+.capture-hint {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border: 4px solid rgba(255, 0, 0, 0.5);
+    border-radius: 50%;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    z-index: 10;
+    box-sizing: border-box;
+}
+
+/* Анимация при наведении на доступный ход */
+.square-55d63.possible-move:hover {
+    background-color: rgba(255, 255, 0, 0.2) !important;
+}
+
+/* Улучшаем видимость на мобильных */
+@media (max-width: 768px) {
+    .move-hint {
+        width: 30%;
+        height: 30%;
+        background: rgba(0, 0, 0, 0.4);
+    }
+
+    .capture-hint {
+        border-width: 5px;
+        border-color: rgba(255, 0, 0, 0.7);
+    }
+
+    .square-55d63.selected-square {
+        box-shadow: inset 0 0 0 4px rgba(255, 255, 0, 0.9) !important;
+        background-color: rgba(255, 255, 0, 0.4) !important;
+    }
+}
+
+/* Курсор для кликабельных клеток */
+.square-55d63 {
+    cursor: pointer;
+}
+
+/* Улу
+чшаем видимость при перетаскивании */
+.piece-417db {
+    cursor: grab !important;
+}
+
+.piece-417db:active {
+    cursor: grabbing !important;
+}
+
+/* Фигура при перетаскивании */
+img.piece-417db {
+    opacity: 1 !important;
+    z-index: 1000 !important;
+}
+
+/* Увеличиваем размер перетаскиваемой фигуры для лучшей видимости */
+body.dragging-piece img.piece-417db {
+    transform: scale(1.2);
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5));
+}

@@ -32,6 +32,9 @@ $(document).ready(function () {
 
 // ===== ДОСКА =====
 
+let selectedSquare = null;
+let highlightedSquares = [];
+
 function initBoard() {
     const config = {
         draggable: true,
@@ -43,6 +46,11 @@ function initBoard() {
     };
 
     board = Chessboard('board', config);
+
+    // Добавляем обработчик кликов для мобильных
+    setTimeout(() => {
+        $('#board').on('click', '.square-55d63', handleSquareClick);
+    }, 500);
 }
 
 function onDragStart(source, piece) {
@@ -86,6 +94,111 @@ function onSnapEnd() {
     board.position(game.fen());
     // Восстанавливаем аннотации после перерисовки доски
     setTimeout(() => renderAnnotations(), 50);
+}
+
+// ===== СИСТЕМА КЛИКОВ (ДЛЯ МОБИЛЬНЫХ И ПК) =====
+
+function handleSquareClick(e) {
+    const square = $(e.currentTarget).attr('data-square');
+
+    if (!square) return;
+
+    // Если игра окончена или не наш ход
+    if (game.game_over()) return;
+    if (!myColor) return;
+    if ((game.turn() === 'w' && myColor !== 'white') ||
+        (game.turn() === 'b' && myColor !== 'black')) {
+        return;
+    }
+
+    const piece = game.get(square);
+
+    // Если кликнули на свою фигуру - выбираем её
+    if (piece &&
+        ((game.turn() === 'w' && piece.color === 'w') ||
+            (game.turn() === 'b' && piece.color === 'b'))) {
+
+        selectSquare(square);
+    }
+    // Если уже выбрана фигура - пытаемся сделать ход
+    else if (selectedSquare) {
+        makeMove(selectedSquare, square);
+    }
+}
+
+function selectSquare(square) {
+    // Снимаем предыдущее выделение
+    clearHighlights();
+
+    selectedSquare = square;
+
+    // Подсвечиваем выбранную клетку
+    $(`[data-square="${square}"]`).addClass('selected-square');
+
+    // Получаем доступные ходы
+    const moves = game.moves({ square: square, verbose: true });
+
+    // Подсвечиваем доступные ходы
+    moves.forEach(move => {
+        const $target = $(`[data-square="${move.to}"]`);
+        $target.addClass('possible-move');
+        highlightedSquares.push(move.to);
+
+        // Добавляем точку для пустых клеток или кружок для взятия
+        if (game.get(move.to)) {
+            $target.append('<div class="capture-hint"></div>');
+        } else {
+            $target.append('<div class="move-hint"></div>');
+        }
+    });
+}
+
+function makeMove(from, to) {
+    // Сохраняем позицию ДО хода для анализа
+    const fenBefore = game.fen();
+
+    const move = game.move({
+        from: from,
+        to: to,
+        promotion: 'q' // Автоматически превращаем в ферзя
+    });
+
+    if (move === null) {
+        // Неверный ход - снимаем выделение
+        clearHighlights();
+        selectedSquare = null;
+        return;
+    }
+
+    // Ход успешен
+    clearHighlights();
+    selectedSquare = null;
+
+    board.position(game.fen());
+
+    // Отправляем ход на сервер
+    sendMove(move);
+
+    updateStatus();
+    updateMovesDisplay();
+
+    // Анализируем СДЕЛАННЫЙ ход
+    if (autoAnalyze) {
+        setTimeout(() => analyzeMadeMove(move, fenBefore), 100);
+    }
+
+    // Если играем с ботом
+    if (playingWithBot && game.turn() === 'b') {
+        makeBotMove();
+    }
+}
+
+function clearHighlights() {
+    $('.selected-square').removeClass('selected-square');
+    $('.possible-move').removeClass('possible-move');
+    $('.move-hint').remove();
+    $('.capture-hint').remove();
+    highlightedSquares = [];
 }
 
 // ===== МУЛЬТИПЛЕЕР (СИМУЛЯЦИЯ) =====
@@ -152,6 +265,8 @@ function resetGame() {
 
     stopTimer();
     clearAnnotations();
+    clearHighlights();
+    selectedSquare = null;
     moveHistory = []; // Очищаем историю аннотаций
 
     whiteTime = selectedTimeControl;
