@@ -7,6 +7,7 @@ let myColor = null;
 let autoAnalyze = false;
 let lastEval = 0;
 let moveAnnotations = {}; // Хранит аннотации для каждой клетки
+let moveHistory = []; // Хранит аннотации для каждого хода
 let playingWithBot = false;
 let botDifficulty = 'medium';
 
@@ -150,6 +151,7 @@ function resetGame() {
 
     stopTimer();
     clearAnnotations();
+    moveHistory = []; // Очищаем историю аннотаций
 
     whiteTime = selectedTimeControl;
     blackTime = selectedTimeControl;
@@ -548,14 +550,24 @@ function evaluateMadeMove(move, evalBefore, evalAfter) {
         .html(`${icon} <strong>${quality}</strong>${accuracyText}${lossText}`)
         .attr('class', 'move-quality ' + className);
 
+    // Сохраняем аннотацию в историю ходов
+    const moveIndex = game.history().length - 1;
+    moveHistory[moveIndex] = annotation;
+
+    // Обновляем отображение истории с аннотациями
+    updateMovesDisplay();
+
     // Аннотация на доске (только на клетку КУДА пошла фигура)
+    // Показываем на 3 секунды, потом убираем
     if (annotation) {
-        // Очищаем старые аннотации перед добавлением новой
         clearAnnotations();
         addMoveAnnotation(move.to, annotation);
-        setTimeout(() => renderAnnotations(), 50);
+        setTimeout(() => {
+            renderAnnotations();
+            // Автоматически убираем через 3 секунды
+            setTimeout(() => clearAnnotations(), 3000);
+        }, 50);
     } else {
-        // Если нет аннотации, просто очищаем старые
         clearAnnotations();
     }
 
@@ -718,11 +730,22 @@ function updateMovesDisplay() {
         const $item = $('<div>').addClass('move-item');
         $item.append($('<span>').text(moveNum + '.'));
 
-        let moveText = whiteMove.san;
-        if (blackMove) {
-            moveText += ' ' + blackMove.san;
+        // Белые с аннотацией
+        let whiteMoveText = whiteMove.san;
+        if (moveHistory[i]) {
+            whiteMoveText += ' ' + moveHistory[i];
         }
 
+        // Черные с аннотацией
+        let blackMoveText = '';
+        if (blackMove) {
+            blackMoveText = blackMove.san;
+            if (moveHistory[i + 1]) {
+                blackMoveText += ' ' + moveHistory[i + 1];
+            }
+        }
+
+        const moveText = blackMoveText ? `${whiteMoveText} ${blackMoveText}` : whiteMoveText;
         $item.append($('<span>').text(moveText));
         $list.append($item);
     }
