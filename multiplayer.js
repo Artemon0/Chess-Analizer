@@ -762,12 +762,20 @@ function sendMessage() {
     addChatMessage('own', message);
     $('#chatInput').val('');
 
-    // Симуляция ответа противника
-    setTimeout(() => {
-        const responses = ['Хороший ход!', 'Интересно...', 'Не ожидал', 'Сильно!'];
-        const randomResponse = responses[Math.floor(Math.random() * responses.length)];
-        addChatMessage('opponent', randomResponse);
-    }, 1000);
+    // WebSocket для онлайн игры
+    if (isOnlineGame && ws && ws.readyState === WebSocket.OPEN) {
+        ws.send(JSON.stringify({
+            type: 'chat',
+            message: message
+        }));
+    }
+    // Умный ответ бота
+    else if (playingWithBot) {
+        setTimeout(() => {
+            const botResponse = getBotChatResponse(message);
+            addChatMessage('opponent', botResponse);
+        }, 800 + Math.random() * 1200);
+    }
 }
 
 function addChatMessage(type, text) {
@@ -1287,28 +1295,7 @@ sendMove = function (move) {
     }
 };
 
-// Переопределяем sendMessage для WebSocket
-const originalSendMessage = sendMessage;
-sendMessage = function () {
-    const message = $('#chatInput').val().trim();
-    if (!message) return;
-
-    addChatMessage('own', message);
-    $('#chatInput').val('');
-
-    if (isOnlineGame && ws && ws.readyState === WebSocket.OPEN) {
-        ws.send(JSON.stringify({
-            type: 'chat',
-            message: message
-        }));
-    } else if (playingWithBot) {
-        // Умный ответ бота
-        setTimeout(() => {
-            const botResponse = getBotChatResponse(message);
-            addChatMessage('opponent', botResponse);
-        }, 800 + Math.random() * 1200); // 0.8-2 секунды
-    }
-};
+// sendMessage уже определена выше с поддержкой WebSocket и бота
 
 // Автоподключение при загрузке
 let autoJoinAttempted = false;
