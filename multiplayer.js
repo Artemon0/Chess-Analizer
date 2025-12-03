@@ -279,9 +279,6 @@ async function analyzeMadeMove(move, fenBefore) {
         const evalAfter = await getCloudEval(game.fen());
 
         if (evalBefore && evalAfter) {
-            // Очищаем старые аннотации
-            clearAnnotations();
-
             // Оцениваем ход и добавляем аннотацию
             evaluateMadeMove(move, evalBefore, evalAfter);
 
@@ -553,8 +550,13 @@ function evaluateMadeMove(move, evalBefore, evalAfter) {
 
     // Аннотация на доске (только на клетку КУДА пошла фигура)
     if (annotation) {
+        // Очищаем старые аннотации перед добавлением новой
+        clearAnnotations();
         addMoveAnnotation(move.to, annotation);
         setTimeout(() => renderAnnotations(), 50);
+    } else {
+        // Если нет аннотации, просто очищаем старые
+        clearAnnotations();
     }
 
     console.log(`${icon} ${quality} ${accuracyText} ${lossText}`);
@@ -570,6 +572,8 @@ function getAnnotation(evalScore) {
 
 function addMoveAnnotation(square, annotation) {
     if (!annotation) return;
+    // Очищаем все старые аннотации и добавляем только новую
+    moveAnnotations = {};
     moveAnnotations[square] = annotation;
 }
 
