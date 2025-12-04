@@ -4,7 +4,7 @@ Write-Host "=== Chess Multiplayer - Build v1.0.0 ===" -ForegroundColor Green
 Write-Host ""
 
 # Go to app folder
-Set-Location app
+Set-Location ../app
 
 Write-Host "[1/4] Installing dependencies..." -ForegroundColor Cyan
 npm install
@@ -40,4 +40,4 @@ Get-ChildItem dist/*.exe, dist/*.dmg, dist/*.AppImage, dist/*.deb -ErrorAction S
 Write-Host ""
 Write-Host "Done! Files are ready in app/dist/" -ForegroundColor Green
 
-Set-Location ..
+Set-Location ../..

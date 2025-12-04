@@ -53,19 +53,34 @@ npm start
 ## 📦 Структура проекта
 
 ```
-chess2/
+chess-multiplayer/
+├── assets/                 # Графические ресурсы
+│   └── icon.svg           # Иконка приложения
+├── documentation/          # Документация
+│   ├── BUILD.md           # Инструкции по сборке
+│   ├── CHANGELOG.md       # История изменений
+│   ├── DEPLOY.md          # Деплой
+│   ├── LANGUAGES.md       # Многоязычность
+│   ├── RELEASE.md         # Создание релиза
+│   └── RELEASE_NOTES.md   # Описание релиза
+├── scripts/                # Скрипты сборки
+│   ├── build-all.ps1      # Сборка всех платформ
+│   └── build.bat          # Сборка Windows
+├── app/                    # Electron приложение
+│   ├── main.js            # Главный процесс
+│   ├── preload.js         # Preload скрипт
+│   ├── assets/            # Ресурсы приложения
+│   └── renderer/          # Веб-приложение
+├── docs/                   # GitHub Pages
 ├── index.html              # Главная страница
 ├── multiplayer.html        # Страница игры
 ├── multiplayer.js          # Основная логика
 ├── multiplayer.css         # Стили
 ├── puzzles.js              # Шахматные задачи
-├── firebase-config.js      # Конфигурация Firebase
+├── i18n.js                 # Система переводов
+├── firebase-config.js      # Firebase конфигурация
 ├── server.js               # Node.js сервер
-├── app/                    # Electron приложение
-│   ├── main.js            # Главный процесс Electron
-│   ├── preload.js         # Preload скрипт
-│   └── renderer/          # Рендер процесс (копия веб-версии)
-└── docs/                   # GitHub Pages деплой
+└── package.json            # Зависимости
 ```
 
 ## 🚀 Деплой
@@ -81,7 +96,7 @@ chess2/
 vercel deploy
 ```
 
-Подробнее: [DEPLOY.md](DEPLOY.md)
+Подробнее: [DEPLOY.md](documentation/DEPLOY.md)
 
 ## 🔧 Настройка Firebase (опционально)
 
