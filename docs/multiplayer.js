@@ -261,7 +261,7 @@ function initControls() {
             pieceTheme: getPieceTheme(style)
         });
         setTimeout(() => {
-            $('#board .board-55d63').attr('data-board-color', currentBoardColor);
+            $('#board').attr('data-board-color', currentBoardColor);
             $('#board').on('click', '.square-55d63', handleSquareClick);
         }, 100);
     });
@@ -272,7 +272,7 @@ function initControls() {
         $('.board-color-btn').removeClass('active');
         $(this).addClass('active');
         currentBoardColor = color;
-        $('#board .board-55d63').attr('data-board-color', color);
+        $('#board').attr('data-board-color', color);
     });
 
     // Быстрый чат
