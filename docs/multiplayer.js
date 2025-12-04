@@ -215,12 +215,7 @@ function getPieceTheme(style) {
     const themes = {
         'wikipedia': 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png',
         'alpha': 'https://chessboardjs.com/img/chesspieces/alpha/{piece}.png',
-        'uscf': 'https://chessboardjs.com/img/chesspieces/uscf/{piece}.png',
-        'staunty': 'https://github.com/lichess-org/lila/raw/master/public/piece/staunty/{piece}.svg',
-        'pirouetti': 'https://github.com/lichess-org/lila/raw/master/public/piece/pirouetti/{piece}.svg',
-        'chessnut': 'https://github.com/lichess-org/lila/raw/master/public/piece/chessnut/{piece}.svg',
-        'letter': 'https://github.com/lichess-org/lila/raw/master/public/piece/letter/{piece}.svg',
-        'shapes': 'https://github.com/lichess-org/lila/raw/master/public/piece/shapes/{piece}.svg'
+        'uscf': 'https://chessboardjs.com/img/chesspieces/uscf/{piece}.png'
     };
     console.log('🎨 Меняем стиль фигур на:', style, '→', themes[style]);
     return themes[style] || themes['wikipedia'];
@@ -1633,3 +1628,184 @@ function copyFallback(input, button) {
         alert('Не удалось скопировать. Выделите текст и скопируйте вручную (Ctrl+C).');
     }
 }
+
+
+// ===== СИСТЕМА АККАУНТОВ =====
+
+let currentUser = null;
+
+// Загрузка пользователя из localStorage
+function loadUser() {
+    const savedUser = localStorage.getItem('chessUser');
+    if (savedUser) {
+        currentUser = JSON.parse(savedUser);
+        updateUserUI();
+    }
+}
+
+function saveUser() {
+    localStorage.setItem('chessUser', JSON.stringify(currentUser));
+}
+
+function updateUserUI() {
+    if (currentUser) {
+        $('#loginBtn').text(`👤 ${currentUser.username}`);
+        $('#profileUsername').text(currentUser.username);
+        $('#profileGames').text(currentUser.stats.games);
+        $('#profileWins').text(currentUser.stats.wins);
+        $('#profileRating').text(currentUser.stats.rating);
+
+        // Обновляем имена игроков
+        if (myColor === 'white') {
+            $('#whitePlayer').text(currentUser.username);
+        } else if (myColor === 'black') {
+            $('#blackPlayer').text(currentUser.username);
+        }
+    } else {
+        $('#loginBtn').text('👤 Войти');
+    }
+}
+
+// Модальное окно
+$('#loginBtn').on('click', function () {
+    if (currentUser) {
+        // Показываем профиль
+        $('#loginTab').addClass('hidden');
+        $('#registerTab').addClass('hidden');
+        $('#userProfile').removeClass('hidden');
+        updateUserUI();
+    } else {
+        // Показываем форму входа
+        $('#loginTab').removeClass('hidden');
+        $('#registerTab').addClass('hidden');
+        $('#userProfile').addClass('hidden');
+    }
+    $('#loginModal').removeClass('hidden');
+});
+
+$('.close').on('click', function () {
+    $('#loginModal').addClass('hidden');
+});
+
+$(window).on('click', function (e) {
+    if ($(e.target).is('#loginModal')) {
+        $('#loginModal').addClass('hidden');
+    }
+});
+
+// Переключение вкладок
+$('.auth-tab').on('click', function () {
+    const tab = $(this).data('tab');
+    $('.auth-tab').removeClass('active');
+    $(this).addClass('active');
+
+    if (tab === 'login') {
+        $('#loginTab').removeClass('hidden');
+        $('#registerTab').addClass('hidden');
+    } else {
+        $('#loginTab').addClass('hidden');
+        $('#registerTab').removeClass('hidden');
+    }
+});
+
+// Регистрация
+$('#registerSubmit').on('click', function () {
+    const username = $('#registerUsername').val().trim();
+    const password = $('#registerPassword').val();
+    const passwordConfirm = $('#registerPasswordConfirm').val();
+
+    if (!username || !password) {
+        alert('Заполните все поля');
+        return;
+    }
+
+    if (password !== passwordConfirm) {
+        alert('Пароли не совпадают');
+        return;
+    }
+
+    if (username.length < 3) {
+        alert('Имя пользователя должно быть не менее 3 символов');
+        return;
+    }
+
+    // Проверяем существование пользователя
+    const users = JSON.parse(localStorage.getItem('chessUsers') || '{}');
+    if (users[username]) {
+        alert('Пользователь с таким именем уже существует');
+        return;
+    }
+
+    // Создаем пользователя
+    users[username] = {
+        password: password, // В реальном приложении нужно хешировать!
+        stats: {
+            games: 0,
+            wins: 0,
+            rating: 1200
+        }
+    };
+
+    localStorage.setItem('chessUsers', JSON.stringify(users));
+
+    currentUser = {
+        username: username,
+        stats: users[username].stats
+    };
+
+    saveUser();
+    updateUserUI();
+    $('#loginModal').addClass('hidden');
+
+    addChatMessage('system', `✅ Добро пожаловать, ${username}!`);
+});
+
+// Вход
+$('#loginSubmit').on('click', function () {
+    const username = $('#loginUsername').val().trim();
+    const password = $('#loginPassword').val();
+
+    if (!username || !password) {
+        alert('Заполните все поля');
+        return;
+    }
+
+    const users = JSON.parse(localStorage.getItem('chessUsers') || '{}');
+
+    if (!users[username]) {
+        alert('Пользователь не найден');
+        return;
+    }
+
+    if (users[username].password !== password) {
+        alert('Неверный пароль');
+        return;
+    }
+
+    currentUser = {
+        username: username,
+        stats: users[username].stats
+    };
+
+    saveUser();
+    updateUserUI();
+    $('#loginModal').addClass('hidden');
+
+    addChatMessage('system', `✅ С возвращением, ${username}!`);
+});
+
+// Выход
+$('#logoutBtn').on('click', function () {
+    currentUser = null;
+    localStorage.removeItem('chessUser');
+    updateUserUI();
+    $('#loginModal').addClass('hidden');
+    addChatMessage('system', '👋 Вы вышли из аккаунта');
+});
+
+// Загружаем пользователя при старте
+$(document).ready(function () {
+    loadUser();
+});
+
+console.log('✅ Система аккаунтов готова!');

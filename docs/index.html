@@ -11,10 +11,45 @@
     <div class="container">
         <div class="header">
             <h1>♟️ Chess Multiplayer</h1>
-            <div class="theme-selector">
-                <button class="theme-btn" data-theme="dark" title="Темная тема">🌙</button>
-                <button class="theme-btn active" data-theme="lichess" title="Lichess">♟️</button>
-                <button class="theme-btn" data-theme="light" title="Светлая тема">☀️</button>
+            <div class="header-controls">
+                <div class="theme-selector">
+                    <button class="theme-btn" data-theme="dark" title="Темная тема">🌙</button>
+                    <button class="theme-btn active" data-theme="lichess" title="Lichess">♟️</button>
+                    <button class="theme-btn" data-theme="light" title="Светлая тема">☀️</button>
+                </div>
+                <button id="loginBtn" class="btn btn-login">👤 Войти</button>
+            </div>
+        </div>
+        
+        <!-- Модальное окно входа -->
+        <div id="loginModal" class="modal hidden">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Вход / Регистрация</h2>
+                <div class="auth-tabs">
+                    <button class="auth-tab active" data-tab="login">Вход</button>
+                    <button class="auth-tab" data-tab="register">Регистрация</button>
+                </div>
+                <div id="loginTab" class="auth-form">
+                    <input type="text" id="loginUsername" placeholder="Имя пользователя" />
+                    <input type="password" id="loginPassword" placeholder="Пароль" />
+                    <button id="loginSubmit" class="btn btn-primary">Войти</button>
+                </div>
+                <div id="registerTab" class="auth-form hidden">
+                    <input type="text" id="registerUsername" placeholder="Имя пользователя" />
+                    <input type="password" id="registerPassword" placeholder="Пароль" />
+                    <input type="password" id="registerPasswordConfirm" placeholder="Повторите пароль" />
+                    <button id="registerSubmit" class="btn btn-primary">Зарегистрироваться</button>
+                </div>
+                <div id="userProfile" class="user-profile hidden">
+                    <div class="profile-info">
+                        <h3 id="profileUsername"></h3>
+                        <p>Игр сыграно: <span id="profileGames">0</span></p>
+                        <p>Побед: <span id="profileWins">0</span></p>
+                        <p>Рейтинг: <span id="profileRating">1200</span></p>
+                    </div>
+                    <button id="logoutBtn" class="btn btn-danger">Выйти</button>
+                </div>
             </div>
         </div>
         <p class="subtitle">Играй онлайн + анализ в реальном времени</p>
@@ -35,11 +70,6 @@
                         <button class="piece-style-btn active" data-style="wikipedia">Классика</button>
                         <button class="piece-style-btn" data-style="alpha">Альфа</button>
                         <button class="piece-style-btn" data-style="uscf">USCF</button>
-                        <button class="piece-style-btn" data-style="staunty">Staunty</button>
-                        <button class="piece-style-btn" data-style="pirouetti">Pirouetti</button>
-                        <button class="piece-style-btn" data-style="chessnut">Chessnut</button>
-                        <button class="piece-style-btn" data-style="letter">Буквы</button>
-                        <button class="piece-style-btn" data-style="shapes">Фигуры</button>
                     </div>
                     
                     <h4>Цвет доски</h4>
