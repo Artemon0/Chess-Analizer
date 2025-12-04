@@ -1,13 +1,14 @@
 // Firebase конфигурация для синхронизации пользователей
 
 const firebaseConfig = {
-    apiKey: "AIzaSyDemoKey-ReplaceWithYourKey",
-    authDomain: "chess-multiplayer.firebaseapp.com",
-    databaseURL: "https://chess-multiplayer-default-rtdb.firebaseio.com",
-    projectId: "chess-multiplayer",
-    storageBucket: "chess-multiplayer.appspot.com",
-    messagingSenderId: "123456789",
-    appId: "1:123456789:web:abcdef123456"
+    apiKey: "AIzaSyDfMfU_wfM2RS5C8VPJf09hbWjOEOo4zhw",
+    authDomain: "chess-analizer-aog.firebaseapp.com",
+    databaseURL: "https://chess-analizer-aog-default-rtdb.firebaseio.com",
+    projectId: "chess-analizer-aog",
+    storageBucket: "chess-analizer-aog.firebasestorage.app",
+    messagingSenderId: "1009290250318",
+    appId: "1:1009290250318:web:52f56a21f24a8682881b1f",
+    measurementId: "G-KBBH96RRKR"
 };
 
 // Инициализация Firebase (будет работать и в браузере, и в Electron)
