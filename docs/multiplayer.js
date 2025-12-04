@@ -214,10 +214,11 @@ function clearHighlights() {
 function getPieceTheme(style) {
     const themes = {
         'wikipedia': 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png',
-        'alpha': 'https://images.chesscomfiles.com/chess-themes/pieces/alpha/{piece}.png',
-        'merida': 'https://lichess1.org/assets/piece/merida/{piece}.svg',
-        'cburnett': 'https://lichess1.org/assets/piece/cburnett/{piece}.svg'
+        'alpha': 'https://www.chess.com/chess-themes/pieces/neo/150/{piece}.png',
+        'merida': 'https://lichess1.org/assets/_Qd0hym/piece/merida/{piece}.svg',
+        'cburnett': 'https://lichess1.org/assets/_Qd0hym/piece/cburnett/{piece}.svg'
     };
+    console.log('🎨 Меняем стиль фигур на:', style, '→', themes[style]);
     return themes[style] || themes['wikipedia'];
 }
 
@@ -269,10 +270,15 @@ function initControls() {
     // Цвета доски
     $('.board-color-btn').on('click', function () {
         const color = $(this).data('color');
+        console.log('🎨 Меняем цвет доски на:', color);
         $('.board-color-btn').removeClass('active');
         $(this).addClass('active');
         currentBoardColor = color;
-        $('#board').attr('data-board-color', color);
+
+        // Применяем к контейнеру доски
+        const $boardContainer = $('#board');
+        $boardContainer.attr('data-board-color', color);
+        console.log('✅ Атрибут установлен:', $boardContainer.attr('data-board-color'));
     });
 
     // Быстрый чат

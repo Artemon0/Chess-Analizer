@@ -1401,46 +1401,56 @@ body[data-theme="light"] #chatInput {
 /* ===== ЦВЕТА ДОСКИ ===== */
 
 /* Коричневая (по умолчанию) */
-[data-board-color="brown"] .white-1e1d7 {
+#board[data-board-color="brown"] .white-1e1d7,
+#board[data-board-color="brown"] .white-1e1d7.highlight-white {
     background-color: #f0d9b5 !important;
 }
 
-[data-board-color="brown"] .black-3c85d {
+#board[data-board-color="brown"] .black-3c85d,
+#board[data-board-color="brown"] .black-3c85d.highlight-black {
     background-color: #b58863 !important;
 }
 
 /* Синяя */
-[data-board-color="blue"] .white-1e1d7 {
+#board[data-board-color="blue"] .white-1e1d7,
+#board[data-board-color="blue"] .white-1e1d7.highlight-white {
     background-color: #dee3e6 !important;
 }
 
-[data-board-color="blue"] .black-3c85d {
+#board[data-board-color="blue"] .black-3c85d,
+#board[data-board-color="blue"] .black-3c85d.highlight-black {
     background-color: #8ca2ad !important;
 }
 
 /* Зеленая */
-[data-board-color="green"] .white-1e1d7 {
+#board[data-board-color="green"] .white-1e1d7,
+#board[data-board-color="green"] .white-1e1d7.highlight-white {
     background-color: #ffffdd !important;
 }
 
-[data-board-color="green"] .black-3c85d {
+#board[data-board-color="green"] .black-3c85d,
+#board[data-board-color="green"] .black-3c85d.highlight-black {
     background-color: #86a666 !important;
 }
 
 /* Фиолетовая */
-[data-board-color="purple"] .white-1e1d7 {
+#board[data-board-color="purple"] .white-1e1d7,
+#board[data-board-color="purple"] .white-1e1d7.highlight-white {
     background-color: #e8e9b7 !important;
 }
 
-[data-board-color="purple"] .black-3c85d {
+#board[data-board-color="purple"] .black-3c85d,
+#board[data-board-color="purple"] .black-3c85d.highlight-black {
     background-color: #9f90b0 !important;
 }
 
 /* Деревянная */
-[data-board-color="wood"] .white-1e1d7 {
+#board[data-board-color="wood"] .white-1e1d7,
+#board[data-board-color="wood"] .white-1e1d7.highlight-white {
     background-color: #d4a574 !important;
 }
 
-[data-board-color="wood"] .black-3c85d {
+#board[data-board-color="wood"] .black-3c85d,
+#board[data-board-color="wood"] .black-3c85d.highlight-black {
     background-color: #8b5a3c !important;
 }
