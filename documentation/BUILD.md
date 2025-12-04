@@ -24,8 +24,16 @@ npm run build:win
 ```
 
 Результат:
-- `app/dist/Chess Multiplayer Setup 1.0.0.exe` - установщик
-- `app/dist/Chess Multiplayer 1.0.0.exe` - portable версия
+- `app/dist/Chess Multiplayer-Setup-1.0.0.exe` - установщик NSIS
+- `app/dist/Chess Multiplayer-1.0.0-portable.exe` - portable версия
+
+**Особенности установщика:**
+- ✅ Установка в Program Files (не в AppData)
+- ✅ Выбор папки установки
+- ✅ Полноценный деинсталлятор
+- ✅ Ярлыки на рабочем столе и в меню Пуск
+
+См. [INSTALLER.md](INSTALLER.md) для подробностей.
 
 ### macOS
 
