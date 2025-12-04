@@ -436,6 +436,34 @@ function initControls() {
         $('#loginModal').addClass('hidden');
         addChatMessage('system', '👋 Вы вышли из аккаунта');
     });
+
+    // Модальное окно входа
+    $('#loginBtn').on('click', function () {
+        if (currentUser) {
+            // Показываем профиль
+            $('#loginTab').addClass('hidden');
+            $('#registerTab').addClass('hidden');
+            $('#userProfile').removeClass('hidden');
+            updateUserUI();
+        } else {
+            // Показываем форму входа
+            $('#loginTab').removeClass('hidden');
+            $('#registerTab').addClass('hidden');
+            $('#userProfile').addClass('hidden');
+        }
+        $('#loginModal').removeClass('hidden');
+    });
+
+    // Закрытие модального окна
+    $('.close').on('click', function () {
+        $('#loginModal').addClass('hidden');
+    });
+
+    $(window).on('click', function (e) {
+        if ($(e.target).is('#loginModal')) {
+            $('#loginModal').addClass('hidden');
+        }
+    });
 }
 
 function resignGame() {
@@ -1859,29 +1887,4 @@ function updateUserUI() {
     }
 }
 
-// Модальное окно
-$('#loginBtn').on('click', function () {
-    if (currentUser) {
-        // Показываем профиль
-        $('#loginTab').addClass('hidden');
-        $('#registerTab').addClass('hidden');
-        $('#userProfile').removeClass('hidden');
-        updateUserUI();
-    } else {
-        // Показываем форму входа
-        $('#loginTab').removeClass('hidden');
-        $('#registerTab').addClass('hidden');
-        $('#userProfile').addClass('hidden');
-    }
-    $('#loginModal').removeClass('hidden');
-});
 
-$('.close').on('click', function () {
-    $('#loginModal').addClass('hidden');
-});
-
-$(window).on('click', function (e) {
-    if ($(e.target).is('#loginModal')) {
-        $('#loginModal').addClass('hidden');
-    }
-});
