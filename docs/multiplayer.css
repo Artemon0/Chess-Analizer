@@ -167,8 +167,8 @@ h1 {
 
 .piece-style-selector {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 8px;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
 }
 
 .board-color-selector {
@@ -178,16 +178,17 @@ h1 {
 }
 
 .piece-style-btn {
-    padding: 10px 14px;
+    padding: 8px 10px;
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 4px;
     color: #a0a0a0;
-    font-size: 13px;
+    font-size: 11px;
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s;
     text-align: center;
+    white-space: nowrap;
 }
 
 .piece-style-btn:hover {
@@ -1453,4 +1454,28 @@ body[data-theme="light"] #chatInput {
 #board[data-board-color="wood"] .black-3c85d,
 #board[data-board-color="wood"] .black-3c85d.highlight-black {
     background-color: #8b5a3c !important;
+}
+
+/* А
+даптивность для стилей фигур */
+@media (max-width: 768px) {
+    .piece-style-selector {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .piece-style-btn {
+        font-size: 12px;
+        padding: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .header {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .piece-style-selector {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }

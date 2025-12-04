@@ -214,9 +214,13 @@ function clearHighlights() {
 function getPieceTheme(style) {
     const themes = {
         'wikipedia': 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png',
-        'alpha': 'https://www.chess.com/chess-themes/pieces/neo/150/{piece}.png',
-        'merida': 'https://lichess1.org/assets/_Qd0hym/piece/merida/{piece}.svg',
-        'cburnett': 'https://lichess1.org/assets/_Qd0hym/piece/cburnett/{piece}.svg'
+        'alpha': 'https://chessboardjs.com/img/chesspieces/alpha/{piece}.png',
+        'uscf': 'https://chessboardjs.com/img/chesspieces/uscf/{piece}.png',
+        'merida': 'https://images.chesscomfiles.com/chess-themes/pieces/neo/150/{piece}.png',
+        'cburnett': 'https://images.chesscomfiles.com/chess-themes/pieces/bases/150/{piece}.png',
+        'cardinal': 'https://images.chesscomfiles.com/chess-themes/pieces/cardinal/150/{piece}.png',
+        'cases': 'https://images.chesscomfiles.com/chess-themes/pieces/cases/150/{piece}.png',
+        'condal': 'https://images.chesscomfiles.com/chess-themes/pieces/condal/150/{piece}.png'
     };
     console.log('🎨 Меняем стиль фигур на:', style, '→', themes[style]);
     return themes[style] || themes['wikipedia'];
