@@ -1296,11 +1296,35 @@ function formatTime(seconds) {
     return `${mins}:${secs.toString().padStart(2, '0')}`;
 }
 
-function gameOver(message) {
+async function gameOver(message) {
     stopTimer();
     $('#gameStatus').html('🏁 ' + message);
     $('#resignBtn').hide();
     addChatMessage('system', message);
+
+    // Обновляем статистику если пользователь залогинен
+    if (currentUser && currentUser.username) {
+        const isWin = message.includes('победили') &&
+            ((message.includes('Белые') && myColor === 'white') ||
+                (message.includes('Черные') && myColor === 'black'));
+        const isDraw = message.includes('Ничья');
+
+        const newStats = {
+            games: currentUser.stats.games + 1,
+            wins: currentUser.stats.wins + (isWin ? 1 : 0),
+            losses: currentUser.stats.losses + (!isWin && !isDraw ? 1 : 0),
+            draws: currentUser.stats.draws + (isDraw ? 1 : 0),
+            rating: currentUser.stats.rating + (isWin ? 10 : (isDraw ? 0 : -10))
+        };
+
+        const DB = useFirebase ? UserDB : LocalUserDB;
+        await DB.updateStats(currentUser.username, newStats);
+
+        currentUser.stats = newStats;
+        updateUserUI();
+
+        console.log('✅ Статистика обновлена');
+    }
 }
 
 // ===== УЛУЧШЕННЫЕ АННОТАЦИИ =====
@@ -1632,6 +1656,18 @@ function showGameLink(gameUrl) {
 // ===== СИСТЕМА АККАУНТОВ =====
 
 let currentUser = null;
+let useFirebase = false;
+
+// Инициализация БД
+$(document).ready(function () {
+    useFirebase = initFirebase();
+    if (useFirebase) {
+        console.log('✅ Используем Firebase для синхронизации');
+    } else {
+        console.log('⚠️ Firebase недоступен, используем localStorage');
+    }
+    loadUser();
+});
 
 // Загрузка пользователя из localStorage
 function loadUser() {
@@ -1639,6 +1675,17 @@ function loadUser() {
     if (savedUser) {
         currentUser = JSON.parse(savedUser);
         updateUserUI();
+
+        // Синхронизируем с сервером если доступен
+        if (useFirebase && currentUser.username) {
+            UserDB.syncUser(currentUser.username).then(result => {
+                if (result.success) {
+                    currentUser.stats = result.user.stats;
+                    updateUserUI();
+                    console.log('✅ Данные синхронизированы с сервером');
+                }
+            });
+        }
     }
 }
 
@@ -1708,7 +1755,7 @@ $('.auth-tab').on('click', function () {
 });
 
 // Регистрация
-$('#registerSubmit').on('click', function () {
+$('#registerSubmit').on('click', async function () {
     const username = $('#registerUsername').val().trim();
     const password = $('#registerPassword').val();
     const passwordConfirm = $('#registerPasswordConfirm').val();
@@ -1728,31 +1775,20 @@ $('#registerSubmit').on('click', function () {
         return;
     }
 
-    // Проверяем существование пользователя
-    const users = JSON.parse(localStorage.getItem('chessUsers') || '{}');
-    if (users[username]) {
-        alert('Пользователь с таким именем уже существует');
+    // Используем Firebase или localStorage
+    const DB = useFirebase ? UserDB : LocalUserDB;
+    const result = await DB.register(username, password);
+
+    if (!result.success) {
+        alert(result.error);
         return;
     }
 
-    // Создаем пользователя
-    users[username] = {
-        password: password, // В реальном приложении нужно хешировать!
-        stats: {
-            games: 0,
-            wins: 0,
-            rating: 1200
-        }
-    };
-
-    localStorage.setItem('chessUsers', JSON.stringify(users));
-
     currentUser = {
         username: username,
-        stats: users[username].stats
+        stats: result.user.stats
     };
 
-    saveUser();
     updateUserUI();
     $('#loginModal').addClass('hidden');
 
@@ -1760,7 +1796,7 @@ $('#registerSubmit').on('click', function () {
 });
 
 // Вход
-$('#loginSubmit').on('click', function () {
+$('#loginSubmit').on('click', async function () {
     const username = $('#loginUsername').val().trim();
     const password = $('#loginPassword').val();
 
@@ -1769,24 +1805,20 @@ $('#loginSubmit').on('click', function () {
         return;
     }
 
-    const users = JSON.parse(localStorage.getItem('chessUsers') || '{}');
+    // Используем Firebase или localStorage
+    const DB = useFirebase ? UserDB : LocalUserDB;
+    const result = await DB.login(username, password);
 
-    if (!users[username]) {
-        alert('Пользователь не найден');
-        return;
-    }
-
-    if (users[username].password !== password) {
-        alert('Неверный пароль');
+    if (!result.success) {
+        alert(result.error);
         return;
     }
 
     currentUser = {
         username: username,
-        stats: users[username].stats
+        stats: result.user.stats
     };
 
-    saveUser();
     updateUserUI();
     $('#loginModal').addClass('hidden');
 
