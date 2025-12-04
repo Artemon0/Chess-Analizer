@@ -1,40 +1,43 @@
-# Скрипт сборки для всех платформ
+# Chess Multiplayer Build Script v1.0.0
 
-Write-Host "=== Chess Multiplayer - Сборка v1.0.0 ===" -ForegroundColor Green
+Write-Host "=== Chess Multiplayer - Build v1.0.0 ===" -ForegroundColor Green
 Write-Host ""
 
-# Переходим в папку app
+# Go to app folder
 Set-Location app
 
-Write-Host "📦 Установка зависимостей..." -ForegroundColor Cyan
+Write-Host "[1/4] Installing dependencies..." -ForegroundColor Cyan
 npm install
 
 Write-Host ""
-Write-Host "🔨 Сборка для всех платформ..." -ForegroundColor Cyan
+Write-Host "[2/4] Building for all platforms..." -ForegroundColor Cyan
 Write-Host ""
 
 # Windows
-Write-Host "🪟 Windows..." -ForegroundColor Yellow
+Write-Host "  > Windows..." -ForegroundColor Yellow
 npm run build:win
 
 # macOS
-Write-Host "🍎 macOS..." -ForegroundColor Yellow
+Write-Host "  > macOS..." -ForegroundColor Yellow
 npm run build:mac
 
 # Linux
-Write-Host "🐧 Linux..." -ForegroundColor Yellow
+Write-Host "  > Linux..." -ForegroundColor Yellow
 npm run build:linux
 
 Write-Host ""
-Write-Host "✅ Сборка завершена!" -ForegroundColor Green
+Write-Host "[3/4] Build completed!" -ForegroundColor Green
 Write-Host ""
-Write-Host "📁 Файлы находятся в: app/dist/" -ForegroundColor Cyan
+Write-Host "[4/4] Output location: app/dist/" -ForegroundColor Cyan
 Write-Host ""
 
-# Показываем размеры
-Write-Host "📊 Размеры файлов:" -ForegroundColor Cyan
+# Show file sizes
+Write-Host "File sizes:" -ForegroundColor Cyan
 Get-ChildItem dist/*.exe, dist/*.dmg, dist/*.AppImage, dist/*.deb -ErrorAction SilentlyContinue | 
     Select-Object Name, @{Name="Size (MB)";Expression={[math]::Round($_.Length/1MB, 2)}} | 
     Format-Table -AutoSize
+
+Write-Host ""
+Write-Host "Done! Files are ready in app/dist/" -ForegroundColor Green
 
 Set-Location ..
