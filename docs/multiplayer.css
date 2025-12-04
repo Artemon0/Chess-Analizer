@@ -478,6 +478,15 @@ h1 {
     background: #f39c12;
 }
 
+.btn-info {
+    background: #17a2b8;
+    color: white;
+}
+
+.btn-info:hover {
+    background: #1ab8d0;
+}
+
 .btn-secondary {
     background: #555;
     color: #ccc;
@@ -1477,5 +1486,58 @@ body[data-theme="light"] #chatInput {
 
     .piece-style-selector {
         grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+
+/* ===== ПОДСКАЗКИ В ЗАДАЧАХ ===== */
+
+.hint-from {
+    box-shadow: inset 0 0 0 4px rgba(52, 152, 219, 0.8) !important;
+    background-color: rgba(52, 152, 219, 0.2) !important;
+    animation: pulse-hint 1s infinite;
+}
+
+.hint-to {
+    box-shadow: inset 0 0 0 4px rgba(46, 204, 113, 0.8) !important;
+    background-color: rgba(46, 204, 113, 0.2) !important;
+    animation: pulse-hint 1s infinite;
+}
+
+@keyframes pulse-hint {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.6;
+    }
+}
+
+.hint-arrow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 40px;
+    color: #2ecc71;
+    font-weight: bold;
+    text-shadow: 0 0 10px rgba(46, 204, 113, 0.8);
+    pointer-events: none;
+    z-index: 100;
+    animation: bounce-arrow 0.5s infinite;
+}
+
+@keyframes bounce-arrow {
+
+    0%,
+    100% {
+        transform: translate(-50%, -50%) scale(1);
+    }
+
+    50% {
+        transform: translate(-50%, -50%) scale(1.2);
     }
 }

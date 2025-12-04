@@ -100,7 +100,7 @@ function startPuzzle() {
 const originalOnDropPuzzle = onDrop;
 onDrop = function (source, target) {
     if (!puzzleMode) {
-        
+
         return originalOnDropPuzzle(source, target);
     }
 
@@ -168,3 +168,68 @@ onDrop = function (source, target) {
 };
 
 console.log('✅ Модуль задач загружен!');
+
+
+// ===== ПОДСКАЗКИ =====
+
+function showHint() {
+    if (!puzzleMode || !currentPuzzle) {
+        addChatMessage('system', '⚠️ Подсказки доступны только в режиме задач');
+        return;
+    }
+
+    if (puzzleIndex >= currentPuzzle.moves.length) {
+        addChatMessage('system', '✅ Задача уже решена!');
+        return;
+    }
+
+    const nextMove = currentPuzzle.moves[puzzleIndex];
+
+    // Парсим ход
+    const tempGame = new Chess(game.fen());
+    const moveObj = tempGame.move(nextMove);
+
+    if (moveObj) {
+        // Подсвечиваем клетки
+        clearHighlights();
+
+        const $from = $(`[data-square="${moveObj.from}"]`);
+        const $to = $(`[data-square="${moveObj.to}"]`);
+
+        $from.addClass('hint-from');
+        $to.addClass('hint-to');
+
+        // Добавляем стрелку
+        $to.append('<div class="hint-arrow">→</div>');
+
+        addChatMessage('system', `💡 Подсказка: ${moveObj.san}`);
+
+        // Убираем подсветку через 3 секунды
+        setTimeout(() => {
+            $('.hint-from').removeClass('hint-from');
+            $('.hint-to').removeClass('hint-to');
+            $('.hint-arrow').remove();
+        }, 3000);
+    }
+}
+
+// Инициализация кнопки подсказки
+$(document).ready(function () {
+    $('#hintBtn').on('click', showHint);
+
+    // Показываем кнопку подсказки в режиме задач
+    const originalStartPuzzle = startPuzzle;
+    startPuzzle = function () {
+        originalStartPuzzle();
+        $('#hintBtn').show();
+        $('#resignBtn').hide();
+    };
+
+    // Скрываем при сбросе
+    const originalResetGame = resetGame;
+    resetGame = function () {
+        originalResetGame();
+        $('#hintBtn').hide();
+        puzzleMode = false;
+    };
+});
