@@ -32,9 +32,9 @@ $(document).ready(function () {
     // Проверяем статус Firebase
     setTimeout(() => {
         if (useFirebase) {
-            addChatMessage('system', '☁️ Синхронизация с облаком включена');
+            addChatMessage('system', t('cloudSync'));
         } else {
-            addChatMessage('system', '💾 Данные сохраняются локально');
+            addChatMessage('system', t('localStorage'));
         }
     }, 1000);
 
@@ -383,7 +383,7 @@ function initControls() {
             $('#registerPassword').val('');
             $('#registerPasswordConfirm').val('');
 
-            addChatMessage('system', `✅ Добро пожаловать, ${username}!`);
+            addChatMessage('system', `${t('welcome')}, ${username}!`);
             console.log('✅ Регистрация успешна:', currentUser);
         } catch (error) {
             console.error('Ошибка регистрации:', error);
@@ -427,7 +427,7 @@ function initControls() {
             $('#loginUsername').val('');
             $('#loginPassword').val('');
 
-            addChatMessage('system', `✅ С возвращением, ${username}!`);
+            addChatMessage('system', `${t('welcomeBack')}, ${username}!`);
             console.log('✅ Вход успешен:', currentUser);
         } catch (error) {
             console.error('Ошибка входа:', error);
@@ -443,7 +443,7 @@ function initControls() {
         localStorage.removeItem('chessUser');
         updateUserUI();
         $('#loginModal').addClass('hidden');
-        addChatMessage('system', '👋 Вы вышли из аккаунта');
+        addChatMessage('system', t('loggedOut'));
     });
 
     // Модальное окно входа
@@ -547,7 +547,7 @@ function createGame() {
     setTimeout(() => {
         $('#blackPlayer').text('Противник');
         $('#gameStatus').html('✅ Игра началась! Ваш ход (белые)');
-        addChatMessage('system', 'Противник присоединился!');
+        addChatMessage('system', t('opponentJoined'));
     }, 3000);
 
     console.log('Игра создана:', gameId);
@@ -600,7 +600,7 @@ function sendMove(move) {
                 board.position(game.fen());
                 updateStatus();
                 updateMovesDisplay();
-                addChatMessage('opponent', 'Хороший ход!');
+                addChatMessage('opponent', t('goodGame').replace('👍 ', ''));
             }
         }, 2000);
     }

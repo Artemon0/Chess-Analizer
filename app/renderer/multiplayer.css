@@ -1561,12 +1561,15 @@ body[data-theme="light"] #chatInput {
 }
 
 .lang-btn {
-    width: 36px;
+    min-width: 42px;
     height: 36px;
+    padding: 0 10px;
     border: 2px solid rgba(255, 255, 255, 0.1);
     border-radius: 6px;
     background: rgba(255, 255, 255, 0.05);
-    font-size: 18px;
+    color: #a0a0a0;
+    font-size: 13px;
+    font-weight: 600;
     cursor: pointer;
     transition: all 0.2s;
     display: flex;
@@ -1583,6 +1586,7 @@ body[data-theme="light"] #chatInput {
 .lang-btn.active {
     background: #759656;
     border-color: #759656;
+    color: white;
     box-shadow: 0 2px 8px rgba(117, 150, 86, 0.3);
 }
 
