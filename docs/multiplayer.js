@@ -1576,25 +1576,35 @@ function showGameLink(gameUrl) {
     $('#gameLink').removeClass('hidden').empty().append($link);
 
     // Кнопка копирования
-    $('#copyLinkBtn').on('click', function () {
-        const input = document.getElementById('gameUrlInput');
-        input.select();
-        input.setSelectionRange(0, 99999);
+    $('#copyLinkBtn').on('click', async function () {
+        const $btn = $(this);
 
-        // Пробуем современный API
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-            navigator.clipboard.writeText(gameUrl).then(() => {
-                $(this).text('✅ Скопировано!').css('background', '#4CAF50');
-                setTimeout(() => {
-                    $(this).text('📋 Копировать ссылку').css('background', '#2196F3');
-                }, 2000);
-            }).catch(() => {
-                // Fallback
-                copyFallback(input, $(this));
-            });
-        } else {
-            // Старый метод
-            copyFallback(input, $(this));
+        try {
+            // Современный Clipboard API
+            await navigator.clipboard.writeText(gameUrl);
+            $btn.text('✅ Скопировано!').css('background', '#4CAF50');
+            setTimeout(() => {
+                $btn.text('📋 Копировать ссылку').css('background', '#2196F3');
+            }, 2000);
+        } catch (err) {
+            // Fallback для старых браузеров
+            const input = document.getElementById('gameUrlInput');
+            input.select();
+            input.setSelectionRange(0, 99999);
+
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    $btn.text('✅ Скопировано!').css('background', '#4CAF50');
+                    setTimeout(() => {
+                        $btn.text('📋 Копировать ссылку').css('background', '#2196F3');
+                    }, 2000);
+                } else {
+                    throw new Error('Copy failed');
+                }
+            } catch (e) {
+                alert('Не удалось скопировать. Выделите текст и нажмите Ctrl+C');
+            }
         }
     });
 
@@ -1616,18 +1626,7 @@ function showGameLink(gameUrl) {
     });
 }
 
-function copyFallback(input, button) {
-    try {
-        input.focus();
-        document.execCommand('copy');
-        button.text('✅ Скопировано!').css('background', '#4CAF50');
-        setTimeout(() => {
-            button.text('📋 Копировать ссылку').css('background', '#2196F3');
-        }, 2000);
-    } catch (err) {
-        alert('Не удалось скопировать. Выделите текст и скопируйте вручную (Ctrl+C).');
-    }
-}
+// Функция copyFallback больше не нужна - используем async/await с Clipboard API
 
 
 // ===== СИСТЕМА АККАУНТОВ =====
