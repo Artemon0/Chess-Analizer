@@ -3,7 +3,7 @@
 const firebaseConfig = {
     apiKey: "AIzaSyDfMfU_wfM2RS5C8VPJf09hbWjOEOo4zhw",
     authDomain: "chess-analizer-aog.firebaseapp.com",
-    databaseURL: "https://chess-analizer-aog-default-rtdb.firebaseio.com",
+    databaseURL: "https://chess-analizer-aog-default-rtdb.europe-west1.firebasedatabase.app",
     projectId: "chess-analizer-aog",
     storageBucket: "chess-analizer-aog.firebasestorage.app",
     messagingSenderId: "1009290250318",
