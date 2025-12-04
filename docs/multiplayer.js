@@ -7,6 +7,7 @@ let myColor = null;
 let autoAnalyze = false;
 let lastEval = 0;
 let moveAnnotations = {}; // Хранит аннотации для каждой клетки
+let moveHistory = []; // Хранит аннотации для каждого хода
 let playingWithBot = false;
 let botDifficulty = 'medium';
 
@@ -31,6 +32,12 @@ $(document).ready(function () {
 
 // ===== ДОСКА =====
 
+let selectedSquare = null;
+let highlightedSquares = [];
+let currentPieceStyle = 'wikipedia';
+let currentBoardColor = 'brown';
+let currentTheme = 'lichess';
+
 function initBoard() {
     const config = {
         draggable: true,
@@ -38,10 +45,20 @@ function initBoard() {
         onDragStart: onDragStart,
         onDrop: onDrop,
         onSnapEnd: onSnapEnd,
-        pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png'
+        pieceTheme: getPieceTheme(currentPieceStyle)
     };
 
     board = Chessboard('board', config);
+
+    // Устанавливаем цвет доски
+    setTimeout(() => {
+        $('#board .board-55d63').attr('data-board-color', currentBoardColor);
+    }, 100);
+
+    // Добавляем обработчик кликов для мобильных
+    setTimeout(() => {
+        $('#board').on('click', '.square-55d63', handleSquareClick);
+    }, 500);
 }
 
 function onDragStart(source, piece) {
@@ -87,7 +104,122 @@ function onSnapEnd() {
     setTimeout(() => renderAnnotations(), 50);
 }
 
+// ===== СИСТЕМА КЛИКОВ (ДЛЯ МОБИЛЬНЫХ И ПК) =====
+
+function handleSquareClick(e) {
+    const square = $(e.currentTarget).attr('data-square');
+
+    if (!square) return;
+
+    // Если игра окончена или не наш ход
+    if (game.game_over()) return;
+    if (!myColor) return;
+    if ((game.turn() === 'w' && myColor !== 'white') ||
+        (game.turn() === 'b' && myColor !== 'black')) {
+        return;
+    }
+
+    const piece = game.get(square);
+
+    // Если кликнули на свою фигуру - выбираем её
+    if (piece &&
+        ((game.turn() === 'w' && piece.color === 'w') ||
+            (game.turn() === 'b' && piece.color === 'b'))) {
+
+        selectSquare(square);
+    }
+    // Если уже выбрана фигура - пытаемся сделать ход
+    else if (selectedSquare) {
+        makeMove(selectedSquare, square);
+    }
+}
+
+function selectSquare(square) {
+    // Снимаем предыдущее выделение
+    clearHighlights();
+
+    selectedSquare = square;
+
+    // Подсвечиваем выбранную клетку
+    $(`[data-square="${square}"]`).addClass('selected-square');
+
+    // Получаем доступные ходы
+    const moves = game.moves({ square: square, verbose: true });
+
+    // Подсвечиваем доступные ходы
+    moves.forEach(move => {
+        const $target = $(`[data-square="${move.to}"]`);
+        $target.addClass('possible-move');
+        highlightedSquares.push(move.to);
+
+        // Добавляем точку для пустых клеток или кружок для взятия
+        if (game.get(move.to)) {
+            $target.append('<div class="capture-hint"></div>');
+        } else {
+            $target.append('<div class="move-hint"></div>');
+        }
+    });
+}
+
+function makeMove(from, to) {
+    // Сохраняем позицию ДО хода для анализа
+    const fenBefore = game.fen();
+
+    const move = game.move({
+        from: from,
+        to: to,
+        promotion: 'q' // Автоматически превращаем в ферзя
+    });
+
+    if (move === null) {
+        // Неверный ход - снимаем выделение
+        clearHighlights();
+        selectedSquare = null;
+        return;
+    }
+
+    // Ход успешен
+    clearHighlights();
+    selectedSquare = null;
+
+    board.position(game.fen());
+
+    // Отправляем ход на сервер
+    sendMove(move);
+
+    updateStatus();
+    updateMovesDisplay();
+
+    // Анализируем СДЕЛАННЫЙ ход
+    if (autoAnalyze) {
+        setTimeout(() => analyzeMadeMove(move, fenBefore), 100);
+    }
+
+    // Если играем с ботом
+    if (playingWithBot && game.turn() === 'b') {
+        makeBotMove();
+    }
+}
+
+function clearHighlights() {
+    $('.selected-square').removeClass('selected-square');
+    $('.possible-move').removeClass('possible-move');
+    $('.move-hint').remove();
+    $('.capture-hint').remove();
+    highlightedSquares = [];
+}
+
 // ===== МУЛЬТИПЛЕЕР (СИМУЛЯЦИЯ) =====
+
+function getPieceTheme(style) {
+    const themes = {
+        'wikipedia': 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png',
+        'alpha': 'https://images.chesscomfiles.com/chess-themes/pieces/alpha/{piece}.png',
+        'merida': 'https://lichess1.org/assets/piece/merida/{piece}.svg',
+        'cburnett': 'https://lichess1.org/assets/piece/cburnett/{piece}.svg'
+    };
+    return themes[style] || themes['wikipedia'];
+}
 
 function initControls() {
     $('#createGameBtn').on('click', createGame);
@@ -98,8 +230,49 @@ function initControls() {
     $('#analyzeBtn').on('click', toggleAnalysis);
     $('#resignBtn').on('click', resignGame);
     $('#sendBtn').on('click', sendMessage);
+    $('#fullscreenBtn').on('click', toggleFullscreen);
+    $('#flipBoardBtn').on('click', () => board.flip());
+    $('#settingsBtn').on('click', () => $('#settingsPanel').toggleClass('hidden'));
     $('#chatInput').on('keypress', function (e) {
         if (e.which === 13) sendMessage();
+    });
+
+    // Темы
+    $('.theme-btn').on('click', function () {
+        const theme = $(this).data('theme');
+        $('.theme-btn').removeClass('active');
+        $(this).addClass('active');
+        $('body').attr('data-theme', theme);
+        currentTheme = theme;
+    });
+
+    // Стили фигур
+    $('.piece-style-btn').on('click', function () {
+        const style = $(this).data('style');
+        $('.piece-style-btn').removeClass('active');
+        $(this).addClass('active');
+        currentPieceStyle = style;
+        board = Chessboard('board', {
+            draggable: true,
+            position: game.fen(),
+            onDragStart: onDragStart,
+            onDrop: onDrop,
+            onSnapEnd: onSnapEnd,
+            pieceTheme: getPieceTheme(style)
+        });
+        setTimeout(() => {
+            $('#board .board-55d63').attr('data-board-color', currentBoardColor);
+            $('#board').on('click', '.square-55d63', handleSquareClick);
+        }, 100);
+    });
+
+    // Цвета доски
+    $('.board-color-btn').on('click', function () {
+        const color = $(this).data('color');
+        $('.board-color-btn').removeClass('active');
+        $(this).addClass('active');
+        currentBoardColor = color;
+        $('#board .board-55d63').attr('data-board-color', color);
     });
 
     // Быстрый чат
@@ -150,6 +323,9 @@ function resetGame() {
 
     stopTimer();
     clearAnnotations();
+    clearHighlights();
+    selectedSquare = null;
+    moveHistory = []; // Очищаем историю аннотаций
 
     whiteTime = selectedTimeControl;
     blackTime = selectedTimeControl;
@@ -279,9 +455,6 @@ async function analyzeMadeMove(move, fenBefore) {
         const evalAfter = await getCloudEval(game.fen());
 
         if (evalBefore && evalAfter) {
-            // Очищаем старые аннотации
-            clearAnnotations();
-
             // Оцениваем ход и добавляем аннотацию
             evaluateMadeMove(move, evalBefore, evalAfter);
 
@@ -551,10 +724,25 @@ function evaluateMadeMove(move, evalBefore, evalAfter) {
         .html(`${icon} <strong>${quality}</strong>${accuracyText}${lossText}`)
         .attr('class', 'move-quality ' + className);
 
+    // Сохраняем аннотацию в историю ходов
+    const moveIndex = game.history().length - 1;
+    moveHistory[moveIndex] = annotation;
+
+    // Обновляем отображение истории с аннотациями
+    updateMovesDisplay();
+
     // Аннотация на доске (только на клетку КУДА пошла фигура)
+    // Показываем на 3 секунды, потом убираем
     if (annotation) {
+        clearAnnotations();
         addMoveAnnotation(move.to, annotation);
-        setTimeout(() => renderAnnotations(), 50);
+        setTimeout(() => {
+            renderAnnotations();
+            // Автоматически убираем через 3 секунды
+            setTimeout(() => clearAnnotations(), 3000);
+        }, 50);
+    } else {
+        clearAnnotations();
     }
 
     console.log(`${icon} ${quality} ${accuracyText} ${lossText}`);
@@ -570,6 +758,8 @@ function getAnnotation(evalScore) {
 
 function addMoveAnnotation(square, annotation) {
     if (!annotation) return;
+    // Очищаем все старые аннотации и добавляем только новую
+    moveAnnotations = {};
     moveAnnotations[square] = annotation;
 }
 
@@ -714,11 +904,22 @@ function updateMovesDisplay() {
         const $item = $('<div>').addClass('move-item');
         $item.append($('<span>').text(moveNum + '.'));
 
-        let moveText = whiteMove.san;
-        if (blackMove) {
-            moveText += ' ' + blackMove.san;
+        // Белые с аннотацией
+        let whiteMoveText = whiteMove.san;
+        if (moveHistory[i]) {
+            whiteMoveText += ' ' + moveHistory[i];
         }
 
+        // Черные с аннотацией
+        let blackMoveText = '';
+        if (blackMove) {
+            blackMoveText = blackMove.san;
+            if (moveHistory[i + 1]) {
+                blackMoveText += ' ' + moveHistory[i + 1];
+            }
+        }
+
+        const moveText = blackMoveText ? `${whiteMoveText} ${blackMoveText}` : whiteMoveText;
         $item.append($('<span>').text(moveText));
         $list.append($item);
     }
@@ -735,12 +936,24 @@ function sendMessage() {
     addChatMessage('own', message);
     $('#chatInput').val('');
 
-    // Симуляция ответа противника
-    setTimeout(() => {
-        const responses = ['Хороший ход!', 'Интересно...', 'Не ожидал', 'Сильно!'];
-        const randomResponse = responses[Math.floor(Math.random() * responses.length)];
-        addChatMessage('opponent', randomResponse);
-    }, 1000);
+    // WebSocket для онлайн игры
+    if (isOnlineGame && ws && ws.readyState === WebSocket.OPEN) {
+        ws.send(JSON.stringify({
+            type: 'chat',
+            message: message
+        }));
+    }
+    // Умный ответ бота
+    else if (playingWithBot) {
+        console.log('🤖 Бот отвечает на:', message);
+        setTimeout(() => {
+            const botResponse = getBotChatResponse(message);
+            console.log('🤖 Ответ бота:', botResponse);
+            addChatMessage('opponent', botResponse);
+        }, 800 + Math.random() * 1200);
+    } else {
+        console.log('⚠️ Ни онлайн, ни бот. playingWithBot:', playingWithBot, 'isOnlineGame:', isOnlineGame);
+    }
 }
 
 function addChatMessage(type, text) {
@@ -757,6 +970,157 @@ function addChatMessage(type, text) {
     $('#chatMessages').append($msg);
     $('#chatMessages').scrollTop($('#chatMessages')[0].scrollHeight);
 }
+
+// ===== УМНЫЙ ЧАТ БОТА =====
+
+function getBotChatResponse(userMessage) {
+    const msg = userMessage.toLowerCase();
+
+    // Приветствия
+    if (msg.match(/привет|здравствуй|hi|hello/)) {
+        return ['Привет!', 'Здравствуй!', 'Привет! Удачи в игре!'][Math.floor(Math.random() * 3)];
+    }
+
+    // Благодарности
+    if (msg.match(/спасибо|thanks|thx/)) {
+        return ['Пожалуйста!', 'Не за что!', 'Всегда пожалуйста!'][Math.floor(Math.random() * 3)];
+    }
+
+    // Комплименты
+    if (msg.match(/хорош|отлич|круто|молодец|красиво|сильно/)) {
+        return ['Спасибо!', 'Ты тоже хорошо играешь!', 'Взаимно!', 'Стараюсь!'][Math.floor(Math.random() * 4)];
+    }
+
+    // Удача
+    if (msg.match(/удач|gl|good luck/)) {
+        return ['И тебе удачи!', 'Спасибо, взаимно!', 'Удачи!'][Math.floor(Math.random() * 3)];
+    }
+
+    // Ничья
+    if (msg.match(/ничь|draw/)) {
+        if (game.history().length < 20) {
+            return 'Рано еще, давай поиграем!';
+        } else if (Math.abs(lastEval) < 0.5) {
+            return 'Согласен, позиция равная.';
+        } else {
+            return 'Давай доиграем, позиция интересная!';
+        }
+    }
+
+    // Еще партию
+    if (msg.match(/еще|ещё|снова|реванш|again|rematch/)) {
+        if (game.game_over()) {
+            return ['Давай!', 'Конечно!', 'С удовольствием!', 'Поехали!'][Math.floor(Math.random() * 4)];
+        } else {
+            return 'Давай сначала эту доиграем!';
+        }
+    }
+
+    // Вопросы о ходе
+    if (msg.match(/почему|зачем|why/)) {
+        return ['Показалось лучшим ходом', 'Интуиция!', 'Стратегия!', 'Попробуем так'][Math.floor(Math.random() * 4)];
+    }
+
+    // Негатив
+    if (msg.match(/плох|слаб|bad|weak/)) {
+        return ['Бывает!', 'Учусь на ошибках', 'Не всегда получается', 'Промах'][Math.floor(Math.random() * 4)];
+    }
+
+    // Эмоции
+    if (msg.match(/😊|😄|🙂|👍/)) {
+        return ['😊', '👍', '🙂'][Math.floor(Math.random() * 3)];
+    }
+
+    if (msg.match(/😢|😞|☹️/)) {
+        return ['Не расстраивайся!', 'Все будет хорошо!', 'Держись!'][Math.floor(Math.random() * 3)];
+    }
+
+    // Вопросы о силе
+    if (msg.match(/сильн|уровень|рейтинг|rating|elo/)) {
+        return ['Средний уровень, наверное', 'Стараюсь играть хорошо!', 'Учусь постоянно'][Math.floor(Math.random() * 3)];
+    }
+
+    // Общие фразы
+    const generalResponses = [
+        'Интересно!',
+        'Хм...',
+        'Понятно',
+        'Да, согласен',
+        'Может быть',
+        'Посмотрим!',
+        'Неплохо',
+        'Думаю...',
+        'Интересная мысль'
+    ];
+
+    return generalResponses[Math.floor(Math.random() * generalResponses.length)];
+}
+
+// ===== ПОЛНОЭКРАННЫЙ РЕЖИМ =====
+
+function toggleFullscreen() {
+    const $boardSection = $('.board-section');
+    const $btn = $('#fullscreenBtn');
+
+    if ($boardSection.hasClass('fullscreen')) {
+        // Выход из полноэкранного режима
+        $boardSection.removeClass('fullscreen');
+        $btn.text('⛶');
+        $btn.attr('title', 'Полноэкранный режим');
+
+        // Выход из браузерного fullscreen
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) {
+            document.webkitExitFullscreen();
+        } else if (document.mozCancelFullScreen) {
+            document.mozCancelFullScreen();
+        } else if (document.msExitFullscreen) {
+            document.msExitFullscreen();
+        }
+    } else {
+        // Вход в полноэкранный режим
+        $boardSection.addClass('fullscreen');
+        $btn.text('✕');
+        $btn.attr('title', 'Выход из полноэкранного режима');
+
+        // Браузерный fullscreen
+        const elem = document.documentElement;
+        if (elem.requestFullscreen) {
+            elem.requestFullscreen();
+        } else if (elem.webkitRequestFullscreen) {
+            elem.webkitRequestFullscreen();
+        } else if (elem.mozRequestFullScreen) {
+            elem.mozRequestFullScreen();
+        } else if (elem.msRequestFullscreen) {
+            elem.msRequestFullscreen();
+        }
+    }
+
+    // Обновляем размер доски
+    setTimeout(() => {
+        board.resize();
+    }, 100);
+}
+
+// Выход из fullscreen по ESC
+$(document).on('keydown', function (e) {
+    if (e.key === 'Escape' && $('.board-section').hasClass('fullscreen')) {
+        toggleFullscreen();
+    }
+});
+
+// Обработка выхода из браузерного fullscreen
+$(document).on('fullscreenchange webkitfullscreenchange mozfullscreenchange msfullscreenchange', function () {
+    if (!document.fullscreenElement && !document.webkitFullscreenElement &&
+        !document.mozFullScreenElement && !document.msFullscreenElement) {
+        if ($('.board-section').hasClass('fullscreen')) {
+            $('.board-section').removeClass('fullscreen');
+            $('#fullscreenBtn').text('⛶').attr('title', 'Полноэкранный режим');
+            setTimeout(() => board.resize(), 100);
+        }
+    }
+});
 
 console.log('♟️ Multiplayer готов!');
 
@@ -789,9 +1153,11 @@ async function makeBotMove() {
 
     $('#gameStatus').html('🤖 Бот думает...');
 
+    // Сохраняем позицию ДО хода бота
+    const fenBefore = game.fen();
+
     // Получаем лучший ход от Cloud Eval
-    const fen = game.fen();
-    const result = await getCloudEval(fen);
+    const result = await getCloudEval(fenBefore);
 
     setTimeout(() => {
         let botMove = null;
@@ -818,15 +1184,24 @@ async function makeBotMove() {
             board.position(game.fen());
             updateStatus();
             updateMovesDisplay();
-            renderAnnotations();
 
+            // Анализируем ход бота
             if (autoAnalyze) {
-                analyzePosition();
+                setTimeout(() => analyzeMadeMove(botMove, fenBefore), 100);
             }
 
-            // Случайные сообщения от бота
-            const botMessages = ['Интересный ход!', 'Хм...', 'Неплохо', 'Думаю...'];
-            if (Math.random() < 0.3) {
+            // Случайные сообщения от бота (реже и умнее)
+            if (Math.random() < 0.15) { // 15% шанс
+                const botMessages = [
+                    'Интересный ход!',
+                    'Хм...',
+                    'Неплохо',
+                    'Не ожидал',
+                    'Сильно!',
+                    'Думаю...',
+                    'Интересная позиция',
+                    'Надо подумать'
+                ];
                 addChatMessage('opponent', botMessages[Math.floor(Math.random() * botMessages.length)]);
             }
         }
@@ -1052,6 +1427,9 @@ function handleOpponentJoined(data) {
 }
 
 function handleOpponentMove(data) {
+    // Сохраняем позицию ДО хода противника
+    const fenBefore = game.fen();
+
     const move = game.move({
         from: data.move.from,
         to: data.move.to,
@@ -1062,10 +1440,10 @@ function handleOpponentMove(data) {
         board.position(game.fen());
         updateStatus();
         updateMovesDisplay();
-        renderAnnotations();
 
+        // Анализируем ход противника
         if (autoAnalyze) {
-            analyzePosition();
+            setTimeout(() => analyzeMadeMove(move, fenBefore), 100);
         }
     }
 }
@@ -1161,29 +1539,7 @@ sendMove = function (move) {
     }
 };
 
-// Переопределяем sendMessage для WebSocket
-const originalSendMessage = sendMessage;
-sendMessage = function () {
-    const message = $('#chatInput').val().trim();
-    if (!message) return;
-
-    addChatMessage('own', message);
-    $('#chatInput').val('');
-
-    if (isOnlineGame && ws && ws.readyState === WebSocket.OPEN) {
-        ws.send(JSON.stringify({
-            type: 'chat',
-            message: message
-        }));
-    } else if (playingWithBot) {
-        // Ответ бота
-        setTimeout(() => {
-            const responses = ['Хороший ход!', 'Интересно...', 'Не ожидал', 'Сильно!'];
-            const randomResponse = responses[Math.floor(Math.random() * responses.length)];
-            addChatMessage('opponent', randomResponse);
-        }, 1000);
-    }
-};
+// sendMessage уже определена выше с поддержкой WebSocket и бота
 
 // Автоподключение при загрузке
 let autoJoinAttempted = false;

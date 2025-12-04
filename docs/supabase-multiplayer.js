@@ -88,9 +88,9 @@ function handlePeerMessage(data) {
 }
 
 function handleOpponentMovePeer(moveData) {
-    clearAnnotations();
-
+    // Сохраняем позицию ДО хода противника
     const fenBefore = game.fen();
+
     const move = game.move({
         from: moveData.from,
         to: moveData.to,
@@ -102,6 +102,7 @@ function handleOpponentMovePeer(moveData) {
         updateStatus();
         updateMovesDisplay();
 
+        // Анализируем ход противника
         if (autoAnalyze) {
             setTimeout(() => analyzeMadeMove(move, fenBefore), 100);
         }
@@ -197,7 +198,8 @@ sendMove = function (move) {
     }
 };
 
-// Переопределяем sendMessage
+// Переопределяем sendMessage для PeerJS
+const originalSendMessageForPeer = sendMessage;
 sendMessage = function () {
     const message = $('#chatInput').val().trim();
     if (!message) return;
@@ -205,16 +207,19 @@ sendMessage = function () {
     addChatMessage('own', message);
     $('#chatInput').val('');
 
+    // PeerJS онлайн игра
     if (isOnlineGame && connection && connection.open) {
         connection.send({
             type: 'chat',
             message: message
         });
-    } else if (playingWithBot) {
+    }
+    // Умный бот
+    else if (playingWithBot) {
         setTimeout(() => {
-            const responses = ['Хороший ход!', 'Интересно...', 'Не ожидал', 'Сильно!'];
-            addChatMessage('opponent', responses[Math.floor(Math.random() * responses.length)]);
-        }, 1000);
+            const botResponse = getBotChatResponse(message);
+            addChatMessage('opponent', botResponse);
+        }, 800 + Math.random() * 1200);
     }
 };
 

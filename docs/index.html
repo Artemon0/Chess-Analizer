@@ -3,18 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>♟️ Lichess Multiplayer + Analysis</title>
+    <title>♟️ Chess Multiplayer + Analysis</title>
     <link rel="stylesheet" href="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.css">
     <link rel="stylesheet" href="multiplayer.css">
 </head>
 <body>
     <div class="container">
-        <h1>♟️ Lichess Multiplayer</h1>
+        <div class="header">
+            <h1>♟️ Chess Multiplayer</h1>
+            <div class="theme-selector">
+                <button class="theme-btn" data-theme="dark" title="Темная тема">🌙</button>
+                <button class="theme-btn active" data-theme="lichess" title="Lichess">♟️</button>
+                <button class="theme-btn" data-theme="light" title="Светлая тема">☀️</button>
+            </div>
+        </div>
         <p class="subtitle">Играй онлайн + анализ в реальном времени</p>
         
         <div class="main-layout">
             <!-- Доска -->
             <div class="board-section">
+                <div class="board-controls">
+                    <button id="fullscreenBtn" class="icon-btn" title="Полноэкранный режим">⛶</button>
+                    <button id="flipBoardBtn" class="icon-btn" title="Перевернуть доску">🔄</button>
+                    <button id="settingsBtn" class="icon-btn" title="Настройки">⚙️</button>
+                </div>
+                
+                <!-- Настройки -->
+                <div id="settingsPanel" class="settings-panel hidden">
+                    <h4>Стиль фигур</h4>
+                    <div class="piece-style-selector">
+                        <button class="piece-style-btn active" data-style="wikipedia">Классика</button>
+                        <button class="piece-style-btn" data-style="alpha">Альфа</button>
+                        <button class="piece-style-btn" data-style="merida">Мерида</button>
+                        <button class="piece-style-btn" data-style="cburnett">Шахматы.com</button>
+                    </div>
+                    
+                    <h4>Цвет доски</h4>
+                    <div class="board-color-selector">
+                        <button class="board-color-btn active" data-color="brown" style="background: linear-gradient(135deg, #f0d9b5 50%, #b58863 50%)"></button>
+                        <button class="board-color-btn" data-color="blue" style="background: linear-gradient(135deg, #dee3e6 50%, #8ca2ad 50%)"></button>
+                        <button class="board-color-btn" data-color="green" style="background: linear-gradient(135deg, #ffffdd 50%, #86a666 50%)"></button>
+                        <button class="board-color-btn" data-color="purple" style="background: linear-gradient(135deg, #e8e9b7 50%, #9f90b0 50%)"></button>
+                        <button class="board-color-btn" data-color="wood" style="background: linear-gradient(135deg, #d4a574 50%, #8b5a3c 50%)"></button>
+                    </div>
+                </div>
+                
                 <div id="board" class="chessboard"></div>
                 
                 <div class="time-control">
