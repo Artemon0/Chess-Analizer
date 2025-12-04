@@ -34,6 +34,9 @@ $(document).ready(function () {
 
 let selectedSquare = null;
 let highlightedSquares = [];
+let currentPieceStyle = 'wikipedia';
+let currentBoardColor = 'brown';
+let currentTheme = 'lichess';
 
 function initBoard() {
     const config = {
@@ -42,10 +45,15 @@ function initBoard() {
         onDragStart: onDragStart,
         onDrop: onDrop,
         onSnapEnd: onSnapEnd,
-        pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png'
+        pieceTheme: getPieceTheme(currentPieceStyle)
     };
 
     board = Chessboard('board', config);
+
+    // Устанавливаем цвет доски
+    setTimeout(() => {
+        $('#board .board-55d63').attr('data-board-color', currentBoardColor);
+    }, 100);
 
     // Добавляем обработчик кликов для мобильных
     setTimeout(() => {
@@ -203,6 +211,16 @@ function clearHighlights() {
 
 // ===== МУЛЬТИПЛЕЕР (СИМУЛЯЦИЯ) =====
 
+function getPieceTheme(style) {
+    const themes = {
+        'wikipedia': 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png',
+        'alpha': 'https://images.chesscomfiles.com/chess-themes/pieces/alpha/{piece}.png',
+        'merida': 'https://lichess1.org/assets/piece/merida/{piece}.svg',
+        'cburnett': 'https://lichess1.org/assets/piece/cburnett/{piece}.svg'
+    };
+    return themes[style] || themes['wikipedia'];
+}
+
 function initControls() {
     $('#createGameBtn').on('click', createGame);
     $('#joinGameBtn').on('click', joinGame);
@@ -213,8 +231,48 @@ function initControls() {
     $('#resignBtn').on('click', resignGame);
     $('#sendBtn').on('click', sendMessage);
     $('#fullscreenBtn').on('click', toggleFullscreen);
+    $('#flipBoardBtn').on('click', () => board.flip());
+    $('#settingsBtn').on('click', () => $('#settingsPanel').toggleClass('hidden'));
     $('#chatInput').on('keypress', function (e) {
         if (e.which === 13) sendMessage();
+    });
+
+    // Темы
+    $('.theme-btn').on('click', function () {
+        const theme = $(this).data('theme');
+        $('.theme-btn').removeClass('active');
+        $(this).addClass('active');
+        $('body').attr('data-theme', theme);
+        currentTheme = theme;
+    });
+
+    // Стили фигур
+    $('.piece-style-btn').on('click', function () {
+        const style = $(this).data('style');
+        $('.piece-style-btn').removeClass('active');
+        $(this).addClass('active');
+        currentPieceStyle = style;
+        board = Chessboard('board', {
+            draggable: true,
+            position: game.fen(),
+            onDragStart: onDragStart,
+            onDrop: onDrop,
+            onSnapEnd: onSnapEnd,
+            pieceTheme: getPieceTheme(style)
+        });
+        setTimeout(() => {
+            $('#board .board-55d63').attr('data-board-color', currentBoardColor);
+            $('#board').on('click', '.square-55d63', handleSquareClick);
+        }, 100);
+    });
+
+    // Цвета доски
+    $('.board-color-btn').on('click', function () {
+        const color = $(this).data('color');
+        $('.board-color-btn').removeClass('active');
+        $(this).addClass('active');
+        currentBoardColor = color;
+        $('#board .board-55d63').attr('data-board-color', color);
     });
 
     // Быстрый чат
