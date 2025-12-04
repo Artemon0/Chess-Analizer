@@ -1589,20 +1589,22 @@ body[data-theme="light"] #chatInput {
 
 .modal-content {
     background: #262421;
-    padding: 30px;
+    padding: 35px 40px;
     border-radius: 12px;
-    max-width: 400px;
+    max-width: 450px;
     width: 90%;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
     position: relative;
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .modal-content h2 {
     color: #f0d9b5;
-    margin: 0 0 20px 0;
-    font-size: 24px;
+    margin: 0 0 25px 0;
+    font-size: 26px;
     text-align: center;
     line-height: 1.4;
+    font-weight: 600;
 }
 
 .close {
@@ -1621,8 +1623,8 @@ body[data-theme="light"] #chatInput {
 
 .auth-tabs {
     display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
+    gap: 12px;
+    margin-bottom: 25px;
 }
 
 .auth-tab {
@@ -1652,28 +1654,33 @@ body[data-theme="light"] #chatInput {
 .auth-form {
     display: flex;
     flex-direction: column;
-    gap: 15px;
-    margin-top: 10px;
+    gap: 18px;
 }
 
 .auth-form button {
-    margin-top: 5px;
+    margin-top: 8px;
+    padding: 14px !important;
+    font-size: 15px !important;
+    font-weight: 600 !important;
 }
 
 .auth-form input {
-    padding: 12px 15px;
-    background: rgba(0, 0, 0, 0.3);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 6px;
+    padding: 14px 16px;
+    background: rgba(0, 0, 0, 0.4);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
     color: #f0d9b5;
-    font-size: 14px;
+    font-size: 15px;
     width: 100%;
     box-sizing: border-box;
+    transition: all 0.2s;
 }
 
 .auth-form input:focus {
     outline: none;
     border-color: #759656;
+    background: rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 0 3px rgba(117, 150, 86, 0.1);
 }
 
 .auth-form input::placeholder {
@@ -1682,19 +1689,34 @@ body[data-theme="light"] #chatInput {
 
 .user-profile {
     text-align: center;
+    animation: fadeIn 0.3s;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .profile-info {
-    background: rgba(0, 0, 0, 0.2);
-    padding: 20px;
-    border-radius: 8px;
-    margin-bottom: 15px;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 25px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .profile-info h3 {
     color: #f0d9b5;
-    margin: 0 0 15px 0;
-    font-size: 20px;
+    margin: 0 0 20px 0;
+    font-size: 22px;
+    font-weight: 600;
 }
 
 .profile-info p {
