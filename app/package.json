@@ -1,9 +1,9 @@
 {
   "name": "chess-multiplayer",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Chess Multiplayer with Real-time Analysis - Desktop App",
   "main": "main.js",
-  "homepage": "https://github.com/yourusername/chess-multiplayer",
+  "homepage": "https://github.com/Artemon0/Chess-Analizer/",
   "scripts": {
     "start": "electron .",
     "build": "electron-builder",
