@@ -1553,6 +1553,39 @@ body[data-theme="light"] #chatInput {
     margin-left: auto;
 }
 
+/* ===== ПЕРЕКЛЮЧАТЕЛЬ ЯЗЫКА ===== */
+
+.language-selector {
+    display: flex;
+    gap: 6px;
+}
+
+.lang-btn {
+    width: 36px;
+    height: 36px;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.05);
+    font-size: 18px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.lang-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: scale(1.05);
+}
+
+.lang-btn.active {
+    background: #759656;
+    border-color: #759656;
+    box-shadow: 0 2px 8px rgba(117, 150, 86, 0.3);
+}
+
 .btn-login {
     background: #759656;
     color: white;

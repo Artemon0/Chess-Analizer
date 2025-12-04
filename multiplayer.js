@@ -249,6 +249,14 @@ function initControls() {
         if (e.which === 13) sendMessage();
     });
 
+    // Переключение языка
+    $('.lang-btn').on('click', function () {
+        const lang = $(this).data('lang');
+        $('.lang-btn').removeClass('active');
+        $(this).addClass('active');
+        setLanguage(lang);
+    });
+
     // Темы
     $('.theme-btn').on('click', function () {
         const theme = $(this).data('theme');
@@ -294,7 +302,8 @@ function initControls() {
 
     // Быстрый чат
     $('.quick-chat-btn').on('click', function () {
-        const msg = $(this).data('msg');
+        const msgKey = $(this).data('msg-key');
+        const msg = t(msgKey);
         $('#chatInput').val(msg);
         sendMessage();
     });
@@ -603,12 +612,12 @@ function toggleAnalysis() {
     autoAnalyze = !autoAnalyze;
 
     if (autoAnalyze) {
-        $('#analyzeBtn').text('🔍 Анализ ВКЛ').css('background', '#4CAF50');
-        $('#analysisStatus').text('✅ Анализ включен');
+        $('#analyzeBtn').text(t('analyzeOn')).css('background', '#4CAF50');
+        $('#analysisStatus').text(t('analysisOn'));
         analyzePosition();
     } else {
-        $('#analyzeBtn').text('🔍 Анализ ВЫКЛ').css('background', '#FF9800');
-        $('#analysisStatus').text('Анализ выключен');
+        $('#analyzeBtn').text(t('analyzeOff')).css('background', '#FF9800');
+        $('#analysisStatus').text(t('analysisOff'));
         clearAnnotations();
     }
 }

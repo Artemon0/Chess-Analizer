@@ -10,14 +10,18 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>♟️ Chess Multiplayer</h1>
+            <h1 data-i18n="title">♟️ Chess Multiplayer</h1>
             <div class="header-controls">
-                <div class="theme-selector">
-                    <button class="theme-btn" data-theme="dark" title="Темная тема">🌙</button>
-                    <button class="theme-btn active" data-theme="lichess" title="Lichess">♟️</button>
-                    <button class="theme-btn" data-theme="light" title="Светлая тема">☀️</button>
+                <div class="language-selector">
+                    <button class="lang-btn active" data-lang="ru">🇷🇺</button>
+                    <button class="lang-btn" data-lang="en">🇬🇧</button>
                 </div>
-                <button id="loginBtn" class="btn btn-login">👤 Войти</button>
+                <div class="theme-selector">
+                    <button class="theme-btn" data-theme="dark" data-i18n-title="darkTheme">🌙</button>
+                    <button class="theme-btn active" data-theme="lichess" data-i18n-title="lichessTheme">♟️</button>
+                    <button class="theme-btn" data-theme="light" data-i18n-title="lightTheme">☀️</button>
+                </div>
+                <button id="loginBtn" class="btn btn-login" data-i18n="login">👤 Войти</button>
             </div>
         </div>
         
@@ -25,34 +29,34 @@
         <div id="loginModal" class="modal hidden">
             <div class="modal-content">
                 <span class="close">&times;</span>
-                <h2>Вход / Регистрация</h2>
+                <h2 data-i18n="loginRegister">Вход / Регистрация</h2>
                 <div class="auth-tabs">
-                    <button class="auth-tab active" data-tab="login">Вход</button>
-                    <button class="auth-tab" data-tab="register">Регистрация</button>
+                    <button class="auth-tab active" data-tab="login" data-i18n="loginTab">Вход</button>
+                    <button class="auth-tab" data-tab="register" data-i18n="registerTab">Регистрация</button>
                 </div>
                 <div id="loginTab" class="auth-form">
-                    <input type="text" id="loginUsername" placeholder="Имя пользователя" />
-                    <input type="password" id="loginPassword" placeholder="Пароль" />
-                    <button id="loginSubmit" class="btn btn-primary">Войти</button>
+                    <input type="text" id="loginUsername" data-i18n="username" placeholder="Имя пользователя" />
+                    <input type="password" id="loginPassword" data-i18n="password" placeholder="Пароль" />
+                    <button id="loginSubmit" class="btn btn-primary" data-i18n="loginBtn">Войти</button>
                 </div>
                 <div id="registerTab" class="auth-form hidden">
-                    <input type="text" id="registerUsername" placeholder="Имя пользователя" />
-                    <input type="password" id="registerPassword" placeholder="Пароль" />
-                    <input type="password" id="registerPasswordConfirm" placeholder="Повторите пароль" />
-                    <button id="registerSubmit" class="btn btn-primary">Зарегистрироваться</button>
+                    <input type="text" id="registerUsername" data-i18n="username" placeholder="Имя пользователя" />
+                    <input type="password" id="registerPassword" data-i18n="password" placeholder="Пароль" />
+                    <input type="password" id="registerPasswordConfirm" data-i18n="confirmPassword" placeholder="Повторите пароль" />
+                    <button id="registerSubmit" class="btn btn-primary" data-i18n="registerBtn">Зарегистрироваться</button>
                 </div>
                 <div id="userProfile" class="user-profile hidden">
                     <div class="profile-info">
                         <h3 id="profileUsername"></h3>
-                        <p>Игр сыграно: <span id="profileGames">0</span></p>
-                        <p>Побед: <span id="profileWins">0</span></p>
-                        <p>Рейтинг: <span id="profileRating">1200</span></p>
+                        <p><span data-i18n="gamesPlayed">Игр сыграно</span>: <span id="profileGames">0</span></p>
+                        <p><span data-i18n="wins">Побед</span>: <span id="profileWins">0</span></p>
+                        <p><span data-i18n="rating">Рейтинг</span>: <span id="profileRating">1200</span></p>
                     </div>
-                    <button id="logoutBtn" class="btn btn-danger">Выйти</button>
+                    <button id="logoutBtn" class="btn btn-danger" data-i18n="logout">Выйти</button>
                 </div>
             </div>
         </div>
-        <p class="subtitle">Играй онлайн + анализ в реальном времени</p>
+        <p class="subtitle" data-i18n="subtitle">Играй онлайн + анализ в реальном времени</p>
         
         <div class="main-layout">
             <!-- Доска -->
@@ -65,14 +69,14 @@
                 
                 <!-- Настройки -->
                 <div id="settingsPanel" class="settings-panel hidden">
-                    <h4>Стиль фигур</h4>
+                    <h4 data-i18n="pieceStyle">Стиль фигур</h4>
                     <div class="piece-style-selector">
-                        <button class="piece-style-btn active" data-style="wikipedia">Классика</button>
-                        <button class="piece-style-btn" data-style="alpha">Альфа</button>
-                        <button class="piece-style-btn" data-style="uscf">USCF</button>
+                        <button class="piece-style-btn active" data-style="wikipedia" data-i18n="classic">Классика</button>
+                        <button class="piece-style-btn" data-style="alpha" data-i18n="alpha">Альфа</button>
+                        <button class="piece-style-btn" data-style="uscf" data-i18n="uscf">USCF</button>
                     </div>
                     
-                    <h4>Цвет доски</h4>
+                    <h4 data-i18n="boardColor">Цвет доски</h4>
                     <div class="board-color-selector">
                         <button class="board-color-btn active" data-color="brown" style="background: linear-gradient(135deg, #f0d9b5 50%, #b58863 50%)"></button>
                         <button class="board-color-btn" data-color="blue" style="background: linear-gradient(135deg, #dee3e6 50%, #8ca2ad 50%)"></button>
@@ -85,30 +89,30 @@
                 <div id="board" class="chessboard"></div>
                 
                 <div class="time-control">
-                    <h3>⏱️ Контроль времени</h3>
+                    <h3 data-i18n="timeControl">⏱️ Контроль времени</h3>
                     <div class="time-buttons">
-                        <button class="time-btn" data-time="60">⚡ Bullet (1 мин)</button>
-                        <button class="time-btn" data-time="180">🏃 Blitz (3 мин)</button>
-                        <button class="time-btn active" data-time="600">🎯 Rapid (10 мин)</button>
-                        <button class="time-btn" data-time="1800">🐢 Classical (30 мин)</button>
-                        <button class="time-btn" data-time="0">♾️ Без времени</button>
+                        <button class="time-btn" data-time="60" data-i18n="bullet">⚡ Bullet (1 мин)</button>
+                        <button class="time-btn" data-time="180" data-i18n="blitz">🏃 Blitz (3 мин)</button>
+                        <button class="time-btn active" data-time="600" data-i18n="rapid">🎯 Rapid (10 мин)</button>
+                        <button class="time-btn" data-time="1800" data-i18n="classical">🐢 Classical (30 мин)</button>
+                        <button class="time-btn" data-time="0" data-i18n="unlimited">♾️ Без времени</button>
                     </div>
                 </div>
 
                 <div class="controls">
-                    <button id="createGameBtn" class="btn btn-primary">🎮 Создать игру</button>
-                    <button id="joinGameBtn" class="btn btn-success">🔗 Присоединиться</button>
-                    <button id="playBotBtn" class="btn btn-bot">🤖 Играть с ботом</button>
-                    <button id="puzzleBtn" class="btn btn-puzzle">🧩 Задачи</button>
-                    <button id="hintBtn" class="btn btn-info" style="display:none;">💡 Подсказка</button>
-                    <button id="clearBtn" class="btn btn-secondary">🗑️ Очистить</button>
-                    <button id="analyzeBtn" class="btn btn-warning">🔍 Анализ ВЫКЛ</button>
-                    <button id="resignBtn" class="btn btn-danger" style="display:none;">🏳️ Сдаться</button>
+                    <button id="createGameBtn" class="btn btn-primary" data-i18n="createGame">🎮 Создать игру</button>
+                    <button id="joinGameBtn" class="btn btn-success" data-i18n="joinGame">🔗 Присоединиться</button>
+                    <button id="playBotBtn" class="btn btn-bot" data-i18n="playBot">🤖 Играть с ботом</button>
+                    <button id="puzzleBtn" class="btn btn-puzzle" data-i18n="puzzles">🧩 Задачи</button>
+                    <button id="hintBtn" class="btn btn-info" style="display:none;" data-i18n="hint">💡 Подсказка</button>
+                    <button id="clearBtn" class="btn btn-secondary" data-i18n="clear">🗑️ Очистить</button>
+                    <button id="analyzeBtn" class="btn btn-warning" data-i18n="analyzeOff">🔍 Анализ ВЫКЛ</button>
+                    <button id="resignBtn" class="btn btn-danger" style="display:none;" data-i18n="resign">🏳️ Сдаться</button>
                 </div>
 
                 <div class="game-info">
                     <div class="status-box">
-                        <div id="gameStatus">Создайте или присоединитесь к игре</div>
+                        <div id="gameStatus" data-i18n="createOrJoin">Создайте или присоединитесь к игре</div>
                         <div id="gameLink" class="game-link hidden"></div>
                     </div>
                     
@@ -116,14 +120,14 @@
                         <div class="player white">
                             <span class="player-icon">♔</span>
                             <div class="player-info">
-                                <span id="whitePlayer">Белые</span>
+                                <span id="whitePlayer" data-i18n="white">Белые</span>
                                 <div class="timer" id="whiteTimer">10:00</div>
                             </div>
                         </div>
                         <div class="player black">
                             <span class="player-icon">♚</span>
                             <div class="player-info">
-                                <span id="blackPlayer">Черные</span>
+                                <span id="blackPlayer" data-i18n="black">Черные</span>
                                 <div class="timer" id="blackTimer">10:00</div>
                             </div>
                         </div>
@@ -141,34 +145,34 @@
                 </div>
 
                 <div class="analysis-info">
-                    <h3>📊 Анализ позиции</h3>
-                    <div id="analysisStatus">Включите анализ</div>
+                    <h3 data-i18n="analysisTitle">📊 Анализ позиции</h3>
+                    <div id="analysisStatus" data-i18n="analysisOff">Включите анализ</div>
                     <div id="moveQuality" class="move-quality"></div>
                 </div>
 
                 <div class="chat-section">
-                    <h3>💬 Чат</h3>
+                    <h3 data-i18n="chat">💬 Чат</h3>
                     <div id="chatMessages" class="chat-messages"></div>
                     <div class="chat-input">
-                        <input type="text" id="chatInput" placeholder="Сообщение...">
+                        <input type="text" id="chatInput" data-i18n="messagePlaceholder" placeholder="Сообщение...">
                         <button id="sendBtn" class="btn">📤</button>
                     </div>
                 </div>
 
                 <div class="quick-chat">
-                    <h3>💬 Быстрый чат</h3>
+                    <h3 data-i18n="quickChat">💬 Быстрый чат</h3>
                     <div class="quick-chat-buttons">
-                        <button class="quick-chat-btn" data-msg="Хорошая игра!">👍 Хорошая игра</button>
-                        <button class="quick-chat-btn" data-msg="Спасибо!">🙏 Спасибо</button>
-                        <button class="quick-chat-btn" data-msg="Удачи!">🍀 Удачи</button>
-                        <button class="quick-chat-btn" data-msg="Отличный ход!">⭐ Отличный ход</button>
-                        <button class="quick-chat-btn" data-msg="Ничья?">🤝 Ничья?</button>
-                        <button class="quick-chat-btn" data-msg="Ещё партию?">🔄 Ещё партию?</button>
+                        <button class="quick-chat-btn" data-msg-key="goodGame" data-i18n="goodGame">👍 Хорошая игра</button>
+                        <button class="quick-chat-btn" data-msg-key="thanks" data-i18n="thanks">🙏 Спасибо</button>
+                        <button class="quick-chat-btn" data-msg-key="goodLuck" data-i18n="goodLuck">🍀 Удачи</button>
+                        <button class="quick-chat-btn" data-msg-key="niceMove" data-i18n="niceMove">⭐ Отличный ход</button>
+                        <button class="quick-chat-btn" data-msg-key="draw?" data-i18n="draw?">🤝 Ничья?</button>
+                        <button class="quick-chat-btn" data-msg-key="rematch?" data-i18n="rematch?">🔄 Ещё партию?</button>
                     </div>
                 </div>
 
                 <div class="moves-history">
-                    <h3>История партии</h3>
+                    <h3 data-i18n="movesHistory">История партии</h3>
                     <div id="movesList"></div>
                 </div>
             </div>
@@ -186,6 +190,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     
     <script src="firebase-config.js"></script>
+    <script src="i18n.js"></script>
     <script src="multiplayer.js"></script>
     <script src="puzzles.js"></script>
     <script src="supabase-multiplayer.js"></script>
