@@ -1,37 +1,68 @@
-<svg width="150" height="180" viewBox="0 0 100 120" xmlns="http://www.w3.org/2000/svg">
-  
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Фон с градиентом -->
   <defs>
-    <linearGradient id="splitKingClassic" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="50%" stop-color="white"/>
-      <stop offset="50%" stop-color="black"/>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2d2a27;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1a1816;stop-opacity:1" />
     </linearGradient>
-
-    <path id="classic-body" 
-      d="M 50 20 L 60 40 V 80 A 15 15 0 0 0 50 95 A 15 15 0 0 0 40 80 V 40 Z" 
-    />
-    
-    <path id="classic-collar" 
-      d="M 35 40 C 40 35, 60 35, 65 40 L 65 45 H 35 Z" 
-    />
-    
-    <rect id="classic-cross-v" x="48" y="0" width="4" height="25" />
-    <rect id="classic-cross-h" x="40" y="8" width="20" height="4" />
-    
-    <path id="classic-base" 
-      d="M 30 95 H 70 L 65 110 H 35 Z" 
-    />
+    <linearGradient id="kingGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#e0e0e0;stop-opacity:1" />
+    </linearGradient>
   </defs>
-
-  <g fill="url(#splitKingClassic)" stroke="black" stroke-width="1.5">
+  
+  <!-- Фон -->
+  <rect width="100" height="100" fill="url(#bgGradient)" rx="18"/>
+  
+  <!-- Шахматная доска (упрощенная) -->
+  <rect x="12" y="12" width="76" height="76" fill="#8b6f47" rx="6"/>
+  
+  <!-- Светлые клетки (более контрастные) -->
+  <rect x="12" y="12" width="19" height="19" fill="#f5e6d3"/>
+  <rect x="50" y="12" width="19" height="19" fill="#f5e6d3"/>
+  <rect x="31" y="31" width="19" height="19" fill="#f5e6d3"/>
+  <rect x="69" y="31" width="19" height="19" fill="#f5e6d3"/>
+  <rect x="12" y="50" width="19" height="19" fill="#f5e6d3"/>
+  <rect x="50" y="50" width="19" height="19" fill="#f5e6d3"/>
+  <rect x="31" y="69" width="19" height="19" fill="#f5e6d3"/>
+  <rect x="69" y="69" width="19" height="19" fill="#f5e6d3"/>
+  
+  <!-- Темные клетки -->
+  <rect x="31" y="12" width="19" height="19" fill="#8b6f47"/>
+  <rect x="69" y="12" width="19" height="19" fill="#8b6f47"/>
+  <rect x="12" y="31" width="19" height="19" fill="#8b6f47"/>
+  <rect x="50" y="31" width="19" height="19" fill="#8b6f47"/>
+  <rect x="31" y="50" width="19" height="19" fill="#8b6f47"/>
+  <rect x="69" y="50" width="19" height="19" fill="#8b6f47"/>
+  <rect x="12" y="69" width="19" height="19" fill="#8b6f47"/>
+  <rect x="50" y="69" width="19" height="19" fill="#8b6f47"/>
+  
+  <!-- Шахматная фигура (король) - белый с тенью -->
+  <g transform="translate(50, 52)">
+    <!-- Тень -->
+    <ellipse cx="1" cy="16" rx="13" ry="3" fill="#000000" opacity="0.3"/>
     
-    <use href="#classic-base" />
+    <!-- Основание -->
+    <ellipse cx="0" cy="15" rx="12" ry="3.5" fill="#d0d0d0"/>
+    <ellipse cx="0" cy="14" rx="12" ry="3" fill="url(#kingGradient)"/>
     
-    <use href="#classic-body" />
-
-    <use href="#classic-collar" />
-
-    <use href="#classic-cross-v" />
-    <use href="#classic-cross-h" />
+    <!-- Тело -->
+    <path d="M -8,14 L -6,4 L -5,-6 L 5,-6 L 6,4 L 8,14 Z" fill="url(#kingGradient)" stroke="#c0c0c0" stroke-width="0.5"/>
     
+    <!-- Корона -->
+    <circle cx="0" cy="-8" r="5.5" fill="url(#kingGradient)" stroke="#c0c0c0" stroke-width="0.5"/>
+    
+    <!-- Крест (зеленый акцент) -->
+    <rect x="-1.5" y="-19" width="3" height="9" fill="#86b968" stroke="#6a9c4d" stroke-width="0.5"/>
+    <rect x="-4" y="-16.5" width="8" height="3" fill="#86b968" stroke="#6a9c4d" stroke-width="0.5"/>
+    
+    <!-- Блики на короле -->
+    <ellipse cx="-2" cy="-8" rx="2" ry="2.5" fill="#ffffff" opacity="0.4"/>
   </g>
+  
+  <!-- Яркая зеленая рамка -->
+  <rect x="12" y="12" width="76" height="76" fill="none" stroke="#86b968" stroke-width="4" rx="6"/>
+  
+  <!-- Внутренняя подсветка -->
+  <rect x="15" y="15" width="70" height="70" fill="none" stroke="#a8d97f" stroke-width="1" rx="5" opacity="0.5"/>
 </svg>

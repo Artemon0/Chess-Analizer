@@ -1,8 +1,9 @@
 {
   "name": "chess-multiplayer",
   "version": "1.0.0",
-  "description": "Chess Multiplayer Desktop App",
+  "description": "Chess Multiplayer with Real-time Analysis - Desktop App",
   "main": "main.js",
+  "homepage": "https://github.com/yourusername/chess-multiplayer",
   "scripts": {
     "start": "electron .",
     "build": "electron-builder",
@@ -23,24 +24,28 @@
       "node_modules/**/*"
     ],
     "win": {
-      "target": "nsis",
-      "icon": "assets/icon.ico"
+      "target": ["nsis", "portable"],
+      "icon": "assets/icon.png"
     },
     "mac": {
-      "target": "dmg",
-      "icon": "assets/icon.icns"
+      "target": ["dmg", "zip"],
+      "icon": "assets/icon.png"
     },
     "linux": {
-      "target": "AppImage",
-      "icon": "assets/icon.png"
+      "target": ["AppImage", "deb"],
+      "icon": "assets/icon.png",
+      "category": "Game"
     }
   },
   "keywords": [
     "chess",
     "multiplayer",
-    "electron"
+    "electron",
+    "analysis",
+    "lichess",
+    "puzzles"
   ],
-  "author": "",
+  "author": "Chess Multiplayer Team",
   "license": "MIT",
   "devDependencies": {
     "electron": "^28.0.0",

@@ -3,7 +3,7 @@
 const translations = {
     ru: {
         // Заголовки
-        'title': '♟️ Chess Multiplayer',
+        'title': 'Chess Multiplayer',
         'subtitle': 'Играй онлайн + анализ в реальном времени',
 
         // Кнопки управления
@@ -152,7 +152,7 @@ const translations = {
 
     en: {
         // Headers
-        'title': '♟️ Chess Multiplayer',
+        'title': 'Chess Multiplayer',
         'subtitle': 'Play online + real-time analysis',
 
         // Control buttons
@@ -301,7 +301,7 @@ const translations = {
 
     uk: {
         // Заголовки
-        'title': '♟️ Chess Multiplayer',
+        'title': 'Chess Multiplayer',
         'subtitle': 'Грай онлайн + аналіз у реальному часі',
 
         // Кнопки управління

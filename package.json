@@ -1,10 +1,28 @@
 {
   "name": "chess-multiplayer",
   "version": "1.0.0",
-  "description": "Chess multiplayer with WebSocket",
+  "description": "Chess Multiplayer with Real-time Analysis - Online chess game with Lichess Cloud Eval, puzzles, and multiplayer support",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "build:app": "cd app && npm run build",
+    "build:win": "cd app && npm run build:win",
+    "build:mac": "cd app && npm run build:mac",
+    "build:linux": "cd app && npm run build:linux"
+  },
+  "keywords": [
+    "chess",
+    "multiplayer",
+    "lichess",
+    "analysis",
+    "puzzles",
+    "online-game"
+  ],
+  "author": "Chess Multiplayer Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/chess-multiplayer"
   },
   "dependencies": {
     "ws": "^8.14.2"
