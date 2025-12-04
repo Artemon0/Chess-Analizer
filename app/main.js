@@ -14,7 +14,7 @@ function createWindow() {
             nodeIntegration: false,
             contextIsolation: true
         },
-        icon: path.join(__dirname, 'assets', 'icon.png'),
+        icon: path.join(__dirname, 'assets', 'icon.svg'),
         backgroundColor: '#312e2b',
         show: false
     });
