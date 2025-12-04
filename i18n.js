@@ -134,6 +134,12 @@ const translations = {
         'puzzleSolved': '🎉 Задача решена!',
         'puzzleFailed': '❌ Неверно. Попробуйте ещё раз',
         'nextPuzzle': '➡️ Следующая задача',
+        'mate1': '⚡ Мат в 1 ход',
+        'mate2': '🎯 Мат в 2 хода',
+        'mate3': '🔥 Мат в 3 хода',
+        'tactics': '⭐ Тактика',
+        'endgame': '👑 Эндшпиль',
+        'famous': '🏆 Знаменитые партии',
 
         // Бот
         'botThinking': '🤖 Бот думает...',
@@ -277,6 +283,12 @@ const translations = {
         'puzzleSolved': '🎉 Puzzle solved!',
         'puzzleFailed': '❌ Wrong. Try again',
         'nextPuzzle': '➡️ Next Puzzle',
+        'mate1': '⚡ Mate in 1',
+        'mate2': '🎯 Mate in 2',
+        'mate3': '🔥 Mate in 3',
+        'tactics': '⭐ Tactics',
+        'endgame': '👑 Endgame',
+        'famous': '🏆 Famous Games',
 
         // Bot
         'botThinking': '🤖 Bot thinking...',
@@ -420,6 +432,12 @@ const translations = {
         'puzzleSolved': '🎉 Задачу розв\'язано!',
         'puzzleFailed': '❌ Неправильно. Спробуйте ще раз',
         'nextPuzzle': '➡️ Наступна задача',
+        'mate1': '⚡ Мат в 1 хід',
+        'mate2': '🎯 Мат в 2 ходи',
+        'mate3': '🔥 Мат в 3 ходи',
+        'tactics': '⭐ Тактика',
+        'endgame': '👑 Ендшпіль',
+        'famous': '🏆 Знамениті партії',
 
         // Бот
         'botThinking': '🤖 Бот думає...',

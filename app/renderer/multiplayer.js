@@ -167,6 +167,9 @@ function selectSquare(square) {
         // Добавляем точку для пустых клеток или кружок для взятия
         if (game.get(move.to)) {
             $target.append('<div class="capture-hint"></div>');
+        } else if (move.flags.includes('k') || move.flags.includes('q')) {
+            // Рокировка - специальный индикатор
+            $target.append('<div class="castling-hint"></div>');
         } else {
             $target.append('<div class="move-hint"></div>');
         }
@@ -237,7 +240,25 @@ function initControls() {
     $('#createGameBtn').on('click', createGame);
     $('#joinGameBtn').on('click', joinGame);
     $('#playBotBtn').on('click', playWithBot);
-    $('#puzzleBtn').on('click', startPuzzle);
+    // Выпадающее меню задач
+    $('#puzzleBtn').on('click', function (e) {
+        e.stopPropagation();
+        $('#puzzleMenu').toggleClass('hidden');
+    });
+
+    // Закрытие меню при клике вне его
+    $(document).on('click', function (e) {
+        if (!$(e.target).closest('.puzzle-dropdown').length) {
+            $('#puzzleMenu').addClass('hidden');
+        }
+    });
+
+    // Выбор категории задач
+    $('.puzzle-category').on('click', function () {
+        const category = $(this).data('category');
+        $('#puzzleMenu').addClass('hidden');
+        startPuzzle(category);
+    });
     $('#clearBtn').on('click', resetGame);
     $('#analyzeBtn').on('click', toggleAnalysis);
     $('#resignBtn').on('click', resignGame);
@@ -625,11 +646,11 @@ function toggleAnalysis() {
 // Анализ СДЕЛАННОГО хода (только оценка, БЕЗ подсказок)
 async function analyzeMadeMove(move, fenBefore) {
     if (game.game_over()) {
-        $('#analysisStatus').text('Игра окончена');
+        $('#analysisStatus').text(t('gameOver'));
         return;
     }
 
-    $('#analysisStatus').text('🔍 Анализ хода...');
+    $('#analysisStatus').text(t('analyzing'));
 
     try {
         // Получаем оценку позиции ДО хода
@@ -651,13 +672,13 @@ async function analyzeMadeMove(move, fenBefore) {
                 (scoreAfter > 0 ? '+' : '') + scoreAfter.toFixed(1);
             $('#evalScore').text(evalText);
 
-            $('#analysisStatus').text('✅ Анализ завершен');
+            $('#analysisStatus').text(t('analysisComplete'));
         } else {
-            $('#analysisStatus').text('⚠️ Анализ недоступен (нет данных)');
+            $('#analysisStatus').text(t('analysisUnavailable'));
             console.log('Нет данных анализа:', { evalBefore, evalAfter });
         }
     } catch (error) {
-        $('#analysisStatus').text('❌ Ошибка анализа');
+        $('#analysisStatus').text(t('analysisError'));
         console.error('Ошибка анализа:', error);
     }
 }
@@ -665,20 +686,20 @@ async function analyzeMadeMove(move, fenBefore) {
 // Старая функция для кнопки анализа
 async function analyzePosition() {
     if (game.game_over()) {
-        $('#analysisStatus').text('Игра окончена');
+        $('#analysisStatus').text(t('gameOver'));
         return;
     }
 
-    $('#analysisStatus').text('🔍 Анализ...');
+    $('#analysisStatus').text(t('analyzing'));
 
     const fen = game.fen();
     const result = await getCloudEval(fen);
 
     if (result) {
         displayAnalysis(result);
-        $('#analysisStatus').text('✅ Анализ завершен');
+        $('#analysisStatus').text(t('analysisComplete'));
     } else {
-        $('#analysisStatus').text('⚠️ Анализ недоступен');
+        $('#analysisStatus').text(t('analysisUnavailable'));
     }
 }
 

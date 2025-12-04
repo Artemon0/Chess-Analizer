@@ -1,76 +1,175 @@
-// ===== ШАХМАТНЫЕ ЗАДАЧИ ИЗ РЕАЛЬНЫХ ПАРТИЙ =====
+// ===== ШАХМАТНЫЕ ЗАДАЧИ ПО КАТЕГОРИЯМ =====
 
 let currentPuzzle = null;
 let puzzleMode = false;
 let puzzleMoves = [];
 let puzzleIndex = 0;
+let currentCategory = 'famous';
 
-// База задач из известных партий
-const puzzles = [
-    {
-        name: "Легаль - Сен-Бри, 1750",
-        fen: "r1bqkb1r/pppp1ppp/2n2n2/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR w KQkq - 0 1",
-        moves: ["Qxf7+", "Ke7", "Qxe6#"],
-        description: "Классический мат Легаля. Найдите форсированный мат в 2 хода.",
-        difficulty: "Легко"
-    },
-    {
-        name: "Морфи - Герцог Брауншвейгский, 1858",
-        fen: "r1bqk2r/ppp2ppp/2n5/3np1B1/1b2P3/2NP4/PPP2PPP/R2QKB1R w KQkq - 0 1",
-        moves: ["Bxe7", "Nxe7", "Qd8+", "Nxd8", "Rd8#"],
-        description: "Знаменитая партия Морфи. Жертва ферзя и мат.",
-        difficulty: "Средне"
-    },
-    {
-        name: "Каспаров - Топалов, 1999",
-        fen: "r1bq1rk1/pp3pbp/2p1p1p1/8/2BPP3/2N2N2/PP3PPP/R1BQR1K1 w - - 0 1",
-        moves: ["Rxe6", "fxe6", "Qxg6+", "Kh8", "Qh7#"],
-        description: "Блестящая комбинация Каспарова. Жертва ладьи.",
-        difficulty: "Сложно"
-    },
-    {
-        name: "Андерсен - Кизерицкий, 1851",
-        fen: "r1bk3r/p2pBpNp/n4n2/1p1NP2P/6P1/3P4/P1P1K3/q5b1 w - - 0 1",
-        moves: ["Qf6+", "Nxf6", "Be7#"],
-        description: "Бессмертная партия. Финальная комбинация.",
-        difficulty: "Средне"
-    },
-    {
-        name: "Фишер - Бенко, 1963",
-        fen: "r4rk1/1bqnbppp/p2p1n2/1p2p3/3NP3/P1NB4/1PP2PPP/R1BQR1K1 w - - 0 1",
-        moves: ["Nxe6", "fxe6", "Qh5", "g6", "Qh6"],
-        description: "Типичная атака Фишера на короля.",
-        difficulty: "Средне"
-    },
-    {
-        name: "Таль - Смыслов, 1959",
-        fen: "r1b2rk1/2q1bppp/p2ppn2/1p6/3QP3/1BN1B3/PPP2PPP/R4RK1 w - - 0 1",
-        moves: ["Bxf6", "Bxf6", "Qh4", "h6", "Qxh6"],
-        description: "Жертва слона и атака на короля.",
-        difficulty: "Средне"
-    },
-    {
-        name: "Карпов - Корчной, 1978",
-        fen: "r1bq1rk1/ppp2ppp/2np1n2/2b1p3/2B1P3/2NP1N2/PPP2PPP/R1BQK2R w KQ - 0 1",
-        moves: ["Bxf7+", "Kxf7", "Ng5+", "Kg8", "Qb3+"],
-        description: "Классическая жертва на f7.",
-        difficulty: "Легко"
-    },
-    {
-        name: "Алехин - Богољубов, 1922",
-        fen: "r1b1k2r/ppppqppp/2n2n2/2b5/2B1P3/2N2N2/PPPP1PPP/R1BQK2R w KQkq - 0 1",
-        moves: ["Bxf7+", "Kxf7", "Ng5+", "Kg8", "Qf3"],
-        description: "Двойная жертва слонов.",
-        difficulty: "Средне"
-    }
-];
+// База задач по категориям
+const puzzlesByCategory = {
+    mate1: [
+        {
+            name: "Мат в 1 ход #1",
+            fen: "6k1/5ppp/8/8/8/8/5PPP/4R1K1 w - - 0 1",
+            moves: ["Re8#"],
+            description: "Простой мат ладьей по последней горизонтали.",
+            category: "mate1"
+        },
+        {
+            name: "Мат в 1 ход #2",
+            fen: "r5k1/5ppp/8/8/8/8/5PPP/4RK2 w - - 0 1",
+            moves: ["Re8#"],
+            description: "Мат ладьей. Король в углу.",
+            category: "mate1"
+        },
+        {
+            name: "Мат в 1 ход #3",
+            fen: "6k1/5ppp/8/8/8/8/5PPP/5RK1 w - - 0 1",
+            moves: ["Rf8#"],
+            description: "Мат ладьей по вертикали.",
+            category: "mate1"
+        },
+        {
+            name: "Мат в 1 ход #4",
+            fen: "6k1/6pp/8/8/8/8/6PP/5Q1K w - - 0 1",
+            moves: ["Qf8#"],
+            description: "Мат ферзем по последней горизонтали.",
+            category: "mate1"
+        },
+        {
+            name: "Мат в 1 ход #5",
+            fen: "r4rk1/5ppp/8/8/8/8/5PPP/4R1K1 w - - 0 1",
+            moves: ["Re8#"],
+            description: "Мат ладьей. Ладья противника не мешает.",
+            category: "mate1"
+        }
+    ],
 
-function startPuzzle() {
+    mate2: [
+        {
+            name: "Легаль - Сен-Бри, 1750",
+            fen: "r1bqkb1r/pppp1ppp/2n2n2/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR w KQkq - 0 1",
+            moves: ["Qxf7+", "Ke7", "Qxe6#"],
+            description: "Классический мат Легаля.",
+            category: "mate2"
+        },
+        {
+            name: "Мат в 2 хода #2",
+            fen: "r1bqkb1r/pppp1Qpp/2n2n2/4p3/2B1P3/8/PPPP1PPP/RNB1K1NR b KQkq - 0 1",
+            moves: ["Nxf7", "Qxf7#"],
+            description: "Жертва ферзя и мат.",
+            category: "mate2"
+        },
+        {
+            name: "Мат в 2 хода #3",
+            fen: "r1bqk2r/pppp1ppp/2n2n2/2b1p3/2B1P3/3P1N2/PPP2PPP/RNBQK2R w KQkq - 0 1",
+            moves: ["Bxf7+", "Kxf7", "Ng5#"],
+            description: "Жертва слона на f7.",
+            category: "mate2"
+        }
+    ],
+
+    mate3: [
+        {
+            name: "Каспаров - Топалов, 1999",
+            fen: "r1bq1rk1/pp3pbp/2p1p1p1/8/2BPP3/2N2N2/PP3PPP/R1BQR1K1 w - - 0 1",
+            moves: ["Rxe6", "fxe6", "Qxg6+", "Kh8", "Qh7#"],
+            description: "Блестящая комбинация Каспарова.",
+            category: "mate3"
+        },
+        {
+            name: "Мат в 3 хода #2",
+            fen: "r1bqk2r/pppp1ppp/2n2n2/2b1p3/2B1P3/2NP1N2/PPP2PPP/R1BQK2R w KQkq - 0 1",
+            moves: ["Bxf7+", "Kxf7", "Ng5+", "Kg8", "Qf3#"],
+            description: "Классическая атака на f7.",
+            category: "mate3"
+        }
+    ],
+
+    tactics: [
+        {
+            name: "Двойной удар",
+            fen: "r1bqkb1r/pppp1ppp/2n2n2/4p3/2B1P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 0 1",
+            moves: ["Ng5", "d5", "Qf3"],
+            description: "Атака на f7 и угроза двойного удара.",
+            category: "tactics"
+        },
+        {
+            name: "Вилка конем",
+            fen: "r1bqkb1r/pppp1ppp/2n5/4p3/2BnP3/5N2/PPPP1PPP/RNBQK2R w KQkq - 0 1",
+            moves: ["Nxe5", "Nxe5", "d4"],
+            description: "Вилка - атака на короля и ферзя.",
+            category: "tactics"
+        },
+        {
+            name: "Связка",
+            fen: "r1bqk2r/pppp1ppp/2n2n2/2b1p3/2B1P3/2N2N2/PPPP1PPP/R1BQK2R w KQkq - 0 1",
+            moves: ["Ng5", "O-O", "Qf3"],
+            description: "Использование связки для атаки.",
+            category: "tactics"
+        }
+    ],
+
+    endgame: [
+        {
+            name: "Король и пешка",
+            fen: "8/8/8/4k3/8/4K3/4P3/8 w - - 0 1",
+            moves: ["Kd3", "Kd5", "e4+", "Ke5", "Ke3"],
+            description: "Проведение пешки в ферзи.",
+            category: "endgame"
+        },
+        {
+            name: "Ладейный эндшпиль",
+            fen: "6k1/5ppp/8/8/8/8/5PPP/4R1K1 w - - 0 1",
+            moves: ["Re7", "Kf8", "Rxf7+", "Kg8", "Rxg7+"],
+            description: "Активная ладья в эндшпиле.",
+            category: "endgame"
+        }
+    ],
+
+    famous: [
+        {
+            name: "Морфи - Герцог Брауншвейгский, 1858",
+            fen: "r1bqk2r/ppp2ppp/2n5/3np1B1/1b2P3/2NP4/PPP2PPP/R2QKB1R w KQkq - 0 1",
+            moves: ["Bxe7", "Nxe7", "Qd8+", "Nxd8", "Rd8#"],
+            description: "Знаменитая партия Морфи. Жертва ферзя.",
+            category: "famous"
+        },
+        {
+            name: "Андерсен - Кизерицкий, 1851",
+            fen: "r1bk3r/p2pBpNp/n4n2/1p1NP2P/6P1/3P4/P1P1K3/q5b1 w - - 0 1",
+            moves: ["Qf6+", "Nxf6", "Be7#"],
+            description: "Бессмертная партия.",
+            category: "famous"
+        },
+        {
+            name: "Фишер - Бенко, 1963",
+            fen: "r4rk1/1bqnbppp/p2p1n2/1p2p3/3NP3/P1NB4/1PP2PPP/R1BQR1K1 w - - 0 1",
+            moves: ["Nxe6", "fxe6", "Qh5", "g6", "Qh6"],
+            description: "Типичная атака Фишера.",
+            category: "famous"
+        },
+        {
+            name: "Таль - Смыслов, 1959",
+            fen: "r1b2rk1/2q1bppp/p2ppn2/1p6/3QP3/1BN1B3/PPP2PPP/R4RK1 w - - 0 1",
+            moves: ["Bxf6", "Bxf6", "Qh4", "h6", "Qxh6"],
+            description: "Жертва слона Таля.",
+            category: "famous"
+        }
+    ]
+};
+
+function startPuzzle(category = 'famous') {
+    currentCategory = category;
     puzzleMode = true;
     puzzleIndex = 0;
 
-    // Случайная задача
-    currentPuzzle = puzzles[Math.floor(Math.random() * puzzles.length)];
+    // Получаем задачи выбранной категории
+    const categoryPuzzles = puzzlesByCategory[category] || puzzlesByCategory.famous;
+
+    // Случайная задача из категории
+    currentPuzzle = categoryPuzzles[Math.floor(Math.random() * categoryPuzzles.length)];
     puzzleMoves = [];
 
     // Сброс игры
@@ -81,155 +180,22 @@ function startPuzzle() {
     if (myColor === 'black') board.flip();
 
     $('#gameStatus').html(`🧩 <strong>${currentPuzzle.name}</strong>`);
-    $('#whitePlayer').text(game.turn() === 'w' ? 'Вы' : 'Компьютер');
-    $('#blackPlayer').text(game.turn() === 'b' ? 'Вы' : 'Компьютер');
+    $('#whitePlayer').text(game.turn() === 'w' ? t('you') : t('opponent'));
+    $('#blackPlayer').text(game.turn() === 'b' ? t('you') : t('opponent'));
 
     addChatMessage('system', `🧩 ${currentPuzzle.name}`);
     addChatMessage('system', `📝 ${currentPuzzle.description}`);
-    addChatMessage('system', `⚡ Сложность: ${currentPuzzle.difficulty}`);
+
+    // Показываем кнопку подсказки
+    $('#hintBtn').show();
+    $('#resignBtn').hide();
 
     // Включаем анализ
     if (!autoAnalyze) {
         toggleAnalysis();
     }
 
-    console.log('🧩 Задача:', currentPuzzle);
+    console.log('🧩 Задача:', currentPuzzle, 'Категория:', category);
 }
 
-// Переопределяем onDrop для режима задач
-const originalOnDropPuzzle = onDrop;
-onDrop = function (source, target) {
-    if (!puzzleMode) {
-
-        return originalOnDropPuzzle(source, target);
-    }
-
-    // В режиме задач
-    const fenBefore = game.fen();
-
-    const move = game.move({
-        from: source,
-        to: target,
-        promotion: 'q'
-    });
-
-    if (move === null) return 'snapback';
-
-    clearAnnotations();
-    updateStatus();
-    updateMovesDisplay();
-
-    // Проверяем правильность хода
-    const expectedMove = currentPuzzle.moves[puzzleIndex];
-    const isCorrect = move.san === expectedMove;
-
-    if (isCorrect) {
-        addChatMessage('system', `✅ Правильно! ${move.san}`);
-        puzzleIndex++;
-
-        // Задача решена?
-        if (puzzleIndex >= currentPuzzle.moves.length) {
-            setTimeout(() => {
-                addChatMessage('system', '🎉 Задача решена!');
-                $('#gameStatus').html('🎉 Задача решена!');
-                puzzleMode = false;
-
-                setTimeout(() => {
-                    if (confirm('Задача решена! Попробовать другую?')) {
-                        startPuzzle();
-                    }
-                }, 500);
-            }, 500);
-        } else {
-            // Следующий ход компьютера
-            setTimeout(() => {
-                const nextMove = currentPuzzle.moves[puzzleIndex];
-                const compMove = game.move(nextMove);
-                if (compMove) {
-                    board.position(game.fen());
-                    updateStatus();
-                    updateMovesDisplay();
-                    addChatMessage('system', `🤖 ${compMove.san}`);
-                    puzzleIndex++;
-                }
-            }, 500);
-        }
-    } else {
-        // Неправильный ход
-        game.undo();
-        board.position(game.fen());
-        addChatMessage('system', `❌ Неправильно. Попробуйте ещё раз.`);
-        addChatMessage('system', `💡 Подсказка: Ищите форсированный вариант`);
-    }
-
-    if (autoAnalyze) {
-        setTimeout(() => analyzeMadeMove(move, fenBefore), 100);
-    }
-};
-
-console.log('✅ Модуль задач загружен!');
-
-
-// ===== ПОДСКАЗКИ =====
-
-function showHint() {
-    if (!puzzleMode || !currentPuzzle) {
-        addChatMessage('system', '⚠️ Подсказки доступны только в режиме задач');
-        return;
-    }
-
-    if (puzzleIndex >= currentPuzzle.moves.length) {
-        addChatMessage('system', '✅ Задача уже решена!');
-        return;
-    }
-
-    const nextMove = currentPuzzle.moves[puzzleIndex];
-
-    // Парсим ход
-    const tempGame = new Chess(game.fen());
-    const moveObj = tempGame.move(nextMove);
-
-    if (moveObj) {
-        // Подсвечиваем клетки
-        clearHighlights();
-
-        const $from = $(`[data-square="${moveObj.from}"]`);
-        const $to = $(`[data-square="${moveObj.to}"]`);
-
-        $from.addClass('hint-from');
-        $to.addClass('hint-to');
-
-        // Добавляем стрелку
-        $to.append('<div class="hint-arrow">→</div>');
-
-        addChatMessage('system', `💡 Подсказка: ${moveObj.san}`);
-
-        // Убираем подсветку через 3 секунды
-        setTimeout(() => {
-            $('.hint-from').removeClass('hint-from');
-            $('.hint-to').removeClass('hint-to');
-            $('.hint-arrow').remove();
-        }, 3000);
-    }
-}
-
-// Инициализация кнопки подсказки
-$(document).ready(function () {
-    $('#hintBtn').on('click', showHint);
-
-    // Показываем кнопку подсказки в режиме задач
-    const originalStartPuzzle = startPuzzle;
-    startPuzzle = function () {
-        originalStartPuzzle();
-        $('#hintBtn').show();
-        $('#resignBtn').hide();
-    };
-
-    // Скрываем при сбросе
-    const originalResetGame = resetGame;
-    resetGame = function () {
-        originalResetGame();
-        $('#hintBtn').hide();
-        puzzleMode = false;
-    };
-});
+console.log('🧩 Система задач загружена');

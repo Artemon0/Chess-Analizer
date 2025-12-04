@@ -1,0 +1,37 @@
+<svg width="150" height="180" viewBox="0 0 100 120" xmlns="http://www.w3.org/2000/svg">
+  
+  <defs>
+    <linearGradient id="splitKingClassic" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="50%" stop-color="white"/>
+      <stop offset="50%" stop-color="black"/>
+    </linearGradient>
+
+    <path id="classic-body" 
+      d="M 50 20 L 60 40 V 80 A 15 15 0 0 0 50 95 A 15 15 0 0 0 40 80 V 40 Z" 
+    />
+    
+    <path id="classic-collar" 
+      d="M 35 40 C 40 35, 60 35, 65 40 L 65 45 H 35 Z" 
+    />
+    
+    <rect id="classic-cross-v" x="48" y="0" width="4" height="25" />
+    <rect id="classic-cross-h" x="40" y="8" width="20" height="4" />
+    
+    <path id="classic-base" 
+      d="M 30 95 H 70 L 65 110 H 35 Z" 
+    />
+  </defs>
+
+  <g fill="url(#splitKingClassic)" stroke="black" stroke-width="1.5">
+    
+    <use href="#classic-base" />
+    
+    <use href="#classic-body" />
+
+    <use href="#classic-collar" />
+
+    <use href="#classic-cross-v" />
+    <use href="#classic-cross-h" />
+    
+  </g>
+</svg>

@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>♟️ Chess Multiplayer + Analysis</title>
+    <link rel="icon" type="image/svg+xml" href="icon.svg">
     <link rel="stylesheet" href="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.css">
     <link rel="stylesheet" href="multiplayer.css">
 </head>
@@ -104,7 +105,20 @@
                     <button id="createGameBtn" class="btn btn-primary" data-i18n="createGame">🎮 Создать игру</button>
                     <button id="joinGameBtn" class="btn btn-success" data-i18n="joinGame">🔗 Присоединиться</button>
                     <button id="playBotBtn" class="btn btn-bot" data-i18n="playBot">🤖 Играть с ботом</button>
-                    <button id="puzzleBtn" class="btn btn-puzzle" data-i18n="puzzles">🧩 Задачи</button>
+                    
+                    <!-- Выпадающее меню задач -->
+                    <div class="puzzle-dropdown">
+                        <button id="puzzleBtn" class="btn btn-puzzle" data-i18n="puzzles">🧩 Задачи ▼</button>
+                        <div id="puzzleMenu" class="puzzle-menu hidden">
+                            <button class="puzzle-category" data-category="mate1" data-i18n="mate1">⚡ Мат в 1 ход</button>
+                            <button class="puzzle-category" data-category="mate2" data-i18n="mate2">🎯 Мат в 2 хода</button>
+                            <button class="puzzle-category" data-category="mate3" data-i18n="mate3">🔥 Мат в 3 хода</button>
+                            <button class="puzzle-category" data-category="tactics" data-i18n="tactics">⭐ Тактика</button>
+                            <button class="puzzle-category" data-category="endgame" data-i18n="endgame">👑 Эндшпиль</button>
+                            <button class="puzzle-category" data-category="famous" data-i18n="famous">🏆 Знаменитые партии</button>
+                        </div>
+                    </div>
+                    
                     <button id="hintBtn" class="btn btn-info" style="display:none;" data-i18n="hint">💡 Подсказка</button>
                     <button id="clearBtn" class="btn btn-secondary" data-i18n="clear">🗑️ Очистить</button>
                     <button id="analyzeBtn" class="btn btn-warning" data-i18n="analyzeOff">🔍 Анализ ВЫКЛ</button>
