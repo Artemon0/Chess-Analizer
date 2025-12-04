@@ -20,11 +20,12 @@ body {
 
 .header {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
-    gap: 20px;
+    padding: 0 20px;
     margin: 20px 0 10px 0;
     flex-wrap: wrap;
+    gap: 15px;
 }
 
 h1 {
@@ -1549,6 +1550,7 @@ body[data-theme="light"] #chatInput {
     display: flex;
     align-items: center;
     gap: 15px;
+    margin-left: auto;
 }
 
 .btn-login {
@@ -1696,9 +1698,16 @@ body[data-theme="light"] #chatInput {
 }
 
 @media (max-width: 768px) {
-    .header-controls {
+    .header {
         flex-direction: column;
-        gap: 10px;
+        text-align: center;
+        padding: 0 10px;
+    }
+
+    .header-controls {
+        width: 100%;
+        justify-content: center;
+        margin-left: 0;
     }
 
     .modal-content {
