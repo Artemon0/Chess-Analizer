@@ -340,26 +340,26 @@ function initControls() {
         const passwordConfirm = $('#registerPasswordConfirm').val();
 
         if (!username || !password) {
-            alert('Заполните все поля');
+            alert(t('fillAllFields'));
             return;
         }
 
         if (password !== passwordConfirm) {
-            alert('Пароли не совпадают');
+            alert(t('passwordMismatch'));
             return;
         }
 
         if (username.length < 3) {
-            alert('Имя пользователя должно быть не менее 3 символов');
+            alert(t('usernameShort'));
             return;
         }
 
         if (password.length < 6) {
-            alert('Пароль должен быть не менее 6 символов');
+            alert(t('passwordShort'));
             return;
         }
 
-        $btn.prop('disabled', true).text('Регистрация...');
+        $btn.prop('disabled', true).text(t('registering'));
 
         try {
             const DB = useFirebase ? UserDB : LocalUserDB;
@@ -367,7 +367,7 @@ function initControls() {
 
             if (!result.success) {
                 alert(result.error);
-                $btn.prop('disabled', false).text('Зарегистрироваться');
+                $btn.prop('disabled', false).text(t('registerBtn'));
                 return;
             }
 
@@ -389,7 +389,7 @@ function initControls() {
             console.error('Ошибка регистрации:', error);
             alert('Ошибка регистрации: ' + error.message);
         } finally {
-            $btn.prop('disabled', false).text('Зарегистрироваться');
+            $btn.prop('disabled', false).text(t('registerBtn'));
         }
     });
 
@@ -400,11 +400,11 @@ function initControls() {
         const password = $('#loginPassword').val();
 
         if (!username || !password) {
-            alert('Заполните все поля');
+            alert(t('fillAllFields'));
             return;
         }
 
-        $btn.prop('disabled', true).text('Вход...');
+        $btn.prop('disabled', true).text(t('loggingIn'));
 
         try {
             const DB = useFirebase ? UserDB : LocalUserDB;
@@ -412,7 +412,7 @@ function initControls() {
 
             if (!result.success) {
                 alert(result.error);
-                $btn.prop('disabled', false).text('Войти');
+                $btn.prop('disabled', false).text(t('loginBtn'));
                 return;
             }
 
@@ -433,7 +433,7 @@ function initControls() {
             console.error('Ошибка входа:', error);
             alert('Ошибка входа: ' + error.message);
         } finally {
-            $btn.prop('disabled', false).text('Войти');
+            $btn.prop('disabled', false).text(t('loginBtn'));
         }
     });
 

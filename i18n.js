@@ -434,10 +434,14 @@ const translations = {
 // Текущий язык
 let currentLanguage = localStorage.getItem('chessLanguage') || 'ru';
 
-// Функция перевода
-function t(key) {
+// Функция перевода (глобальная)
+window.t = function (key) {
+    if (!translations || !currentLanguage || !translations[currentLanguage]) {
+        console.warn('i18n not ready, returning key:', key);
+        return key;
+    }
     return translations[currentLanguage][key] || key;
-}
+};
 
 // Смена языка
 function setLanguage(lang) {
@@ -546,13 +550,15 @@ function updateChatMessages() {
     });
 }
 
-// Инициализация при загрузке
-$(document).ready(function () {
+// Инициализация при загрузке (выполняется первой)
+$(function () {
     // Устанавливаем активную кнопку языка
     $('.lang-btn').removeClass('active');
     $(`.lang-btn[data-lang="${currentLanguage}"]`).addClass('active');
 
     updateTranslations();
+
+    console.log('🌐 Язык установлен:', currentLanguage);
 });
 
 console.log('🌐 Система многоязычности загружена');
