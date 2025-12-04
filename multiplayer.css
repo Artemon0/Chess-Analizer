@@ -1622,23 +1622,23 @@ body[data-theme="light"] #chatInput {
 }
 
 .auth-tabs {
-    display: flex;
-    gap: 12px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
     margin-bottom: 25px;
 }
 
 .auth-tab {
-    flex: 1;
-    padding: 12px;
+    padding: 14px 20px;
     background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 6px;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
     color: #a0a0a0;
-    font-size: 14px;
-    font-weight: 500;
+    font-size: 15px;
+    font-weight: 600;
     cursor: pointer;
     transition: all 0.2s;
-    white-space: nowrap;
+    text-align: center;
 }
 
 .auth-tab:hover {
@@ -1649,6 +1649,8 @@ body[data-theme="light"] #chatInput {
     background: #759656;
     border-color: #759656;
     color: white;
+    box-shadow: 0 4px 12px rgba(117, 150, 86, 0.3);
+    transform: translateY(-2px);
 }
 
 .auth-form {

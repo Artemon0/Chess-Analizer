@@ -27,7 +27,19 @@ let isOnlineGame = false;
 $(document).ready(function () {
     initBoard();
     initControls();
+    loadUser();
+
+    // Проверяем статус Firebase
+    setTimeout(() => {
+        if (useFirebase) {
+            addChatMessage('system', '☁️ Синхронизация с облаком включена');
+        } else {
+            addChatMessage('system', '💾 Данные сохраняются локально');
+        }
+    }, 1000);
+
     console.log('✅ Multiplayer готов');
+    console.log('✅ Система аккаунтов готова!');
 });
 
 // ===== ДОСКА =====
@@ -294,6 +306,135 @@ function initControls() {
         selectedTimeControl = parseInt($(this).data('time'));
         unlimitedTime = selectedTimeControl === 0;
         console.log('Выбран контроль времени:', selectedTimeControl === 0 ? 'Без времени' : selectedTimeControl + ' сек');
+    });
+
+    // Переключение вкладок в модальном окне входа
+    $('.auth-tab').on('click', function () {
+        const tab = $(this).data('tab');
+        $('.auth-tab').removeClass('active');
+        $(this).addClass('active');
+
+        if (tab === 'login') {
+            $('#loginTab').removeClass('hidden');
+            $('#registerTab').addClass('hidden');
+        } else {
+            $('#loginTab').addClass('hidden');
+            $('#registerTab').removeClass('hidden');
+        }
+    });
+
+    // Регистрация
+    $('#registerSubmit').on('click', async function () {
+        const $btn = $(this);
+        const username = $('#registerUsername').val().trim();
+        const password = $('#registerPassword').val();
+        const passwordConfirm = $('#registerPasswordConfirm').val();
+
+        if (!username || !password) {
+            alert('Заполните все поля');
+            return;
+        }
+
+        if (password !== passwordConfirm) {
+            alert('Пароли не совпадают');
+            return;
+        }
+
+        if (username.length < 3) {
+            alert('Имя пользователя должно быть не менее 3 символов');
+            return;
+        }
+
+        if (password.length < 6) {
+            alert('Пароль должен быть не менее 6 символов');
+            return;
+        }
+
+        $btn.prop('disabled', true).text('Регистрация...');
+
+        try {
+            const DB = useFirebase ? UserDB : LocalUserDB;
+            const result = await DB.register(username, password);
+
+            if (!result.success) {
+                alert(result.error);
+                $btn.prop('disabled', false).text('Зарегистрироваться');
+                return;
+            }
+
+            currentUser = {
+                username: username,
+                stats: result.user.stats
+            };
+
+            updateUserUI();
+            $('#loginModal').addClass('hidden');
+
+            $('#registerUsername').val('');
+            $('#registerPassword').val('');
+            $('#registerPasswordConfirm').val('');
+
+            addChatMessage('system', `✅ Добро пожаловать, ${username}!`);
+            console.log('✅ Регистрация успешна:', currentUser);
+        } catch (error) {
+            console.error('Ошибка регистрации:', error);
+            alert('Ошибка регистрации: ' + error.message);
+        } finally {
+            $btn.prop('disabled', false).text('Зарегистрироваться');
+        }
+    });
+
+    // Вход
+    $('#loginSubmit').on('click', async function () {
+        const $btn = $(this);
+        const username = $('#loginUsername').val().trim();
+        const password = $('#loginPassword').val();
+
+        if (!username || !password) {
+            alert('Заполните все поля');
+            return;
+        }
+
+        $btn.prop('disabled', true).text('Вход...');
+
+        try {
+            const DB = useFirebase ? UserDB : LocalUserDB;
+            const result = await DB.login(username, password);
+
+            if (!result.success) {
+                alert(result.error);
+                $btn.prop('disabled', false).text('Войти');
+                return;
+            }
+
+            currentUser = {
+                username: username,
+                stats: result.user.stats
+            };
+
+            updateUserUI();
+            $('#loginModal').addClass('hidden');
+
+            $('#loginUsername').val('');
+            $('#loginPassword').val('');
+
+            addChatMessage('system', `✅ С возвращением, ${username}!`);
+            console.log('✅ Вход успешен:', currentUser);
+        } catch (error) {
+            console.error('Ошибка входа:', error);
+            alert('Ошибка входа: ' + error.message);
+        } finally {
+            $btn.prop('disabled', false).text('Войти');
+        }
+    });
+
+    // Выход
+    $('#logoutBtn').on('click', function () {
+        currentUser = null;
+        localStorage.removeItem('chessUser');
+        updateUserUI();
+        $('#loginModal').addClass('hidden');
+        addChatMessage('system', '👋 Вы вышли из аккаунта');
     });
 }
 
@@ -1744,156 +1885,3 @@ $(window).on('click', function (e) {
         $('#loginModal').addClass('hidden');
     }
 });
-
-// Переключение вкладок
-$('.auth-tab').on('click', function () {
-    const tab = $(this).data('tab');
-    $('.auth-tab').removeClass('active');
-    $(this).addClass('active');
-
-    if (tab === 'login') {
-        $('#loginTab').removeClass('hidden');
-        $('#registerTab').addClass('hidden');
-    } else {
-        $('#loginTab').addClass('hidden');
-        $('#registerTab').removeClass('hidden');
-    }
-});
-
-// Регистрация
-$('#registerSubmit').on('click', async function () {
-    const $btn = $(this);
-    const username = $('#registerUsername').val().trim();
-    const password = $('#registerPassword').val();
-    const passwordConfirm = $('#registerPasswordConfirm').val();
-
-    if (!username || !password) {
-        alert('Заполните все поля');
-        return;
-    }
-
-    if (password !== passwordConfirm) {
-        alert('Пароли не совпадают');
-        return;
-    }
-
-    if (username.length < 3) {
-        alert('Имя пользователя должно быть не менее 3 символов');
-        return;
-    }
-
-    if (password.length < 6) {
-        alert('Пароль должен быть не менее 6 символов');
-        return;
-    }
-
-    // Показываем загрузку
-    $btn.prop('disabled', true).text('Регистрация...');
-
-    try {
-        // Используем Firebase или localStorage
-        const DB = useFirebase ? UserDB : LocalUserDB;
-        const result = await DB.register(username, password);
-
-        if (!result.success) {
-            alert(result.error);
-            $btn.prop('disabled', false).text('Зарегистрироваться');
-            return;
-        }
-
-        currentUser = {
-            username: username,
-            stats: result.user.stats
-        };
-
-        updateUserUI();
-        $('#loginModal').addClass('hidden');
-
-        // Очищаем поля
-        $('#registerUsername').val('');
-        $('#registerPassword').val('');
-        $('#registerPasswordConfirm').val('');
-
-        addChatMessage('system', `✅ Добро пожаловать, ${username}!`);
-
-        console.log('✅ Регистрация успешна:', currentUser);
-    } catch (error) {
-        console.error('Ошибка регистрации:', error);
-        alert('Ошибка регистрации: ' + error.message);
-    } finally {
-        $btn.prop('disabled', false).text('Зарегистрироваться');
-    }
-});
-
-// Вход
-$('#loginSubmit').on('click', async function () {
-    const $btn = $(this);
-    const username = $('#loginUsername').val().trim();
-    const password = $('#loginPassword').val();
-
-    if (!username || !password) {
-        alert('Заполните все поля');
-        return;
-    }
-
-    // Показываем загрузку
-    $btn.prop('disabled', true).text('Вход...');
-
-    try {
-        // Используем Firebase или localStorage
-        const DB = useFirebase ? UserDB : LocalUserDB;
-        const result = await DB.login(username, password);
-
-        if (!result.success) {
-            alert(result.error);
-            $btn.prop('disabled', false).text('Войти');
-            return;
-        }
-
-        currentUser = {
-            username: username,
-            stats: result.user.stats
-        };
-
-        updateUserUI();
-        $('#loginModal').addClass('hidden');
-
-        // Очищаем поля
-        $('#loginUsername').val('');
-        $('#loginPassword').val('');
-
-        addChatMessage('system', `✅ С возвращением, ${username}!`);
-
-        console.log('✅ Вход успешен:', currentUser);
-    } catch (error) {
-        console.error('Ошибка входа:', error);
-        alert('Ошибка входа: ' + error.message);
-    } finally {
-        $btn.prop('disabled', false).text('Войти');
-    }
-});
-
-// Выход
-$('#logoutBtn').on('click', function () {
-    currentUser = null;
-    localStorage.removeItem('chessUser');
-    updateUserUI();
-    $('#loginModal').addClass('hidden');
-    addChatMessage('system', '👋 Вы вышли из аккаунта');
-});
-
-// Загружаем пользователя при старте
-$(document).ready(function () {
-    loadUser();
-
-    // Проверяем статус Firebase
-    setTimeout(() => {
-        if (useFirebase) {
-            addChatMessage('system', '☁️ Синхронизация с облаком включена');
-        } else {
-            addChatMessage('system', '💾 Данные сохраняются локально');
-        }
-    }, 1000);
-});
-
-console.log('✅ Система аккаунтов готова!');
