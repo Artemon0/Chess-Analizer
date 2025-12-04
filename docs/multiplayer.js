@@ -216,11 +216,11 @@ function getPieceTheme(style) {
         'wikipedia': 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png',
         'alpha': 'https://chessboardjs.com/img/chesspieces/alpha/{piece}.png',
         'uscf': 'https://chessboardjs.com/img/chesspieces/uscf/{piece}.png',
-        'merida': 'https://images.chesscomfiles.com/chess-themes/pieces/neo/150/{piece}.png',
-        'cburnett': 'https://images.chesscomfiles.com/chess-themes/pieces/bases/150/{piece}.png',
-        'cardinal': 'https://images.chesscomfiles.com/chess-themes/pieces/cardinal/150/{piece}.png',
-        'cases': 'https://images.chesscomfiles.com/chess-themes/pieces/cases/150/{piece}.png',
-        'condal': 'https://images.chesscomfiles.com/chess-themes/pieces/condal/150/{piece}.png'
+        'staunty': 'https://github.com/lichess-org/lila/raw/master/public/piece/staunty/{piece}.svg',
+        'pirouetti': 'https://github.com/lichess-org/lila/raw/master/public/piece/pirouetti/{piece}.svg',
+        'chessnut': 'https://github.com/lichess-org/lila/raw/master/public/piece/chessnut/{piece}.svg',
+        'letter': 'https://github.com/lichess-org/lila/raw/master/public/piece/letter/{piece}.svg',
+        'shapes': 'https://github.com/lichess-org/lila/raw/master/public/piece/shapes/{piece}.svg'
     };
     console.log('🎨 Меняем стиль фигур на:', style, '→', themes[style]);
     return themes[style] || themes['wikipedia'];
