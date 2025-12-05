@@ -115,6 +115,10 @@ const translations = {
         'disconnected': 'Отключено',
         'connectionError': 'Ошибка подключения',
         'connectionFailed': 'Не удалось подключиться',
+        'connectionClosed': 'Соединение закрыто',
+        'opponentDisconnected': 'Противник отключился',
+        'playerNotFound': 'Игрок не найден',
+        'reconnecting': 'Переподключение...',
 
         // Диалоги
         'confirmResign': 'Вы уверены что хотите сдаться?',
@@ -123,7 +127,8 @@ const translations = {
         'copyLink': '📋 Копировать',
 
         // Настройки
-        'settings': '⚙️ Настройки',
+        'settings': 'Настройки',
+        'flipBoard': 'Перевернуть доску',
         'pieceStyle': 'Стиль фигур',
         'boardColor': 'Цвет доски',
         'classic': 'Классика',
@@ -159,6 +164,7 @@ const translations = {
 
         // Редактор доски
         'boardEditor': '✏️ Редактор доски',
+        'invalidPosition': 'Невалидная позиция! Убедитесь что у каждой стороны есть король.',
         'setupPosition': 'Расставить позицию',
         'clearBoard': 'Очистить доску',
         'startPosition': 'Начальная позиция',
@@ -180,6 +186,21 @@ const translations = {
         'success': 'Успех!',
         'mateIn': 'Мат в',
         'moves': 'ходов',
+
+        // Дополнительные элементы интерфейса
+        'copied': 'Скопировано!',
+        'copyLink': 'Копировать ссылку',
+        'share': 'Поделиться',
+        'chessGame': 'Шахматная партия',
+        'linkShared': 'Ссылка отправлена',
+        'cancelled': 'Отмена',
+        'shareUnavailable': 'Функция "Поделиться" недоступна. Используйте кнопку "Копировать".',
+        'copyFailed': 'Не удалось скопировать. Выделите текст и нажмите Ctrl+C',
+        'fullscreenMode': 'Полноэкранный режим',
+        'exitFullscreen': 'Выход из полноэкранного режима',
+        'gameAlreadyCreated': 'Игра уже создана',
+        'alreadyInGame': 'Уже в игре',
+        'serverConnectionFailed': 'Не удалось подключиться к серверу. Убедитесь, что сервер запущен.',
 
         // Ответы бота в чате
         'botHello': 'Привет!',
@@ -337,6 +358,10 @@ const translations = {
         'disconnected': 'Disconnected',
         'connectionError': 'Connection error',
         'connectionFailed': 'Connection failed',
+        'connectionClosed': 'Connection closed',
+        'opponentDisconnected': 'Opponent disconnected',
+        'playerNotFound': 'Player not found',
+        'reconnecting': 'Reconnecting...',
 
         // Dialogs
         'confirmResign': 'Are you sure you want to resign?',
@@ -345,7 +370,8 @@ const translations = {
         'copyLink': '📋 Copy',
 
         // Settings
-        'settings': '⚙️ Settings',
+        'settings': 'Settings',
+        'flipBoard': 'Flip Board',
         'pieceStyle': 'Piece Style',
         'boardColor': 'Board Color',
         'classic': 'Classic',
@@ -381,6 +407,7 @@ const translations = {
 
         // Board Editor
         'boardEditor': '✏️ Board Editor',
+        'invalidPosition': 'Invalid position! Make sure each side has a king.',
         'setupPosition': 'Setup Position',
         'clearBoard': 'Clear Board',
         'startPosition': 'Starting Position',
@@ -402,6 +429,21 @@ const translations = {
         'success': 'Success!',
         'mateIn': 'Mate in',
         'moves': 'moves',
+
+        // Additional UI elements
+        'copied': 'Copied!',
+        'copyLink': 'Copy Link',
+        'share': 'Share',
+        'chessGame': 'Chess Game',
+        'linkShared': 'Link shared',
+        'cancelled': 'Cancelled',
+        'shareUnavailable': 'Share function unavailable. Use the "Copy" button.',
+        'copyFailed': 'Failed to copy. Select text and press Ctrl+C',
+        'fullscreenMode': 'Fullscreen Mode',
+        'exitFullscreen': 'Exit Fullscreen',
+        'gameAlreadyCreated': 'Game already created',
+        'alreadyInGame': 'Already in game',
+        'serverConnectionFailed': 'Failed to connect to server. Make sure the server is running.',
 
         // Bot chat responses
         'botHello': 'Hello!',
@@ -559,6 +601,10 @@ const translations = {
         'disconnected': 'Відключено',
         'connectionError': 'Помилка підключення',
         'connectionFailed': 'Не вдалося підключитися',
+        'connectionClosed': 'З\'єднання закрито',
+        'opponentDisconnected': 'Суперник відключився',
+        'playerNotFound': 'Гравця не знайдено',
+        'reconnecting': 'Перепідключення...',
 
         // Діалоги
         'confirmResign': 'Ви впевнені, що хочете здатися?',
@@ -567,7 +613,8 @@ const translations = {
         'copyLink': '📋 Копіювати',
 
         // Налаштування
-        'settings': '⚙️ Налаштування',
+        'settings': 'Налаштування',
+        'flipBoard': 'Перевернути дошку',
         'pieceStyle': 'Стиль фігур',
         'boardColor': 'Колір дошки',
         'classic': 'Класика',
@@ -603,6 +650,7 @@ const translations = {
 
         // Редактор дошки
         'boardEditor': '✏️ Редактор дошки',
+        'invalidPosition': 'Невалідна позиція! Переконайтеся, що у кожної сторони є король.',
         'setupPosition': 'Розставити позицію',
         'clearBoard': 'Очистити дошку',
         'startPosition': 'Початкова позиція',
@@ -624,6 +672,21 @@ const translations = {
         'success': 'Успіх!',
         'mateIn': 'Мат в',
         'moves': 'ходів',
+
+        // Додаткові елементи інтерфейсу
+        'copied': 'Скопійовано!',
+        'copyLink': 'Копіювати посилання',
+        'share': 'Поділитися',
+        'chessGame': 'Шахова партія',
+        'linkShared': 'Посилання надіслано',
+        'cancelled': 'Скасовано',
+        'shareUnavailable': 'Функція "Поділитися" недоступна. Використовуйте кнопку "Копіювати".',
+        'copyFailed': 'Не вдалося скопіювати. Виділіть текст і натисніть Ctrl+C',
+        'fullscreenMode': 'Повноекранний режим',
+        'exitFullscreen': 'Вихід з повноекранного режиму',
+        'gameAlreadyCreated': 'Гру вже створено',
+        'alreadyInGame': 'Вже в грі',
+        'serverConnectionFailed': 'Не вдалося підключитися до сервера. Переконайтеся, що сервер запущено.',
 
         // Відповіді бота в чаті
         'botHello': 'Привіт!',

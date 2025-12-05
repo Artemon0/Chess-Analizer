@@ -1,5 +1,20 @@
 // ===== LICHESS MULTIPLAYER + REAL-TIME ANALYSIS =====
 
+// Конфигурация для разных платформ
+const WEB_URL = 'https://artemon0.github.io/Chess-Analizer'; // Замените на ваш URL
+
+// Функция для получения правильного URL для шаринга
+function getShareableUrl(gameId, fen = null) {
+    // Если это Electron (file:// протокол), используем веб-версию
+    if (window.location.protocol === 'file:') {
+        const params = fen ? `?game=${gameId}&fen=${encodeURIComponent(fen)}` : `?game=${gameId}`;
+        return `${WEB_URL}${params}`;
+    }
+    // Иначе используем текущий URL
+    const params = fen ? `?game=${gameId}&fen=${encodeURIComponent(fen)}` : `?game=${gameId}`;
+    return `${window.location.origin}${window.location.pathname}${params}`;
+}
+
 let board = null;
 let game = new Chess();
 let gameId = null;
@@ -336,7 +351,7 @@ function initControls() {
         $(this).addClass('active');
         selectedTimeControl = parseInt($(this).data('time'));
         unlimitedTime = selectedTimeControl === 0;
-        console.log('Выбран контроль времени:', selectedTimeControl === 0 ? 'Без времени' : selectedTimeControl + ' сек');
+        console.log('Выбран контроль времени:', selectedTimeControl === 0 ? t('unlimited') : selectedTimeControl + ' сек');
     });
 
     // Переключение вкладок в модальном окне входа
@@ -554,7 +569,7 @@ function createGame() {
     gameId = 'game_' + Math.random().toString(36).substr(2, 9);
     myColor = 'white';
 
-    const gameUrl = `${window.location.origin}${window.location.pathname}?game=${gameId}`;
+    const gameUrl = getShareableUrl(gameId);
 
     $('#gameStatus').html(t('gameCreated'));
     $('#gameLink').removeClass('hidden').html(`
@@ -563,7 +578,7 @@ function createGame() {
         <button onclick="navigator.clipboard.writeText('${gameUrl}')" class="btn" style="margin-top:10px;">${t('copyLink')}</button>
     `);
 
-    $('#whitePlayer').text('Вы');
+    $('#whitePlayer').text(t('you'));
     $('#blackPlayer').text(t('waiting'));
 
     // Симуляция подключения противника через 3 секунды
@@ -1272,7 +1287,7 @@ function toggleFullscreen() {
         // Выход из полноэкранного режима
         $boardSection.removeClass('fullscreen');
         $btn.text('⛶');
-        $btn.attr('title', 'Полноэкранный режим');
+        $btn.attr('title', t('fullscreenMode'));
 
         // Выход из браузерного fullscreen
         if (document.exitFullscreen) {
@@ -1288,7 +1303,7 @@ function toggleFullscreen() {
         // Вход в полноэкранный режим
         $boardSection.addClass('fullscreen');
         $btn.text('✕');
-        $btn.attr('title', 'Выход из полноэкранного режима');
+        $btn.attr('title', t('exitFullscreen'));
 
         // Браузерный fullscreen
         const elem = document.documentElement;
@@ -1322,7 +1337,7 @@ $(document).on('fullscreenchange webkitfullscreenchange mozfullscreenchange msfu
         !document.mozFullScreenElement && !document.msFullscreenElement) {
         if ($('.board-section').hasClass('fullscreen')) {
             $('.board-section').removeClass('fullscreen');
-            $('#fullscreenBtn').text('⛶').attr('title', 'Полноэкранный режим');
+            $('#fullscreenBtn').text('⛶').attr('title', t('fullscreenMode'));
             setTimeout(() => board.resize(), 100);
         }
     }
@@ -1399,10 +1414,10 @@ async function makeBotMove() {
             // Случайные сообщения от бота (реже и умнее)
             if (Math.random() < 0.15) { // 15% шанс
                 const botMessages = [
-                    'Интересный ход!',
-                    'Хм...',
-                    'Неплохо',
-                    'Не ожидал',
+                    t('botInteresting'),
+                    t('botHmm'),
+                    t('botNotBad'),
+                    t('botInteresting'),
                     t('excellent'),
                     t('botThinking'),
                     t('analyzing'),
@@ -1530,21 +1545,6 @@ async function gameOver(message) {
 
 // ===== УЛУЧШЕННЫЕ АННОТАЦИИ =====
 
-// Переопределяем onDrop для добавления таймера и бота
-const originalOnDrop = onDrop;
-onDrop = function (source, target) {
-    const result = originalOnDrop(source, target);
-
-    if (result !== 'snapback') {
-        // Ход сделан успешно
-        if (playingWithBot && game.turn() === 'b') {
-            makeBotMove();
-        }
-    }
-
-    return result;
-};
-
 console.log('✅ Бот, таймер и аннотации готовы!');
 
 
@@ -1618,14 +1618,14 @@ function handleGameCreated(data) {
     myColor = data.color;
     isOnlineGame = true;
 
-    const gameUrl = `${window.location.origin}${window.location.pathname}?game=${gameId}`;
-    const timeText = unlimitedTime ? 'Без времени' : formatTime(selectedTimeControl);
+    const gameUrl = getShareableUrl(gameId);
+    const timeText = unlimitedTime ? t('unlimited') : formatTime(selectedTimeControl);
 
     $('#gameStatus').html(`${t('gameCreated')} (${timeText})`);
     showGameLink(gameUrl);
 
-    $('#whitePlayer').text('Вы');
-    $('#blackPlayer').text('Ожидание...');
+    $('#whitePlayer').text(t('you'));
+    $('#blackPlayer').text(t('waiting'));
 
     console.log('🎮 Игра создана:', gameId);
 }
@@ -1690,7 +1690,7 @@ const originalCreateGame = createGame;
 createGame = function () {
     // Предотвращаем повторное создание игры
     if (gameId && isOnlineGame) {
-        console.log('⚠️ Игра уже создана');
+        console.log('⚠️', t('gameAlreadyCreated'));
         return;
     }
 
@@ -1703,7 +1703,7 @@ createGame = function () {
                     timeControl: selectedTimeControl
                 }));
             } else {
-                alert('Не удалось подключиться к серверу. Убедитесь, что сервер запущен.');
+                alert(t('serverConnectionFailed'));
             }
         }, 1000);
     } else {
@@ -1719,7 +1719,7 @@ const originalJoinGame = joinGame;
 joinGame = function () {
     // Предотвращаем повторное присоединение
     if (gameId && isOnlineGame) {
-        console.log('⚠️ Уже в игре');
+        console.log('⚠️', t('alreadyInGame'));
         return;
     }
 
@@ -1794,8 +1794,8 @@ function showGameLink(gameUrl) {
         <p style="margin-bottom:10px;font-weight:bold;">📤 ${t('sendLink')}</p>
         <input type="text" id="gameUrlInput" value="${gameUrl}" readonly 
                style="width:100%;padding:12px;margin:10px 0;border:2px solid #2196F3;border-radius:5px;font-size:14px;font-family:monospace;">
-        <button id="copyLinkBtn" class="btn" style="width:100%;background:#2196F3;">📋 Копировать ссылку</button>
-        <button id="shareLinkBtn" class="btn" style="width:100%;margin-top:10px;background:#4CAF50;">📱 Поделиться</button>
+        <button id="copyLinkBtn" class="btn" style="width:100%;background:#2196F3;">📋 ${t('copyLink')}</button>
+        <button id="shareLinkBtn" class="btn" style="width:100%;margin-top:10px;background:#4CAF50;">📱 ${t('share')}</button>
     `);
 
     $('#gameLink').removeClass('hidden').empty().append($link);
@@ -1807,9 +1807,9 @@ function showGameLink(gameUrl) {
         try {
             // Современный Clipboard API
             await navigator.clipboard.writeText(gameUrl);
-            $btn.text('✅ Скопировано!').css('background', '#4CAF50');
+            $btn.text('✅ ' + t('copied')).css('background', '#4CAF50');
             setTimeout(() => {
-                $btn.text('📋 Копировать ссылку').css('background', '#2196F3');
+                $btn.text('📋 ' + t('copyLink')).css('background', '#2196F3');
             }, 2000);
         } catch (err) {
             // Fallback для старых браузеров
@@ -1820,15 +1820,15 @@ function showGameLink(gameUrl) {
             try {
                 const successful = document.execCommand('copy');
                 if (successful) {
-                    $btn.text('✅ Скопировано!').css('background', '#4CAF50');
+                    $btn.text('✅ ' + t('copied')).css('background', '#4CAF50');
                     setTimeout(() => {
-                        $btn.text('📋 Копировать ссылку').css('background', '#2196F3');
+                        $btn.text('📋 ' + t('copyLink')).css('background', '#2196F3');
                     }, 2000);
                 } else {
                     throw new Error('Copy failed');
                 }
             } catch (e) {
-                alert('Не удалось скопировать. Выделите текст и нажмите Ctrl+C');
+                alert(t('copyFailed'));
             }
         }
     });
@@ -1837,16 +1837,16 @@ function showGameLink(gameUrl) {
     $('#shareLinkBtn').on('click', function () {
         if (navigator.share) {
             navigator.share({
-                title: 'Шахматная партия',
-                text: 'Присоединяйся к игре!',
+                title: t('chessGame'),
+                text: t('joinGame'),
                 url: gameUrl
             }).then(() => {
-                console.log('Ссылка отправлена');
+                console.log(t('linkShared'));
             }).catch((err) => {
-                console.log('Отмена:', err);
+                console.log(t('cancelled'), err);
             });
         } else {
-            alert('Функция "Поделиться" недоступна. Используйте кнопку "Копировать".');
+            alert(t('shareUnavailable'));
         }
     });
 }
@@ -1915,96 +1915,9 @@ function updateUserUI() {
             $('#blackPlayer').text(currentUser.username);
         }
     } else {
-        $('#loginBtn').text('👤 Войти');
+        $('#loginBtn').text('👤 ' + t('login'));
     }
 }
-
-
-
-
-// ===== ВЫБОР СЛОЖНОСТИ БОТА =====
-
-let botDifficulty = 'medium'; // easy, medium, hard
-
-function showBotDifficultyModal() {
-    $('#botDifficultyModal').removeClass('hidden');
-}
-
-$('#botDifficultyModal .close').on('click', function () {
-    $('#botDifficultyModal').addClass('hidden');
-});
-
-$('.btn-difficulty').on('click', function () {
-    botDifficulty = $(this).data('difficulty');
-    $('#botDifficultyModal').addClass('hidden');
-    playWithBot();
-});
-
-// Обновляем функцию makeBotMove для учета сложности
-const originalMakeBotMove = makeBotMove;
-makeBotMove = async function () {
-    if (!playingWithBot || game.turn() !== 'b') return;
-
-    $('#gameStatus').html(t('botThinking'));
-
-    // Сохраняем позицию ДО хода бота
-    const fenBefore = game.fen();
-
-    // Задержка для реалистичности
-    await new Promise(resolve => setTimeout(resolve, 500 + Math.random() * 1000));
-
-    try {
-        // Определяем глубину по сложности
-        let depth;
-        switch (botDifficulty) {
-            case 'easy':
-                depth = Math.floor(Math.random() * 2) + 1; // 1-2
-                break;
-            case 'medium':
-                depth = Math.floor(Math.random() * 2) + 3; // 3-4
-                break;
-            case 'hard':
-                depth = Math.floor(Math.random() * 2) + 5; // 5-6
-                break;
-            default:
-                depth = 3;
-        }
-
-        const bestMove = await getBestMove(game.fen(), depth);
-
-        if (bestMove && !game.game_over()) {
-            const move = game.move(bestMove);
-
-            if (move) {
-                board.position(game.fen());
-                updateStatus();
-                updateMovesDisplay();
-
-                // Анализируем ход бота
-                if (autoAnalyze) {
-                    setTimeout(() => analyzeMadeMove(move, fenBefore), 100);
-                }
-
-                // Случайные комментарии бота
-                if (Math.random() < 0.3) {
-                    const botMessages = [
-                        t('excellent'),
-                        t('botThinking'),
-                        t('analyzing'),
-                        t('botMove')
-                    ];
-                    addChatMessage('opponent', botMessages[Math.floor(Math.random() * botMessages.length)]);
-                }
-            }
-        }
-
-        $('#gameStatus').html(t('yourTurn'));
-
-    } catch (error) {
-        console.error('Ошибка хода бота:', error);
-        $('#gameStatus').html(t('yourTurn'));
-    }
-};
 
 
 // ===== РЕДАКТОР ДОСКИ =====
@@ -2108,7 +2021,7 @@ function playFromEditorPosition(mode) {
     // Проверяем валидность позиции
     const tempGame = new Chess();
     if (!tempGame.load(fen)) {
-        alert('Невалидная позиция! Убедитесь что у каждой стороны есть король.');
+        alert(t('invalidPosition'));
         return;
     }
 
@@ -2198,253 +2111,10 @@ function createGameFromPosition(fen) {
     $('#whitePlayer').text(t('you'));
     $('#blackPlayer').text(t('waiting'));
 
-    const gameUrl = `${window.location.origin}${window.location.pathname}?game=${gameId}&fen=${encodeURIComponent(fen)}`;
+    const gameUrl = getShareableUrl(gameId, fen);
     showGameLink(gameUrl);
 }
 
-
-// ===== ВЫБОР СЛОЖНОСТИ БОТА =====
-
-let botDifficulty = 'medium'; // easy, medium, hard
-
-function showBotDifficultyModal() {
-    $('#botDifficultyModal').removeClass('hidden');
-}
-
-// Обработчики выбора сложности
-$('.btn-difficulty').on('click', function () {
-    botDifficulty = $(this).data('difficulty');
-    $('#botDifficultyModal').addClass('hidden');
-    playWithBot();
-});
-
-// Обновляем функцию makeBotMove для учета сложности
-const originalMakeBotMove = makeBotMove;
-makeBotMove = async function () {
-    if (!playingWithBot || game.turn() !== 'b') return;
-
-    $('#gameStatus').html(t('botThinking'));
-
-    // Сохраняем позицию ДО хода бота
-    const fenBefore = game.fen();
-
-    try {
-        // Устанавливаем глубину в зависимости от сложности
-        let depth;
-        switch (botDifficulty) {
-            case 'easy':
-                depth = Math.floor(Math.random() * 2) + 1; // 1-2
-                break;
-            case 'medium':
-                depth = Math.floor(Math.random() * 2) + 3; // 3-4
-                break;
-            case 'hard':
-                depth = Math.floor(Math.random() * 2) + 5; // 5-6
-                break;
-            default:
-                depth = 3;
-        }
-
-        stockfish.postMessage(`position fen ${game.fen()}`);
-        stockfish.postMessage(`go depth ${depth}`);
-
-        await new Promise((resolve) => {
-            const handler = (event) => {
-                const message = event.data || event;
-                if (typeof message === 'string' && message.startsWith('bestmove')) {
-                    stockfish.removeEventListener('message', handler);
-                    resolve(message);
-                }
-            };
-            stockfish.addEventListener('message', handler);
-        }).then((message) => {
-            const bestMove = message.split(' ')[1];
-            const move = game.move({
-                from: bestMove.substring(0, 2),
-                to: bestMove.substring(2, 4),
-                promotion: bestMove[4] || 'q'
-            });
-
-            if (move) {
-                board.position(game.fen());
-                updateStatus();
-                updateMovesDisplay();
-
-                // Анализируем ход бота
-                if (autoAnalyze) {
-                    setTimeout(() => analyzeMadeMove(move, fenBefore), 100);
-                }
-
-                // Случайные комментарии бота
-                if (Math.random() < 0.3) {
-                    const botMessages = [
-                        t('excellent'),
-                        t('botThinking'),
-                        t('analyzing'),
-                        t('botMove')
-                    ];
-                    addChatMessage('opponent', botMessages[Math.floor(Math.random() * botMessages.length)]);
-                }
-            }
-
-            $('#gameStatus').html(t('yourTurn'));
-        });
-    } catch (error) {
-        console.error('Ошибка хода бота:', error);
-        $('#gameStatus').html(t('yourTurn'));
-    }
-};
-
-// ===== РЕДАКТОР ДОСКИ =====
-
-let editorMode = false;
-let editorSelectedPiece = null;
-let editorTurn = 'w'; // w или b
-let editorBoard = null;
-
-function showBoardEditor() {
-    editorMode = true;
-    $('#boardEditorModal').removeClass('hidden');
-
-    // Создаем отдельную доску для редактора
-    if (!editorBoard) {
-        editorBoard = Chessboard('board', {
-            draggable: false,
-            position: 'start',
-            pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png'
-        });
-    }
-
-    // Включаем режим редактирования
-    setupEditorHandlers();
-}
-
-function setupEditorHandlers() {
-    // Выбор фигуры для размещения
-    $('.piece-btn').off('click').on('click', function () {
-        $('.piece-btn').removeClass('active');
-        $(this).addClass('active');
-        editorSelectedPiece = $(this).data('piece');
-    });
-
-    // Клик по доске для размещения фигуры
-    $('#board .square-55d63').off('click').on('click', function () {
-        if (!editorSelectedPiece) return;
-
-        const square = $(this).data('square');
-        const currentPos = editorBoard.position();
-
-        if (editorSelectedPiece === 'remove') {
-            delete currentPos[square];
-        } else {
-            currentPos[square] = editorSelectedPiece;
-        }
-
-        editorBoard.position(currentPos);
-    });
-
-    // Очистить доску
-    $('#editorClearBtn').off('click').on('click', function () {
-        editorBoard.clear();
-    });
-
-    // Начальная позиция
-    $('#editorStartBtn').off('click').on('click', function () {
-        editorBoard.start();
-    });
-
-    // Выбор хода
-    $('#editorWhiteTurn').off('click').on('click', function () {
-        editorTurn = 'w';
-        $('#editorWhiteTurn').addClass('active');
-        $('#editorBlackTurn').removeClass('active');
-    });
-
-    $('#editorBlackTurn').off('click').on('click', function () {
-        editorTurn = 'b';
-        $('#editorBlackTurn').addClass('active');
-        $('#editorWhiteTurn').removeClass('active');
-    });
-
-    // Играть с позиции
-    $('#editorPlayFriend').off('click').on('click', function () {
-        playFromEditorPosition('friend');
-    });
-
-    $('#editorPlayBot').off('click').on('click', function () {
-        playFromEditorPosition('bot');
-    });
-
-    $('#editorPlaySolo').off('click').on('click', function () {
-        playFromEditorPosition('solo');
-    });
-}
-
-function playFromEditorPosition(mode) {
-    const position = editorBoard.position();
-    const fen = convertPositionToFEN(position, editorTurn);
-
-    // Закрываем редактор
-    $('#boardEditorModal').addClass('hidden');
-    editorMode = false;
-
-    // Загружаем позицию в игру
-    game.load(fen);
-    board.position(fen);
-
-    // Настраиваем режим игры
-    if (mode === 'bot') {
-        showBotDifficultyModal();
-    } else if (mode === 'solo') {
-        myColor = null; // Можно играть за обе стороны
-        $('#gameStatus').html(t('gameStarted'));
-        $('#whitePlayer').text(t('white'));
-        $('#blackPlayer').text(t('black'));
-    } else {
-        // С другом - создаем игру
-        createGame();
-    }
-
-    updateStatus();
-    updateMovesDisplay();
-}
-
-function convertPositionToFEN(position, turn) {
-    // Конвертируем позицию в FEN
-    const rows = [];
-
-    for (let rank = 8; rank >= 1; rank--) {
-        let row = '';
-        let emptyCount = 0;
-
-        for (let file of ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']) {
-            const square = file + rank;
-            const piece = position[square];
-
-            if (piece) {
-                if (emptyCount > 0) {
-                    row += emptyCount;
-                    emptyCount = 0;
-                }
-                // Конвертируем формат фигуры (wK -> K, bK -> k)
-                const color = piece[0];
-                const type = piece[1];
-                row += color === 'w' ? type.toUpperCase() : type.toLowerCase();
-            } else {
-                emptyCount++;
-            }
-        }
-
-        if (emptyCount > 0) {
-            row += emptyCount;
-        }
-
-        rows.push(row);
-    }
-
-    // Базовый FEN (без рокировки, взятия на проходе и счетчиков)
-    return rows.join('/') + ` ${turn} KQkq - 0 1`;
-}
 
 // ===== ПРАКТИКА МАТОВ =====
 
@@ -2510,37 +2180,47 @@ function startMatePractice(mateType) {
     console.log('Практика мата начата:', mateType);
 }
 
-// Проверка мата в практике
+// Переопределяем onDrop для добавления бота и проверки мата в практике
 const originalOnDrop = onDrop;
 onDrop = function (source, target) {
     const result = originalOnDrop(source, target);
 
-    if (result !== 'snapback' && currentMatePractice) {
-        matePracticeMoves++;
+    if (result !== 'snapback') {
+        // Ход сделан успешно
 
-        if (game.in_checkmate()) {
-            addChatMessage('system', `${t('success')} ${t('mateIn')} ${matePracticeMoves} ${t('moves')}!`);
-            $('#gameStatus').html(`✅ ${t('success')}!`);
+        // Проверка мата в практике
+        if (currentMatePractice) {
+            matePracticeMoves++;
 
-            setTimeout(() => {
-                if (confirm(t('tryAgain') + '?')) {
-                    startMatePractice(Object.keys(matePracticePositions).find(
-                        key => matePracticePositions[key] === currentMatePractice
-                    ));
-                } else {
-                    currentMatePractice = null;
-                    newGame();
-                }
-            }, 1000);
-        } else if (matePracticeMoves >= currentMatePractice.maxMoves) {
-            addChatMessage('system', `⏱️ ${t('tryAgain')}`);
-            setTimeout(() => {
-                if (confirm(t('tryAgain') + '?')) {
-                    startMatePractice(Object.keys(matePracticePositions).find(
-                        key => matePracticePositions[key] === currentMatePractice
-                    ));
-                }
-            }, 500);
+            if (game.in_checkmate()) {
+                addChatMessage('system', `${t('success')} ${t('mateIn')} ${matePracticeMoves} ${t('moves')}!`);
+                $('#gameStatus').html(`✅ ${t('success')}!`);
+
+                setTimeout(() => {
+                    if (confirm(t('tryAgain') + '?')) {
+                        startMatePractice(Object.keys(matePracticePositions).find(
+                            key => matePracticePositions[key] === currentMatePractice
+                        ));
+                    } else {
+                        currentMatePractice = null;
+                        resetGame();
+                    }
+                }, 1000);
+            } else if (matePracticeMoves >= currentMatePractice.maxMoves) {
+                addChatMessage('system', `⏱️ ${t('tryAgain')}`);
+                setTimeout(() => {
+                    if (confirm(t('tryAgain') + '?')) {
+                        startMatePractice(Object.keys(matePracticePositions).find(
+                            key => matePracticePositions[key] === currentMatePractice
+                        ));
+                    }
+                }, 500);
+            }
+        }
+
+        // Ход бота
+        if (playingWithBot && game.turn() === 'b') {
+            makeBotMove();
         }
     }
 

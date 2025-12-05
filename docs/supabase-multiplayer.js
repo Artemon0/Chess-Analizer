@@ -31,25 +31,25 @@ function initPeerJS() {
 
         myColor = 'white';
         isOnlineGame = true;
-        $('#whitePlayer').text('Вы');
-        $('#blackPlayer').text('Противник');
-        $('#gameStatus').html('✅ Игра началась! Ваш ход');
+        $('#whitePlayer').text(t('you'));
+        $('#blackPlayer').text(t('opponent'));
+        $('#gameStatus').html(t('gameStarted'));
         $('#resignBtn').show();
         startTimer();
-        addChatMessage('system', '✅ Противник присоединился!');
+        addChatMessage('system', t('opponentJoined'));
     });
 
     peer.on('error', (err) => {
         console.error('❌ Ошибка:', err);
         if (err.type === 'peer-unavailable') {
-            addChatMessage('system', '❌ Игрок не найден');
+            addChatMessage('system', '❌ ' + t('playerNotFound'));
         } else {
-            addChatMessage('system', '❌ Ошибка: ' + err.type);
+            addChatMessage('system', '❌ ' + t('connectionError') + ': ' + err.type);
         }
     });
 
     peer.on('disconnected', () => {
-        console.log('⚠️ Переподключение...');
+        console.log('⚠️', t('reconnecting'));
         peer.reconnect();
     });
 }
@@ -61,14 +61,14 @@ function setupConnection(conn) {
     });
 
     conn.on('close', () => {
-        console.log('❌ Соединение закрыто');
-        addChatMessage('system', '❌ Противник отключился');
+        console.log('❌', t('connectionClosed'));
+        addChatMessage('system', '❌ ' + t('opponentDisconnected'));
         stopTimer();
         isOnlineGame = false;
     });
 
     conn.on('error', (err) => {
-        console.error('❌ Ошибка соединения:', err);
+        console.error('❌', t('connectionError'), err);
     });
 }
 
@@ -81,8 +81,9 @@ function handlePeerMessage(data) {
             addChatMessage('opponent', data.message);
             break;
         case 'resign':
-            const winner = data.color === 'white' ? 'Черные' : 'Белые';
-            gameOver(`🏳️ ${data.color === 'white' ? 'Белые' : 'Черные'} сдались. ${winner} победили!`);
+            const winner = data.color === 'white' ? t('black') : t('white');
+            const loser = data.color === 'white' ? t('white') : t('black');
+            gameOver(`🏳️ ${loser} ${t('resign')}. ${winner} ${t('whiteWins').includes('wins') ? 'wins' : 'победили'}!`);
             break;
     }
 }
@@ -112,7 +113,7 @@ function handleOpponentMovePeer(moveData) {
 // Переопределяем createGame
 createGame = function () {
     if (!peer || !myPeerId) {
-        addChatMessage('system', '⏳ Подключение...');
+        addChatMessage('system', '⏳ ' + t('connecting') + '...');
         setTimeout(() => createGame(), 1000);
         return;
     }
@@ -123,11 +124,11 @@ createGame = function () {
 
     const gameUrl = `${window.location.origin}${window.location.pathname}?peer=${gameId}`;
 
-    $('#gameStatus').html('🎮 Игра создана! Ждем противника...');
+    $('#gameStatus').html(t('gameCreated'));
     showGameLink(gameUrl);
 
-    $('#whitePlayer').text('Вы');
-    $('#blackPlayer').text('Ожидание...');
+    $('#whitePlayer').text(t('you'));
+    $('#blackPlayer').text(t('waiting'));
 
     console.log('🎮 ID игры:', gameId);
 };
@@ -135,7 +136,7 @@ createGame = function () {
 // Переопределяем joinGame
 joinGame = function () {
     if (!peer || !myPeerId) {
-        addChatMessage('system', '⏳ Подключение...');
+        addChatMessage('system', '⏳ ' + t('connecting') + '...');
         setTimeout(() => joinGame(), 1000);
         return;
     }
@@ -146,7 +147,7 @@ joinGame = function () {
     if (peerIdFromUrl) {
         connectToPeer(peerIdFromUrl);
     } else {
-        const inputPeerId = prompt('Введите ID игры:');
+        const inputPeerId = prompt(t('enterGameId'));
         if (inputPeerId) {
             connectToPeer(inputPeerId);
         }
@@ -154,26 +155,26 @@ joinGame = function () {
 };
 
 function connectToPeer(peerId) {
-    console.log('🔗 Подключение к:', peerId);
-    addChatMessage('system', '🔗 Подключение...');
+    console.log('🔗', t('connecting'), peerId);
+    addChatMessage('system', '🔗 ' + t('connecting') + '...');
 
     connection = peer.connect(peerId);
 
     connection.on('open', () => {
-        console.log('✅ Подключено!');
+        console.log('✅', t('connected'));
         setupConnection(connection);
 
         myColor = 'black';
         isOnlineGame = true;
         board.flip();
 
-        $('#gameStatus').html('✅ Вы присоединились!');
-        $('#whitePlayer').text('Противник');
-        $('#blackPlayer').text('Вы');
+        $('#gameStatus').html(t('youJoined'));
+        $('#whitePlayer').text(t('opponent'));
+        $('#blackPlayer').text(t('you'));
         $('#resignBtn').show();
 
         startTimer();
-        addChatMessage('system', '✅ Подключено!');
+        addChatMessage('system', '✅ ' + t('connected'));
     });
 
     connection.on('error', (err) => {

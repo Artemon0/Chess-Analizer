@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chess Multiplayer + Analysis</title>
-    <link rel="stylesheet" href="chessboard.min.css">
+    <link rel="icon" type="image/svg+xml" href="assets/icon.svg">
+    <link rel="stylesheet" href="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.css">
     <link rel="stylesheet" href="multiplayer.css">
 </head>
 <body>
@@ -133,9 +134,9 @@
             <!-- Доска -->
             <div class="board-section">
                 <div class="board-controls">
-                    <button id="fullscreenBtn" class="icon-btn" title="Полноэкранный режим">⛶</button>
-                    <button id="flipBoardBtn" class="icon-btn" title="Перевернуть доску">🔄</button>
-                    <button id="settingsBtn" class="icon-btn" title="Настройки">⚙️</button>
+                    <button id="fullscreenBtn" class="icon-btn" data-i18n-title="fullscreenMode">⛶</button>
+                    <button id="flipBoardBtn" class="icon-btn" data-i18n-title="flipBoard">🔄</button>
+                    <button id="settingsBtn" class="icon-btn" data-i18n-title="settings">⚙️</button>
                 </div>
                 
                 <!-- Настройки -->
@@ -274,14 +275,12 @@
         </div>
     </div>
 
-    <!-- Local libraries for Android -->
-    <script src="jquery.min.js"></script>
-    <script src="chessboard.min.js"></script>
-    <script src="chess.js"></script>
-    <script src="peerjs.min.js"></script>
-    <script src="stockfish.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     
-    <!-- Firebase (requires internet) -->
+    <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
