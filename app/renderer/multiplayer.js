@@ -239,7 +239,8 @@ function getPieceTheme(style) {
 function initControls() {
     $('#createGameBtn').on('click', createGame);
     $('#joinGameBtn').on('click', joinGame);
-    $('#playBotBtn').on('click', playWithBot);
+    $('#playBotBtn').on('click', showBotDifficultyModal);
+    $('#boardEditorBtn').on('click', showBoardEditor);
     // Выпадающее меню задач
     $('#puzzleBtn').on('click', function (e) {
         e.stopPropagation();
@@ -1919,3 +1920,642 @@ function updateUserUI() {
 }
 
 
+
+
+// ===== ВЫБОР СЛОЖНОСТИ БОТА =====
+
+let botDifficulty = 'medium'; // easy, medium, hard
+
+function showBotDifficultyModal() {
+    $('#botDifficultyModal').removeClass('hidden');
+}
+
+$('#botDifficultyModal .close').on('click', function () {
+    $('#botDifficultyModal').addClass('hidden');
+});
+
+$('.btn-difficulty').on('click', function () {
+    botDifficulty = $(this).data('difficulty');
+    $('#botDifficultyModal').addClass('hidden');
+    playWithBot();
+});
+
+// Обновляем функцию makeBotMove для учета сложности
+const originalMakeBotMove = makeBotMove;
+makeBotMove = async function () {
+    if (!playingWithBot || game.turn() !== 'b') return;
+
+    $('#gameStatus').html(t('botThinking'));
+
+    // Сохраняем позицию ДО хода бота
+    const fenBefore = game.fen();
+
+    // Задержка для реалистичности
+    await new Promise(resolve => setTimeout(resolve, 500 + Math.random() * 1000));
+
+    try {
+        // Определяем глубину по сложности
+        let depth;
+        switch (botDifficulty) {
+            case 'easy':
+                depth = Math.floor(Math.random() * 2) + 1; // 1-2
+                break;
+            case 'medium':
+                depth = Math.floor(Math.random() * 2) + 3; // 3-4
+                break;
+            case 'hard':
+                depth = Math.floor(Math.random() * 2) + 5; // 5-6
+                break;
+            default:
+                depth = 3;
+        }
+
+        const bestMove = await getBestMove(game.fen(), depth);
+
+        if (bestMove && !game.game_over()) {
+            const move = game.move(bestMove);
+
+            if (move) {
+                board.position(game.fen());
+                updateStatus();
+                updateMovesDisplay();
+
+                // Анализируем ход бота
+                if (autoAnalyze) {
+                    setTimeout(() => analyzeMadeMove(move, fenBefore), 100);
+                }
+
+                // Случайные комментарии бота
+                if (Math.random() < 0.3) {
+                    const botMessages = [
+                        t('excellent'),
+                        t('botThinking'),
+                        t('analyzing'),
+                        t('botMove')
+                    ];
+                    addChatMessage('opponent', botMessages[Math.floor(Math.random() * botMessages.length)]);
+                }
+            }
+        }
+
+        $('#gameStatus').html(t('yourTurn'));
+
+    } catch (error) {
+        console.error('Ошибка хода бота:', error);
+        $('#gameStatus').html(t('yourTurn'));
+    }
+};
+
+
+// ===== РЕДАКТОР ДОСКИ =====
+
+let editorMode = false;
+let editorSelectedPiece = null;
+let editorTurn = 'w'; // w или b
+let editorBoard = null;
+
+function showBoardEditor() {
+    editorMode = true;
+    $('#boardEditorModal').removeClass('hidden');
+
+    // Создаем отдельную доску для редактора
+    if (!editorBoard) {
+        editorBoard = Chessboard('board', {
+            draggable: false,
+            position: 'start',
+            pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png'
+        });
+    }
+
+    // Копируем текущую позицию
+    editorBoard.position(game.fen());
+}
+
+$('#boardEditorModal .close').on('click', function () {
+    $('#boardEditorModal').addClass('hidden');
+    editorMode = false;
+    editorSelectedPiece = null;
+});
+
+// Выбор фигуры
+$('.piece-btn').on('click', function () {
+    $('.piece-btn').removeClass('active');
+    $(this).addClass('active');
+    editorSelectedPiece = $(this).data('piece');
+});
+
+// Очистить доску
+$('#editorClearBtn').on('click', function () {
+    editorBoard.clear();
+});
+
+// Начальная позиция
+$('#editorStartBtn').on('click', function () {
+    editorBoard.start();
+});
+
+// Выбор хода
+$('#editorWhiteTurn').on('click', function () {
+    editorTurn = 'w';
+    $('#editorWhiteTurn').addClass('active');
+    $('#editorBlackTurn').removeClass('active');
+});
+
+$('#editorBlackTurn').on('click', function () {
+    editorTurn = 'b';
+    $('#editorBlackTurn').addClass('active');
+    $('#editorWhiteTurn').removeClass('active');
+});
+
+// Клик по доске в редакторе
+$('#board').on('click', '.square-55d63', function () {
+    if (!editorMode) return;
+
+    const square = $(this).data('square');
+
+    if (editorSelectedPiece === 'remove') {
+        // Удалить фигуру
+        const position = editorBoard.position();
+        delete position[square];
+        editorBoard.position(position);
+    } else if (editorSelectedPiece) {
+        // Добавить фигуру
+        const position = editorBoard.position();
+        position[square] = editorSelectedPiece;
+        editorBoard.position(position);
+    }
+});
+
+// Играть с позиции
+$('#editorPlayFriend').on('click', function () {
+    playFromEditorPosition('friend');
+});
+
+$('#editorPlayBot').on('click', function () {
+    playFromEditorPosition('bot');
+});
+
+$('#editorPlaySolo').on('click', function () {
+    playFromEditorPosition('solo');
+});
+
+function playFromEditorPosition(mode) {
+    const position = editorBoard.position();
+
+    // Создаем FEN из позиции
+    const fen = createFenFromPosition(position, editorTurn);
+
+    // Проверяем валидность позиции
+    const tempGame = new Chess();
+    if (!tempGame.load(fen)) {
+        alert('Невалидная позиция! Убедитесь что у каждой стороны есть король.');
+        return;
+    }
+
+    // Закрываем редактор
+    $('#boardEditorModal').addClass('hidden');
+    editorMode = false;
+
+    // Загружаем позицию в игру
+    game.load(fen);
+    board.position(game.fen());
+
+    // Запускаем игру в зависимости от режима
+    if (mode === 'bot') {
+        playingWithBot = true;
+        myColor = editorTurn === 'w' ? 'white' : 'black';
+        $('#gameStatus').html(t('gameStarted'));
+        $('#whitePlayer').text(editorTurn === 'w' ? t('you') : '🤖 ' + t('bot'));
+        $('#blackPlayer').text(editorTurn === 'b' ? t('you') : '🤖 ' + t('bot'));
+        $('#resignBtn').show();
+
+        if (editorTurn === 'b') {
+            makeBotMove();
+        }
+    } else if (mode === 'solo') {
+        playingWithBot = false;
+        myColor = null; // Можно играть за обе стороны
+        $('#gameStatus').html(t('yourTurn'));
+        $('#whitePlayer').text(t('white'));
+        $('#blackPlayer').text(t('black'));
+        $('#resignBtn').show();
+    } else {
+        // С другом - создаем онлайн игру с этой позиции
+        createGameFromPosition(fen);
+    }
+
+    updateStatus();
+    updateMovesDisplay();
+}
+
+function createFenFromPosition(position, turn) {
+    // Создаем FEN из позиции доски
+    let fen = '';
+
+    for (let rank = 8; rank >= 1; rank--) {
+        let emptyCount = 0;
+
+        for (let file of ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']) {
+            const square = file + rank;
+            const piece = position[square];
+
+            if (piece) {
+                if (emptyCount > 0) {
+                    fen += emptyCount;
+                    emptyCount = 0;
+                }
+                fen += piece;
+            } else {
+                emptyCount++;
+            }
+        }
+
+        if (emptyCount > 0) {
+            fen += emptyCount;
+        }
+
+        if (rank > 1) {
+            fen += '/';
+        }
+    }
+
+    // Добавляем остальные части FEN
+    fen += ' ' + turn; // Чей ход
+    fen += ' KQkq'; // Рокировки (упрощенно)
+    fen += ' -'; // En passant
+    fen += ' 0 1'; // Счетчики ходов
+
+    return fen;
+}
+
+function createGameFromPosition(fen) {
+    // Создаем онлайн игру с кастомной позиции
+    gameId = 'custom_' + Date.now();
+    isOnlineGame = true;
+    myColor = 'white';
+
+    $('#gameStatus').html(t('gameCreated'));
+    $('#whitePlayer').text(t('you'));
+    $('#blackPlayer').text(t('waiting'));
+
+    const gameUrl = `${window.location.origin}${window.location.pathname}?game=${gameId}&fen=${encodeURIComponent(fen)}`;
+    showGameLink(gameUrl);
+}
+
+
+// ===== ВЫБОР СЛОЖНОСТИ БОТА =====
+
+let botDifficulty = 'medium'; // easy, medium, hard
+
+function showBotDifficultyModal() {
+    $('#botDifficultyModal').removeClass('hidden');
+}
+
+// Обработчики выбора сложности
+$('.btn-difficulty').on('click', function () {
+    botDifficulty = $(this).data('difficulty');
+    $('#botDifficultyModal').addClass('hidden');
+    playWithBot();
+});
+
+// Обновляем функцию makeBotMove для учета сложности
+const originalMakeBotMove = makeBotMove;
+makeBotMove = async function () {
+    if (!playingWithBot || game.turn() !== 'b') return;
+
+    $('#gameStatus').html(t('botThinking'));
+
+    // Сохраняем позицию ДО хода бота
+    const fenBefore = game.fen();
+
+    try {
+        // Устанавливаем глубину в зависимости от сложности
+        let depth;
+        switch (botDifficulty) {
+            case 'easy':
+                depth = Math.floor(Math.random() * 2) + 1; // 1-2
+                break;
+            case 'medium':
+                depth = Math.floor(Math.random() * 2) + 3; // 3-4
+                break;
+            case 'hard':
+                depth = Math.floor(Math.random() * 2) + 5; // 5-6
+                break;
+            default:
+                depth = 3;
+        }
+
+        stockfish.postMessage(`position fen ${game.fen()}`);
+        stockfish.postMessage(`go depth ${depth}`);
+
+        await new Promise((resolve) => {
+            const handler = (event) => {
+                const message = event.data || event;
+                if (typeof message === 'string' && message.startsWith('bestmove')) {
+                    stockfish.removeEventListener('message', handler);
+                    resolve(message);
+                }
+            };
+            stockfish.addEventListener('message', handler);
+        }).then((message) => {
+            const bestMove = message.split(' ')[1];
+            const move = game.move({
+                from: bestMove.substring(0, 2),
+                to: bestMove.substring(2, 4),
+                promotion: bestMove[4] || 'q'
+            });
+
+            if (move) {
+                board.position(game.fen());
+                updateStatus();
+                updateMovesDisplay();
+
+                // Анализируем ход бота
+                if (autoAnalyze) {
+                    setTimeout(() => analyzeMadeMove(move, fenBefore), 100);
+                }
+
+                // Случайные комментарии бота
+                if (Math.random() < 0.3) {
+                    const botMessages = [
+                        t('excellent'),
+                        t('botThinking'),
+                        t('analyzing'),
+                        t('botMove')
+                    ];
+                    addChatMessage('opponent', botMessages[Math.floor(Math.random() * botMessages.length)]);
+                }
+            }
+
+            $('#gameStatus').html(t('yourTurn'));
+        });
+    } catch (error) {
+        console.error('Ошибка хода бота:', error);
+        $('#gameStatus').html(t('yourTurn'));
+    }
+};
+
+// ===== РЕДАКТОР ДОСКИ =====
+
+let editorMode = false;
+let editorSelectedPiece = null;
+let editorTurn = 'w'; // w или b
+let editorBoard = null;
+
+function showBoardEditor() {
+    editorMode = true;
+    $('#boardEditorModal').removeClass('hidden');
+
+    // Создаем отдельную доску для редактора
+    if (!editorBoard) {
+        editorBoard = Chessboard('board', {
+            draggable: false,
+            position: 'start',
+            pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png'
+        });
+    }
+
+    // Включаем режим редактирования
+    setupEditorHandlers();
+}
+
+function setupEditorHandlers() {
+    // Выбор фигуры для размещения
+    $('.piece-btn').off('click').on('click', function () {
+        $('.piece-btn').removeClass('active');
+        $(this).addClass('active');
+        editorSelectedPiece = $(this).data('piece');
+    });
+
+    // Клик по доске для размещения фигуры
+    $('#board .square-55d63').off('click').on('click', function () {
+        if (!editorSelectedPiece) return;
+
+        const square = $(this).data('square');
+        const currentPos = editorBoard.position();
+
+        if (editorSelectedPiece === 'remove') {
+            delete currentPos[square];
+        } else {
+            currentPos[square] = editorSelectedPiece;
+        }
+
+        editorBoard.position(currentPos);
+    });
+
+    // Очистить доску
+    $('#editorClearBtn').off('click').on('click', function () {
+        editorBoard.clear();
+    });
+
+    // Начальная позиция
+    $('#editorStartBtn').off('click').on('click', function () {
+        editorBoard.start();
+    });
+
+    // Выбор хода
+    $('#editorWhiteTurn').off('click').on('click', function () {
+        editorTurn = 'w';
+        $('#editorWhiteTurn').addClass('active');
+        $('#editorBlackTurn').removeClass('active');
+    });
+
+    $('#editorBlackTurn').off('click').on('click', function () {
+        editorTurn = 'b';
+        $('#editorBlackTurn').addClass('active');
+        $('#editorWhiteTurn').removeClass('active');
+    });
+
+    // Играть с позиции
+    $('#editorPlayFriend').off('click').on('click', function () {
+        playFromEditorPosition('friend');
+    });
+
+    $('#editorPlayBot').off('click').on('click', function () {
+        playFromEditorPosition('bot');
+    });
+
+    $('#editorPlaySolo').off('click').on('click', function () {
+        playFromEditorPosition('solo');
+    });
+}
+
+function playFromEditorPosition(mode) {
+    const position = editorBoard.position();
+    const fen = convertPositionToFEN(position, editorTurn);
+
+    // Закрываем редактор
+    $('#boardEditorModal').addClass('hidden');
+    editorMode = false;
+
+    // Загружаем позицию в игру
+    game.load(fen);
+    board.position(fen);
+
+    // Настраиваем режим игры
+    if (mode === 'bot') {
+        showBotDifficultyModal();
+    } else if (mode === 'solo') {
+        myColor = null; // Можно играть за обе стороны
+        $('#gameStatus').html(t('gameStarted'));
+        $('#whitePlayer').text(t('white'));
+        $('#blackPlayer').text(t('black'));
+    } else {
+        // С другом - создаем игру
+        createGame();
+    }
+
+    updateStatus();
+    updateMovesDisplay();
+}
+
+function convertPositionToFEN(position, turn) {
+    // Конвертируем позицию в FEN
+    const rows = [];
+
+    for (let rank = 8; rank >= 1; rank--) {
+        let row = '';
+        let emptyCount = 0;
+
+        for (let file of ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']) {
+            const square = file + rank;
+            const piece = position[square];
+
+            if (piece) {
+                if (emptyCount > 0) {
+                    row += emptyCount;
+                    emptyCount = 0;
+                }
+                // Конвертируем формат фигуры (wK -> K, bK -> k)
+                const color = piece[0];
+                const type = piece[1];
+                row += color === 'w' ? type.toUpperCase() : type.toLowerCase();
+            } else {
+                emptyCount++;
+            }
+        }
+
+        if (emptyCount > 0) {
+            row += emptyCount;
+        }
+
+        rows.push(row);
+    }
+
+    // Базовый FEN (без рокировки, взятия на проходе и счетчиков)
+    return rows.join('/') + ` ${turn} KQkq - 0 1`;
+}
+
+// ===== ПРАКТИКА МАТОВ =====
+
+const matePracticePositions = {
+    queenKing: {
+        fen: '8/8/8/8/8/4k3/8/4K2Q w - - 0 1',
+        name: 'queenKingMate',
+        description: 'Оттесните черного короля на край доски и дайте мат',
+        maxMoves: 10
+    },
+    twoRooks: {
+        fen: '4k3/8/8/8/8/8/8/R3K2R w - - 0 1',
+        name: 'twoRooksMate',
+        description: 'Используйте ладьи поочередно, чтобы оттеснить короля',
+        maxMoves: 8
+    },
+    rookKing: {
+        fen: '8/8/8/8/8/4k3/8/4K2R w - - 0 1',
+        name: 'rookKingMate',
+        description: 'Оттесните короля в угол с помощью своего короля',
+        maxMoves: 15
+    }
+};
+
+let currentMatePractice = null;
+let matePracticeMoves = 0;
+
+// Обработчики меню практики матов
+$('#matePracticeBtn').on('click', function (e) {
+    e.stopPropagation();
+    $('#matePracticeMenu').toggleClass('hidden');
+    $('#puzzleMenu').addClass('hidden');
+});
+
+$('.mate-practice-category').on('click', function () {
+    const mateType = $(this).data('mate');
+    startMatePractice(mateType);
+    $('#matePracticeMenu').addClass('hidden');
+});
+
+function startMatePractice(mateType) {
+    currentMatePractice = matePracticePositions[mateType];
+    matePracticeMoves = 0;
+
+    // Загружаем позицию
+    game.load(currentMatePractice.fen);
+    board.position(currentMatePractice.fen);
+
+    // Настройки
+    myColor = 'white';
+    playingWithBot = false;
+
+    $('#gameStatus').html(`${t('matePractice')}: ${t(currentMatePractice.name)}`);
+    $('#whitePlayer').text(t('you'));
+    $('#blackPlayer').text(t('opponent'));
+
+    addChatMessage('system', t(currentMatePractice.name));
+    addChatMessage('system', currentMatePractice.description);
+
+    updateStatus();
+    updateMovesDisplay();
+
+    console.log('Практика мата начата:', mateType);
+}
+
+// Проверка мата в практике
+const originalOnDrop = onDrop;
+onDrop = function (source, target) {
+    const result = originalOnDrop(source, target);
+
+    if (result !== 'snapback' && currentMatePractice) {
+        matePracticeMoves++;
+
+        if (game.in_checkmate()) {
+            addChatMessage('system', `${t('success')} ${t('mateIn')} ${matePracticeMoves} ${t('moves')}!`);
+            $('#gameStatus').html(`✅ ${t('success')}!`);
+
+            setTimeout(() => {
+                if (confirm(t('tryAgain') + '?')) {
+                    startMatePractice(Object.keys(matePracticePositions).find(
+                        key => matePracticePositions[key] === currentMatePractice
+                    ));
+                } else {
+                    currentMatePractice = null;
+                    newGame();
+                }
+            }, 1000);
+        } else if (matePracticeMoves >= currentMatePractice.maxMoves) {
+            addChatMessage('system', `⏱️ ${t('tryAgain')}`);
+            setTimeout(() => {
+                if (confirm(t('tryAgain') + '?')) {
+                    startMatePractice(Object.keys(matePracticePositions).find(
+                        key => matePracticePositions[key] === currentMatePractice
+                    ));
+                }
+            }, 500);
+        }
+    }
+
+    return result;
+};
+
+// Закрытие модальных окон
+$('.modal .close').on('click', function () {
+    $(this).closest('.modal').addClass('hidden');
+});
+
+$(window).on('click', function (e) {
+    if ($(e.target).hasClass('modal')) {
+        $(e.target).addClass('hidden');
+    }
+});
+
+console.log('✅ Редактор доски, выбор сложности бота и практика матов загружены');

@@ -58,6 +58,76 @@
                 </div>
             </div>
         </div>
+        
+        <!-- Модальное окно выбора сложности бота -->
+        <div id="botDifficultyModal" class="modal hidden">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2 data-i18n="selectDifficulty">Выберите сложность:</h2>
+                <div class="difficulty-buttons">
+                    <button class="btn btn-difficulty btn-easy" data-difficulty="easy">
+                        <span data-i18n="easy">Легко</span>
+                        <small>~800-1000</small>
+                    </button>
+                    <button class="btn btn-difficulty btn-medium" data-difficulty="medium">
+                        <span data-i18n="medium">Средне</span>
+                        <small>~1200-1400</small>
+                    </button>
+                    <button class="btn btn-difficulty btn-hard" data-difficulty="hard">
+                        <span data-i18n="hard">Сложно</span>
+                        <small>~1600-1800</small>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Модальное окно редактора доски -->
+        <div id="boardEditorModal" class="modal hidden">
+            <div class="modal-content modal-large">
+                <span class="close">&times;</span>
+                <h2 data-i18n="boardEditor">✏️ Редактор доски</h2>
+                
+                <div class="editor-controls">
+                    <div class="editor-pieces">
+                        <h4 data-i18n="addPieces">Добавить фигуры:</h4>
+                        <div class="piece-selector">
+                            <button class="piece-btn" data-piece="wK">♔</button>
+                            <button class="piece-btn" data-piece="wQ">♕</button>
+                            <button class="piece-btn" data-piece="wR">♖</button>
+                            <button class="piece-btn" data-piece="wB">♗</button>
+                            <button class="piece-btn" data-piece="wN">♘</button>
+                            <button class="piece-btn" data-piece="wP">♙</button>
+                        </div>
+                        <div class="piece-selector">
+                            <button class="piece-btn" data-piece="bK">♚</button>
+                            <button class="piece-btn" data-piece="bQ">♛</button>
+                            <button class="piece-btn" data-piece="bR">♜</button>
+                            <button class="piece-btn" data-piece="bB">♝</button>
+                            <button class="piece-btn" data-piece="bN">♞</button>
+                            <button class="piece-btn" data-piece="bP">♟</button>
+                        </div>
+                        <button class="piece-btn piece-btn-remove" data-piece="remove">🗑️</button>
+                    </div>
+                    
+                    <div class="editor-actions">
+                        <button id="editorClearBtn" class="btn" data-i18n="clearBoard">Очистить доску</button>
+                        <button id="editorStartBtn" class="btn" data-i18n="startPosition">Начальная позиция</button>
+                        <div class="turn-selector">
+                            <button id="editorWhiteTurn" class="btn btn-turn active" data-i18n="whiteToMove">Ход белых</button>
+                            <button id="editorBlackTurn" class="btn btn-turn" data-i18n="blackToMove">Ход черных</button>
+                        </div>
+                    </div>
+                    
+                    <div class="editor-play">
+                        <h4 data-i18n="playFromPosition">Играть с позиции:</h4>
+                        <button id="editorPlayFriend" class="btn btn-primary" data-i18n="playWithFriend">С другом</button>
+                        <button id="editorPlayBot" class="btn btn-bot" data-i18n="playWithBot">С ботом</button>
+                        <button id="editorPlaySolo" class="btn btn-success" data-i18n="playSolo">Сам с собой</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
         <p class="subtitle" data-i18n="subtitle">Играй онлайн + анализ в реальном времени</p>
         
         <div class="main-layout">
@@ -105,6 +175,7 @@
                     <button id="createGameBtn" class="btn btn-primary" data-i18n="createGame">🎮 Создать игру</button>
                     <button id="joinGameBtn" class="btn btn-success" data-i18n="joinGame">🔗 Присоединиться</button>
                     <button id="playBotBtn" class="btn btn-bot" data-i18n="playBot">🤖 Играть с ботом</button>
+                    <button id="boardEditorBtn" class="btn btn-editor" data-i18n="boardEditor">✏️ Редактор доски</button>
                     
                     <!-- Выпадающее меню задач -->
                     <div class="puzzle-dropdown">
@@ -116,6 +187,16 @@
                             <button class="puzzle-category" data-category="tactics" data-i18n="tactics">⭐ Тактика</button>
                             <button class="puzzle-category" data-category="endgame" data-i18n="endgame">👑 Эндшпиль</button>
                             <button class="puzzle-category" data-category="famous" data-i18n="famous">🏆 Знаменитые партии</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Выпадающее меню практики матов -->
+                    <div class="puzzle-dropdown">
+                        <button id="matePracticeBtn" class="btn btn-practice" data-i18n="matePractice">👑 Практика матов ▼</button>
+                        <div id="matePracticeMenu" class="puzzle-menu hidden">
+                            <button class="mate-practice-category" data-mate="queenKing" data-i18n="queenKingMate">♕ Ферзь и король</button>
+                            <button class="mate-practice-category" data-mate="twoRooks" data-i18n="twoRooksMate">♜♜ Две ладьи</button>
+                            <button class="mate-practice-category" data-mate="rookKing" data-i18n="rookKingMate">♜ Ладья и король</button>
                         </div>
                     </div>
                     

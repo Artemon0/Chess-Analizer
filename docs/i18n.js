@@ -157,6 +157,30 @@ const translations = {
         'medium': 'Средне',
         'hard': 'Сложно',
 
+        // Редактор доски
+        'boardEditor': '✏️ Редактор доски',
+        'setupPosition': 'Расставить позицию',
+        'clearBoard': 'Очистить доску',
+        'startPosition': 'Начальная позиция',
+        'playFromPosition': 'Играть с позиции',
+        'playWithFriend': 'С другом',
+        'playWithBot': 'С ботом',
+        'playSolo': 'Сам с собой',
+        'whiteToMove': 'Ход белых',
+        'blackToMove': 'Ход черных',
+        'addPieces': 'Добавить фигуры',
+        'removePieces': 'Убрать фигуры',
+
+        // Практика матов
+        'matePractice': '👑 Практика матов',
+        'queenKingMate': 'Мат ферзем и королем',
+        'twoRooksMate': 'Мат двумя ладьями',
+        'rookKingMate': 'Мат ладьей и королем',
+        'tryAgain': 'Попробовать снова',
+        'success': 'Успех!',
+        'mateIn': 'Мат в',
+        'moves': 'ходов',
+
         // Ответы бота в чате
         'botHello': 'Привет!',
         'botHelloLuck': 'Привет! Удачи в игре!',
@@ -355,6 +379,30 @@ const translations = {
         'medium': 'Medium',
         'hard': 'Hard',
 
+        // Board Editor
+        'boardEditor': '✏️ Board Editor',
+        'setupPosition': 'Setup Position',
+        'clearBoard': 'Clear Board',
+        'startPosition': 'Starting Position',
+        'playFromPosition': 'Play from Position',
+        'playWithFriend': 'With Friend',
+        'playWithBot': 'With Bot',
+        'playSolo': 'Solo',
+        'whiteToMove': 'White to move',
+        'blackToMove': 'Black to move',
+        'addPieces': 'Add Pieces',
+        'removePieces': 'Remove Pieces',
+
+        // Mate Practice
+        'matePractice': '👑 Mate Practice',
+        'queenKingMate': 'Queen and King Mate',
+        'twoRooksMate': 'Two Rooks Mate',
+        'rookKingMate': 'Rook and King Mate',
+        'tryAgain': 'Try Again',
+        'success': 'Success!',
+        'mateIn': 'Mate in',
+        'moves': 'moves',
+
         // Bot chat responses
         'botHello': 'Hello!',
         'botHelloLuck': 'Hello! Good luck!',
@@ -552,6 +600,30 @@ const translations = {
         'easy': 'Легко',
         'medium': 'Середньо',
         'hard': 'Складно',
+
+        // Редактор дошки
+        'boardEditor': '✏️ Редактор дошки',
+        'setupPosition': 'Розставити позицію',
+        'clearBoard': 'Очистити дошку',
+        'startPosition': 'Початкова позиція',
+        'playFromPosition': 'Грати з позиції',
+        'playWithFriend': 'З другом',
+        'playWithBot': 'З ботом',
+        'playSolo': 'Сам з собою',
+        'whiteToMove': 'Хід білих',
+        'blackToMove': 'Хід чорних',
+        'addPieces': 'Додати фігури',
+        'removePieces': 'Прибрати фігури',
+
+        // Практика матів
+        'matePractice': '👑 Практика матів',
+        'queenKingMate': 'Мат ферзем та королем',
+        'twoRooksMate': 'Мат двома турами',
+        'rookKingMate': 'Мат турою та королем',
+        'tryAgain': 'Спробувати знову',
+        'success': 'Успіх!',
+        'mateIn': 'Мат в',
+        'moves': 'ходів',
 
         // Відповіді бота в чаті
         'botHello': 'Привіт!',
