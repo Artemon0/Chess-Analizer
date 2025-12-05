@@ -23,8 +23,11 @@ echo.
 
 REM Создание local.properties
 echo Creating local.properties...
-echo sdk.dir=%ANDROID_HOME:\=\\% > local.properties
+set SDK_PATH=%ANDROID_HOME:\=\\%
+echo sdk.dir=%SDK_PATH%> local.properties
 echo [OK] local.properties created
+echo.
+echo SDK path: %SDK_PATH%
 echo.
 
 REM Проверка Gradle

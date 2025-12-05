@@ -4,7 +4,7 @@
 # Location of the Android SDK. This is usually auto-detected by Android Studio.
 # If not, set it manually:
 #
-# For Windows:
+# For Windows (ВАЖНО: используйте двойные обратные слэши):
 # sdk.dir=C\:\\Users\\YourUsername\\AppData\\Local\\Android\\Sdk
 #
 # For Mac:
@@ -12,6 +12,10 @@
 #
 # For Linux:
 # sdk.dir=/home/YourUsername/Android/Sdk
+#
+# ВАЖНО: Путь НЕ должен содержать пробелов в конце!
+# Правильно: sdk.dir=C\:\\Users\\Artem\\AppData\\Local\\Android\\Sdk
+# Неправильно: sdk.dir=C\:\\Users\\Artem\\AppData\\Local\\Android\\Sdk 
 
 # Uncomment and set your SDK path:
 # sdk.dir=YOUR_SDK_PATH_HERE

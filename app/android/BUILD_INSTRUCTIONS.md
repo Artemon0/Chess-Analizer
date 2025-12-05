@@ -6,6 +6,12 @@
 2. Установите с настройками по умолчанию
 3. При первом запуске установите Android SDK
 
+**Важно о Java:**
+- Проект использует Gradle 8.5
+- Требуется Java 17-21
+- Android Studio обычно включает подходящую версию JDK
+- Если у вас Java 21 - всё ОК!
+
 ## Шаг 2: Настройка SDK
 
 1. Создайте файл `local.properties` в папке `app/android`:
@@ -116,9 +122,17 @@ adb install app/build/outputs/apk/debug/app-debug.apk
 # Очистите кэш
 gradlew clean
 
-# Обновите Gradle wrapper
-gradlew wrapper --gradle-version 8.1
+# Обновите Gradle wrapper (если нужно)
+gradlew wrapper --gradle-version 8.5
 ```
+
+### Java version incompatible
+
+Если ошибка "incompatible Java":
+1. File → Settings → Build, Execution, Deployment → Build Tools → Gradle
+2. Gradle JDK: выберите Java 17 или 21
+3. Нажмите Apply → OK
+4. Sync Project
 
 ### SDK not found
 
