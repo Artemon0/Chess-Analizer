@@ -19,15 +19,6 @@ npm install
 npm start
 ```
 
-### Android приложение
-```bash
-# Откройте app/android в Android Studio
-# Или соберите APK:
-cd app/android
-./gradlew assembleDebug
-```
-См. [app/android/README.md](app/android/README.md)
-
 ## ✨ Возможности
 
 ### 🎯 Игра
@@ -75,17 +66,12 @@ chess-multiplayer/
 │   ├── DEPLOY.md          # Деплой
 │   ├── LANGUAGES.md       # Многоязычность
 │   ├── RELEASE.md         # Создание релиза
-│   ├── RELEASE_NOTES.md   # Описание релиза
-│   └── WIKI.md            # Полная Wiki (RU/EN/UA)
+│   └── RELEASE_NOTES.md   # Описание релиза
 ├── scripts/                # Скрипты сборки
 │   ├── build-all.ps1      # Сборка всех платформ
 │   └── build.bat          # Сборка Windows
-├── app/                    # Приложения
-│   ├── android/           # 📱 Android приложение
-│   │   ├── app/           # Исходники
-│   │   ├── build.gradle   # Конфигурация
-│   │   └── README.md      # Документация Android
-│   ├── main.js            # Electron главный процесс
+├── app/                    # Electron приложение
+│   ├── main.js            # Главный процесс
 │   ├── preload.js         # Preload скрипт
 │   ├── assets/            # Ресурсы приложения
 │   └── renderer/          # Веб-приложение
@@ -146,13 +132,12 @@ vercel deploy
 ## 🛠️ Технологии
 
 - **Frontend**: HTML5, CSS3, JavaScript (ES6+)
-- **Библиотеки**: jQuery, Chess.js, Chessboard.js, Stockfish.js
-- **Анализ**: Stockfish.js (локальный движок)
+- **Библиотеки**: jQuery, Chess.js, Chessboard.js
+- **Анализ**: Lichess Cloud Eval API
 - **Backend**: Node.js, Express
 - **База данных**: Firebase Realtime Database
 - **Desktop**: Electron
-- **Mobile**: Android (Kotlin + WebView)
-- **Деплой**: Vercel, GitHub Pages, Google Play
+- **Деплой**: Vercel, GitHub Pages
 
 ## 📝 Лицензия
 

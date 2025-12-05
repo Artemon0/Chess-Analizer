@@ -1,0 +1,2033 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', sans-serif;
+    background: #312e2b;
+    min-height: 100vh;
+    padding: 0;
+    margin: 0;
+}
+
+.container {
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    margin: 20px 0 10px 0;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+h1 {
+    color: #f0d9b5;
+    margin: 0;
+    font-size: 2em;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+}
+
+.theme-selector {
+    display: flex;
+    gap: 8px;
+}
+
+.theme-btn {
+    width: 36px;
+    height: 36px;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.05);
+    color: #a0a0a0;
+    font-size: 18px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.theme-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: scale(1.05);
+}
+
+.theme-btn.active {
+    background: #759656;
+    border-color: #759656;
+    color: white;
+}
+
+.subtitle {
+    text-align: center;
+    color: #a0a0a0;
+    margin-bottom: 20px;
+    font-size: 0.95em;
+    font-weight: 400;
+}
+
+.main-layout {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 20px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.board-section {
+    background: #262421;
+    padding: 60px 20px 20px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    position: relative;
+}
+
+.analysis-section {
+    background: #262421;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Контролы доски */
+.board-controls {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    display: flex;
+    gap: 8px;
+    z-index: 100;
+}
+
+.icon-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    width: 36px;
+    height: 36px;
+    font-size: 18px;
+    color: #f0d9b5;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: scale(1.05);
+}
+
+.icon-btn:active {
+    transform: scale(0.95);
+}
+
+/* Панель настроек */
+.settings-panel {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    padding: 15px;
+    margin-bottom: 20px;
+    transition: all 0.3s;
+    max-height: 500px;
+    overflow: hidden;
+}
+
+.settings-panel.hidden {
+    max-height: 0;
+    padding: 0 15px;
+    margin-bottom: 0;
+    border: none;
+}
+
+.settings-panel h4 {
+    color: #f0d9b5;
+    font-size: 12px;
+    font-weight: 600;
+    margin: 0 0 12px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.settings-panel h4:not(:first-child) {
+    margin-top: 20px;
+}
+
+.piece-style-selector {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+}
+
+.board-color-selector {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.piece-style-btn {
+    padding: 8px 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    color: #a0a0a0;
+    font-size: 11px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.piece-style-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #c8d4b8;
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.piece-style-btn.active {
+    background: #759656;
+    border-color: #759656;
+    color: white;
+    box-shadow: 0 2px 8px rgba(117, 150, 86, 0.3);
+}
+
+.board-color-btn {
+    width: 48px;
+    height: 48px;
+    border: 3px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+}
+
+.board-color-btn:hover {
+    transform: scale(1.05);
+    border-color: rgba(255, 255, 255, 0.4);
+}
+
+.board-color-btn.active {
+    border-color: #759656;
+    border-width: 4px;
+    box-shadow: 0 0 0 3px rgba(117, 150, 86, 0.3);
+    transform: scale(1.05);
+}
+
+.board-color-btn.active::after {
+    content: '✓';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 20px;
+    font-weight: bold;
+    text-shadow: 0 0 4px rgba(0, 0, 0, 0.8);
+}
+
+/* Полноэкранный режим */
+.board-section.fullscreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 9999;
+    border-radius: 0;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: auto;
+}
+
+.board-section.fullscreen .chessboard {
+    width: min(90vw, 90vh, 600px);
+    height: min(90vw, 90vh, 600px);
+}
+
+.board-section.fullscreen .fullscreen-btn {
+    font-size: 28px;
+    width: 50px;
+    height: 50px;
+}
+
+.chessboard {
+    width: 560px;
+    height: 560px;
+    margin: 0 auto 20px auto;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    position: relative;
+}
+
+/* Клетки доски должны быть relative для аннотаций */
+.board-b72b1 .square-55d63 {
+    position: relative !important;
+}
+
+/* Подсветка короля при шахе */
+.square-in-check {
+    background-color: rgba(255, 0, 0, 0.5) !important;
+    animation: checkPulse 1s infinite;
+}
+
+@keyframes checkPulse {
+
+    0%,
+    100% {
+        background-color: rgba(255, 0, 0, 0.5);
+        box-shadow: 0 0 20px rgba(255, 0, 0, 0.8);
+    }
+
+    50% {
+        background-color: rgba(255, 0, 0, 0.7);
+        box-shadow: 0 0 30px rgba(255, 0, 0, 1);
+    }
+}
+
+/* Кнопка сдаться */
+.btn-danger {
+    background: #dc3545;
+}
+
+.btn-danger:hover {
+    background: #c82333;
+}
+
+/* Кнопка задач */
+.btn-puzzle {
+    background: #9c27b0;
+}
+
+.btn-puzzle:hover {
+    background: #7b1fa2;
+}
+
+/* Кнопка новой игры */
+.btn-secondary {
+    background: #6c757d;
+}
+
+.btn-secondary:hover {
+    background: #5a6268;
+}
+
+/* Быстрый чат */
+.quick-chat {
+    margin: 20px 0;
+}
+
+.quick-chat h3 {
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+.quick-chat-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.quick-chat-buttons {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+}
+
+.quick-chat-btn {
+    padding: 8px 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    color: #a0a0a0;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.15s;
+    text-align: center;
+}
+
+.quick-chat-btn:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.2);
+    color: #c8d4b8;
+}
+
+/* Аннотации на фигурах */
+.piece-annotation {
+    position: absolute !important;
+    top: 5px !important;
+    right: 5px !important;
+    font-size: 22px !important;
+    font-weight: bold !important;
+    text-shadow: 0 0 4px white, 0 0 8px white, 0 0 12px white !important;
+    z-index: 1000 !important;
+    pointer-events: none !important;
+    animation: fadeIn 0.5s !important;
+    background: rgba(255, 255, 255, 0.9) !important;
+    padding: 2px 6px !important;
+    border-radius: 4px !important;
+    line-height: 1 !important;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.3) rotate(-10deg);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.controls {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 8px;
+    margin-top: 15px;
+}
+
+.btn {
+    padding: 10px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    border: none;
+    border-radius: 4px;
+    background: #3d3d3d;
+    color: #f0d9b5;
+    cursor: pointer;
+    transition: all 0.15s;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.btn:hover {
+    background: #4a4a4a;
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.btn:active {
+    transform: scale(0.98);
+}
+
+.btn-primary {
+    background: #759656;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #86a968;
+}
+
+.btn-success {
+    background: #3d8cc8;
+    color: white;
+}
+
+.btn-success:hover {
+    background: #4a9dd9;
+}
+
+.btn-warning {
+    background: #d59120;
+    color: white;
+}
+
+.btn-warning:hover {
+    background: #e6a030;
+}
+
+.btn-danger {
+    background: #c33;
+    color: white;
+}
+
+.btn-danger:hover {
+    background: #d44;
+}
+
+.btn-bot {
+    background: #8e44ad;
+    color: white;
+}
+
+.btn-bot:hover {
+    background: #9b59b6;
+}
+
+.btn-puzzle {
+    background: #e67e22;
+    color: white;
+}
+
+.btn-puzzle:hover {
+    background: #f39c12;
+}
+
+/* ===== ВЫПАДАЮЩЕЕ МЕНЮ ЗАДАЧ ===== */
+
+.puzzle-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.puzzle-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: #262421;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    margin-top: 5px;
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    overflow: hidden;
+}
+
+.puzzle-menu.hidden {
+    display: none;
+}
+
+.puzzle-category {
+    width: 100%;
+    padding: 12px 16px;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    color: #f0d9b5;
+    font-size: 14px;
+    font-weight: 500;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.puzzle-category:last-child {
+    border-bottom: none;
+}
+
+.puzzle-category:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #e67e22;
+}
+
+.puzzle-category:active {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.btn-info {
+    background: #17a2b8;
+    color: white;
+}
+
+.btn-info:hover {
+    background: #1ab8d0;
+}
+
+.btn-secondary {
+    background: #555;
+    color: #ccc;
+}
+
+.btn-secondary:hover {
+    background: #666;
+}
+
+.game-info {
+    margin-top: 15px;
+}
+
+.status-box {
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+    margin-bottom: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+#gameStatus {
+    font-size: 14px;
+    font-weight: 500;
+    color: #f0d9b5;
+    text-align: center;
+}
+
+.game-link {
+    margin-top: 10px;
+    padding: 12px;
+    background: rgba(61, 140, 200, 0.1);
+    border-radius: 4px;
+    border: 1px solid rgba(61, 140, 200, 0.3);
+}
+
+.game-link.hidden {
+    display: none;
+}
+
+.game-link a {
+    color: #3d8cc8;
+    text-decoration: none;
+    font-weight: 500;
+    word-break: break-all;
+    font-size: 13px;
+}
+
+.game-link p {
+    color: #a0a0a0;
+    font-size: 13px;
+    margin-bottom: 8px;
+}
+
+.players {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 12px;
+}
+
+.player {
+    flex: 1;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border: 2px solid transparent;
+    transition: all 0.2s;
+}
+
+.player.active {
+    background: rgba(117, 150, 86, 0.15);
+    border-color: #759656;
+}
+
+.player.white {
+    border-left: 3px solid #f0d9b5;
+}
+
+.player.black {
+    border-left: 3px solid #b58863;
+}
+
+.player-icon {
+    font-size: 28px;
+    opacity: 0.9;
+}
+
+.player-info {
+    flex: 1;
+}
+
+.player-info span {
+    color: #f0d9b5;
+    font-size: 14px;
+    font-weight: 500;
+    display: block;
+    margin-bottom: 4px;
+}
+
+.timer {
+    font-size: 20px;
+    font-weight: 600;
+    color: #a0a0a0;
+    font-family: 'Roboto Mono', 'Courier New', monospace;
+}
+
+.player.active .timer {
+    color: #f0d9b5;
+}
+
+.timer.low-time {
+    color: #dc3545 !important;
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.6;
+    }
+}
+
+.analysis-section {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.eval-bar-container {
+    margin-bottom: 15px;
+}
+
+.eval-bar {
+    height: 32px;
+    background: #1a1a1a;
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.eval-bar-white {
+    height: 100%;
+    background: #f0d9b5;
+    width: 50%;
+    transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.eval-score {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 14px;
+    font-weight: 700;
+    color: #262421;
+    text-shadow: 0 0 2px rgba(255, 255, 255, 0.8);
+    z-index: 10;
+    font-family: 'Roboto Mono', monospace;
+}
+
+.analysis-info,
+.best-moves,
+.moves-history,
+.chat-section,
+.quick-chat {
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.analysis-section h3 {
+    margin: 0 0 10px 0;
+    color: #f0d9b5;
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    opacity: 0.9;
+}
+
+.move-quality {
+    margin-top: 10px;
+    padding: 12px 15px;
+    border-radius: 8px;
+    font-size: 15px;
+    text-align: left;
+    border-left: 4px solid;
+    background: rgba(255, 255, 255, 0.05);
+    font-weight: 500;
+}
+
+.move-quality strong {
+    font-weight: 700;
+    font-size: 16px;
+}
+
+.move-quality.book {
+    border-left-color: #8b7355;
+    color: #d4a574;
+}
+
+.move-quality.best {
+    border-left-color: #81b64c;
+    color: #a3d977;
+}
+
+.move-quality.brilliant {
+    border-left-color: #1baca6;
+    color: #5fd3cc;
+    background: linear-gradient(90deg, rgba(27, 172, 166, 0.15), transparent);
+}
+
+.move-quality.excellent {
+    border-left-color: #96bc4b;
+    color: #b8d96f;
+}
+
+.move-quality.good {
+    border-left-color: #96af8b;
+    color: #b5c9a9;
+}
+
+.move-quality.inaccuracy {
+    border-left-color: #f0c15c;
+    color: #f5d98a;
+}
+
+.move-quality.mistake {
+    border-left-color: #e58f2a;
+    color: #f0a855;
+}
+
+.move-quality.blunder {
+    border-left-color: #ca3431;
+    color: #e85956;
+}
+
+#bestMovesList {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.best-move-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    background: white;
+    border-radius: 8px;
+    border-left: 4px solid #4CAF50;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.best-move-item:hover {
+    transform: translateX(5px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.best-move-item.top-move {
+    border-left-color: #FF9800;
+    background: #fff8e1;
+}
+
+.move-notation {
+    font-family: 'Courier New', monospace;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.move-eval {
+    font-size: 16px;
+    color: #666;
+}
+
+#movesList {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    max-height: 250px;
+    overflow-y: auto;
+    padding: 4px;
+}
+
+#movesList::-webkit-scrollbar {
+    width: 6px;
+}
+
+#movesList::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 3px;
+}
+
+#movesList::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+}
+
+.move-item {
+    padding: 6px 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 3px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    font-family: 'Roboto Mono', monospace;
+    font-size: 13px;
+    color: #a0a0a0;
+    transition: background 0.15s;
+}
+
+.move-item:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.move-item span:first-child {
+    color: #666;
+    min-width: 20px;
+}
+
+.move-annotation {
+    font-size: 16px;
+    margin-left: auto;
+}
+
+#analysisStatus {
+    color: #a0a0a0;
+    font-size: 13px;
+    padding: 8px;
+    text-align: center;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 3px;
+    margin-top: 8px;
+}
+
+.chat-messages {
+    height: 180px;
+    overflow-y: auto;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 8px;
+    border-radius: 3px;
+    margin-bottom: 10px;
+}
+
+.chat-messages::-webkit-scrollbar {
+    width: 6px;
+}
+
+.chat-messages::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.chat-messages::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+}
+
+.chat-message {
+    padding: 6px 10px;
+    margin-bottom: 6px;
+    border-radius: 3px;
+    background: rgba(255, 255, 255, 0.05);
+    color: #a0a0a0;
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+.chat-message.own {
+    background: rgba(117, 150, 86, 0.2);
+    color: #c8d4b8;
+    text-align: right;
+}
+
+.chat-input {
+    display: flex;
+    gap: 8px;
+}
+
+#chatInput {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    font-size: 13px;
+    background: rgba(0, 0, 0, 0.2);
+    color: #f0d9b5;
+}
+
+#chatInput::placeholder {
+    color: #666;
+}
+
+#chatInput:focus {
+    outline: none;
+    border-color: rgba(117, 150, 86, 0.5);
+    background: rgba(0, 0, 0, 0.3);
+}
+
+#sendBtn {
+    padding: 8px 16px;
+    background: #759656;
+    border: none;
+    border-radius: 3px;
+    color: white;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.15s;
+}
+
+#sendBtn:hover {
+    background: #86a968;
+}
+
+@media (max-width: 1200px) {
+    .main-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .chessboard {
+        width: 100%;
+        max-width: 560px;
+    }
+}
+
+/* Кно
+пка бота */
+.btn-bot {
+    background: #9C27B0;
+}
+
+.btn-bot:hover {
+    background: #7B1FA2;
+}
+
+/* Подсветка лучшего хода */
+.best-move-hint {
+    box-shadow: 0 0 0 3px #4CAF50 inset !important;
+    animation: glow 1.5s infinite;
+}
+
+@keyframes glow {
+
+    0%,
+    100% {
+        box-shadow: 0 0 0 3px #4CAF50 inset !important;
+    }
+
+    50% {
+        box-shadow: 0 0 0 5px #81C784 inset !important;
+    }
+}
+
+/* К
+/* Контроль времени */
+.time-control {
+    margin-top: 15px;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.time-control h3 {
+    margin: 0 0 10px 0;
+    color: #f0d9b5;
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    opacity: 0.9;
+}
+
+.time-buttons {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 6px;
+}
+
+.time-btn {
+    padding: 8px 12px;
+    font-size: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    background: rgba(255, 255, 255, 0.05);
+    color: #a0a0a0;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-weight: 500;
+    text-align: center;
+}
+
+.time-btn:hover {
+    border-color: rgba(117, 150, 86, 0.5);
+    background: rgba(117, 150, 86, 0.1);
+    color: #c8d4b8;
+}
+
+.time-btn.active {
+    border-color: #759656;
+    background: #759656;
+    color: white;
+}
+
+.time-btn.active:hover {
+    background: #86a968;
+    border-color: #86a968;
+}
+
+
+/* ===== МОБИЛЬНАЯ АДАПТАЦИЯ ===== */
+
+@media (max-width: 1200px) {
+    .main-layout {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .chessboard {
+        width: 100%;
+        max-width: 500px;
+    }
+}
+
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+
+    h1 {
+        font-size: 1.8em;
+        margin-bottom: 5px;
+    }
+
+    .subtitle {
+        font-size: 0.9em;
+        margin-bottom: 15px;
+    }
+
+    .board-section,
+    .analysis-section {
+        padding: 15px;
+    }
+
+    .chessboard {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    /* Кнопки управления */
+    .controls {
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+    }
+
+    .btn {
+        padding: 10px 12px;
+        font-size: 13px;
+    }
+
+    /* Контроль времени */
+    .time-buttons {
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+    }
+
+    .time-btn {
+        padding: 8px;
+        font-size: 12px;
+    }
+
+    /* Игроки */
+    .players {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .player {
+        width: 100%;
+    }
+
+    /* Чат */
+    .chat-messages {
+        max-height: 150px;
+    }
+
+    .chat-input input {
+        font-size: 14px;
+    }
+
+    /* Быстрый чат */
+    .quick-chat-buttons {
+        grid-template-columns: 1fr;
+        gap: 6px;
+    }
+
+    .quick-chat-btn {
+        padding: 10px;
+        font-size: 14px;
+    }
+
+    /* История ходов */
+    .moves-history {
+        max-height: 200px;
+    }
+
+    /* Анализ */
+    .eval-bar-container {
+        height: 300px;
+    }
+
+    .analysis-info h3,
+    .moves-history h3,
+    .chat-section h3,
+    .quick-chat h3 {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    h1 {
+        font-size: 1.5em;
+    }
+
+    .subtitle {
+        font-size: 0.85em;
+    }
+
+    .board-section,
+    .analysis-section {
+        padding: 10px;
+    }
+
+    .controls {
+        grid-template-columns: 1fr;
+    }
+
+    .btn {
+        width: 100%;
+        padding: 12px;
+        font-size: 14px;
+    }
+
+    .time-buttons {
+        grid-template-columns: 1fr;
+    }
+
+    .time-btn {
+        width: 100%;
+    }
+
+    .player-icon {
+        font-size: 30px;
+    }
+
+    .timer {
+        font-size: 18px;
+    }
+
+    .chat-messages {
+        max-height: 120px;
+        font-size: 13px;
+    }
+
+    .quick-chat-btn {
+        font-size: 13px;
+        padding: 12px;
+    }
+
+    /* Оценочная шкала */
+    .eval-bar-container {
+        height: 250px;
+        width: 30px;
+    }
+
+    .eval-score {
+        font-size: 12px;
+        padding: 3px 5px;
+    }
+}
+
+/* Ландшафтная ориентация на мобильных */
+@media (max-width: 768px) and (orientation: landscape) {
+    .main-layout {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .chessboard {
+        max-width: 400px;
+    }
+
+    .chat-messages {
+        max-height: 200px;
+    }
+}
+
+/* Улучшения для тач-устройств */
+@media (hover: none) and (pointer: coarse) {
+
+    .btn,
+    .time-btn,
+    .quick-chat-btn {
+        min-height: 44px;
+        /* Минимальный размер для тача */
+    }
+
+    .chat-input input {
+        min-height: 44px;
+        font-size: 16px;
+        /* Предотвращает зум на iOS */
+    }
+
+    /* Увеличиваем клетки для удобства */
+    .square-55d63 {
+        cursor: pointer;
+    }
+}
+
+/* По
+лноэкранный режим на мобильных */
+@media (max-width: 768px) {
+    .board-section.fullscreen {
+        padding: 10px;
+    }
+
+    .board-section.fullscreen .chessboard {
+        width: min(95vw, 95vh);
+        height: min(95vw, 95vh);
+    }
+
+    .board-section.fullscreen .controls {
+        flex-wrap: wrap;
+        gap: 5px;
+    }
+
+    .board-section.fullscreen .btn {
+        font-size: 12px;
+        padding: 8px 12px;
+    }
+
+    .board-section.fullscreen .game-info {
+        font-size: 14px;
+    }
+
+    .board-section.fullscreen .time-control {
+        display: none;
+        /* Скрываем выбор времени в fullscreen */
+    }
+}
+
+/* Предотвращаем зум при двойном тапе на доске */
+.chessboard {
+    touch-action: manipulation;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+
+/* ===== СИСТЕМА КЛИКОВ - ПОДСВЕТКА ХОДОВ ===== */
+
+/* Выбранная фигура */
+.square-55d63.selected-square {
+    box-shadow: inset 0 0 0 3px rgba(255, 255, 0, 0.8) !important;
+    background-color: rgba(255, 255, 0, 0.3) !important;
+}
+
+/* Доступные ходы */
+.square-55d63.possible-move {
+    cursor: pointer !important;
+}
+
+/* Точка для обычного хода */
+.move-hint {
+    position: absolute;
+    width: 25%;
+    height: 25%;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 10;
+}
+
+/* Кружок для взятия */
+.capture-hint {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border: 4px solid rgba(255, 0, 0, 0.5);
+    border-radius: 50%;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    z-index: 10;
+    box-sizing: border-box;
+}
+
+/* Индикатор рокировки */
+.castling-hint {
+    position: absolute;
+    width: 40%;
+    height: 40%;
+    background: rgba(117, 150, 86, 0.3);
+    border: 3px solid rgba(117, 150, 86, 0.6);
+    border-radius: 8px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 10;
+}
+
+/* Анимация при наведении на доступный ход */
+.square-55d63.possible-move:hover {
+    background-color: rgba(255, 255, 0, 0.2) !important;
+}
+
+/* Улучшаем видимость на мобильных */
+@media (max-width: 768px) {
+    .move-hint {
+        width: 30%;
+        height: 30%;
+        background: rgba(0, 0, 0, 0.4);
+    }
+
+    .capture-hint {
+        border-width: 5px;
+        border-color: rgba(255, 0, 0, 0.7);
+    }
+
+    .square-55d63.selected-square {
+        box-shadow: inset 0 0 0 4px rgba(255, 255, 0, 0.9) !important;
+        background-color: rgba(255, 255, 0, 0.4) !important;
+    }
+}
+
+/* Курсор для кликабельных клеток */
+.square-55d63 {
+    cursor: pointer;
+}
+
+/* Улу
+чшаем видимость при перетаскивании */
+.piece-417db {
+    cursor: grab !important;
+}
+
+.piece-417db:active {
+    cursor: grabbing !important;
+}
+
+/* Фигура при перетаскивании */
+img.piece-417db {
+    opacity: 1 !important;
+    z-index: 1000 !important;
+}
+
+/* Увеличиваем размер перетаскиваемой фигуры для лучшей видимости */
+body.dragging-piece img.piece-417db {
+    transform: scale(1.2);
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5));
+}
+
+/* =
+==== ТЕМЫ ===== */
+
+/* Темная тема */
+body[data-theme="dark"] {
+    background: #1a1a1a;
+}
+
+body[data-theme="dark"] .board-section,
+body[data-theme="dark"] .analysis-section {
+    background: #2a2a2a;
+}
+
+body[data-theme="dark"] h1 {
+    color: #fff;
+}
+
+/* Светлая тема */
+body[data-theme="light"] {
+    background: #e8e8e8;
+}
+
+body[data-theme="light"] .board-section,
+body[data-theme="light"] .analysis-section {
+    background: #fff;
+    border: 1px solid #ddd;
+}
+
+body[data-theme="light"] h1,
+body[data-theme="light"] .subtitle,
+body[data-theme="light"] .analysis-section h3,
+body[data-theme="light"] .player-info span,
+body[data-theme="light"] #gameStatus {
+    color: #333;
+}
+
+body[data-theme="light"] .btn,
+body[data-theme="light"] .time-btn,
+body[data-theme="light"] .icon-btn {
+    background: #f5f5f5;
+    color: #333;
+    border-color: #ddd;
+}
+
+body[data-theme="light"] .btn:hover {
+    background: #e8e8e8;
+}
+
+body[data-theme="light"] .move-item,
+body[data-theme="light"] .chat-message {
+    background: #f5f5f5;
+    color: #333;
+}
+
+body[data-theme="light"] #chatInput {
+    background: #f5f5f5;
+    color: #333;
+    border-color: #ddd;
+}
+
+/* ===== ЦВЕТА ДОСКИ ===== */
+
+/* Коричневая (по умолчанию) */
+#board[data-board-color="brown"] .white-1e1d7,
+#board[data-board-color="brown"] .white-1e1d7.highlight-white {
+    background-color: #f0d9b5 !important;
+}
+
+#board[data-board-color="brown"] .black-3c85d,
+#board[data-board-color="brown"] .black-3c85d.highlight-black {
+    background-color: #b58863 !important;
+}
+
+/* Синяя */
+#board[data-board-color="blue"] .white-1e1d7,
+#board[data-board-color="blue"] .white-1e1d7.highlight-white {
+    background-color: #dee3e6 !important;
+}
+
+#board[data-board-color="blue"] .black-3c85d,
+#board[data-board-color="blue"] .black-3c85d.highlight-black {
+    background-color: #8ca2ad !important;
+}
+
+/* Зеленая */
+#board[data-board-color="green"] .white-1e1d7,
+#board[data-board-color="green"] .white-1e1d7.highlight-white {
+    background-color: #ffffdd !important;
+}
+
+#board[data-board-color="green"] .black-3c85d,
+#board[data-board-color="green"] .black-3c85d.highlight-black {
+    background-color: #86a666 !important;
+}
+
+/* Фиолетовая */
+#board[data-board-color="purple"] .white-1e1d7,
+#board[data-board-color="purple"] .white-1e1d7.highlight-white {
+    background-color: #e8e9b7 !important;
+}
+
+#board[data-board-color="purple"] .black-3c85d,
+#board[data-board-color="purple"] .black-3c85d.highlight-black {
+    background-color: #9f90b0 !important;
+}
+
+/* Деревянная */
+#board[data-board-color="wood"] .white-1e1d7,
+#board[data-board-color="wood"] .white-1e1d7.highlight-white {
+    background-color: #d4a574 !important;
+}
+
+#board[data-board-color="wood"] .black-3c85d,
+#board[data-board-color="wood"] .black-3c85d.highlight-black {
+    background-color: #8b5a3c !important;
+}
+
+/* А
+даптивность для стилей фигур */
+@media (max-width: 768px) {
+    .piece-style-selector {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .piece-style-btn {
+        font-size: 12px;
+        padding: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .header {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .piece-style-selector {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+
+/* ===== ПОДСКАЗКИ В ЗАДАЧАХ ===== */
+
+.hint-from {
+    box-shadow: inset 0 0 0 4px rgba(52, 152, 219, 0.8) !important;
+    background-color: rgba(52, 152, 219, 0.2) !important;
+    animation: pulse-hint 1s infinite;
+}
+
+.hint-to {
+    box-shadow: inset 0 0 0 4px rgba(46, 204, 113, 0.8) !important;
+    background-color: rgba(46, 204, 113, 0.2) !important;
+    animation: pulse-hint 1s infinite;
+}
+
+@keyframes pulse-hint {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.6;
+    }
+}
+
+.hint-arrow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 40px;
+    color: #2ecc71;
+    font-weight: bold;
+    text-shadow: 0 0 10px rgba(46, 204, 113, 0.8);
+    pointer-events: none;
+    z-index: 100;
+    animation: bounce-arrow 0.5s infinite;
+}
+
+@keyframes bounce-arrow {
+
+    0%,
+    100% {
+        transform: translate(-50%, -50%) scale(1);
+    }
+
+    50% {
+        transform: translate(-50%, -50%) scale(1.2);
+    }
+}
+
+
+/* ===== АККАУНТЫ ===== */
+
+.header-controls {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-left: auto;
+}
+
+/* ===== ПЕРЕКЛЮЧАТЕЛЬ ЯЗЫКА ===== */
+
+.language-selector {
+    display: flex;
+    gap: 6px;
+}
+
+.lang-btn {
+    min-width: 42px;
+    height: 36px;
+    padding: 0 10px;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.05);
+    color: #a0a0a0;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.lang-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: scale(1.05);
+}
+
+.lang-btn.active {
+    background: #759656;
+    border-color: #759656;
+    color: white;
+    box-shadow: 0 2px 8px rgba(117, 150, 86, 0.3);
+}
+
+.btn-login {
+    background: #759656;
+    color: white;
+    padding: 8px 16px;
+    font-size: 14px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-login:hover {
+    background: #86a968;
+}
+
+/* Модальное окно */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    transition: opacity 0.3s;
+}
+
+.modal.hidden {
+    display: none;
+}
+
+.modal-content {
+    background: #262421;
+    padding: 35px 40px;
+    border-radius: 12px;
+    max-width: 450px;
+    width: 90%;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    position: relative;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.modal-content h2 {
+    color: #f0d9b5;
+    margin: 0 0 25px 0;
+    font-size: 26px;
+    text-align: center;
+    line-height: 1.4;
+    font-weight: 600;
+}
+
+.close {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 28px;
+    color: #a0a0a0;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.close:hover {
+    color: #f0d9b5;
+}
+
+.auth-tabs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.auth-tab {
+    padding: 14px 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    color: #a0a0a0;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+}
+
+.auth-tab:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.auth-tab.active {
+    background: #759656;
+    border-color: #759656;
+    color: white;
+    box-shadow: 0 4px 12px rgba(117, 150, 86, 0.3);
+    transform: translateY(-2px);
+}
+
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.auth-form button {
+    margin-top: 8px;
+    padding: 14px !important;
+    font-size: 15px !important;
+    font-weight: 600 !important;
+}
+
+.auth-form input {
+    padding: 14px 16px;
+    background: rgba(0, 0, 0, 0.4);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    color: #f0d9b5;
+    font-size: 15px;
+    width: 100%;
+    box-sizing: border-box;
+    transition: all 0.2s;
+}
+
+.auth-form input:focus {
+    outline: none;
+    border-color: #759656;
+    background: rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 0 3px rgba(117, 150, 86, 0.1);
+}
+
+.auth-form input::placeholder {
+    color: #666;
+}
+
+.user-profile {
+    text-align: center;
+    animation: fadeIn 0.3s;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.profile-info {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 25px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.profile-info h3 {
+    color: #f0d9b5;
+    margin: 0 0 20px 0;
+    font-size: 22px;
+    font-weight: 600;
+}
+
+.profile-info p {
+    color: #a0a0a0;
+    margin: 10px 0;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.profile-info span {
+    color: #f0d9b5;
+    font-weight: 600;
+}
+
+@media (max-width: 768px) {
+    .header {
+        flex-direction: column;
+        text-align: center;
+        padding: 0 10px;
+    }
+
+    .header-controls {
+        width: 100%;
+        justify-content: center;
+        margin-left: 0;
+    }
+
+    .modal-content {
+        padding: 20px;
+    }
+}
+
+/* ===== МОДАЛЬНЫЕ ОКНА ===== */
+
+.modal-large {
+    max-width: 900px;
+    width: 90%;
+}
+
+/* Выбор сложности бота */
+.difficulty-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.btn-difficulty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    font-size: 18px;
+    transition: all 0.3s;
+}
+
+.btn-difficulty small {
+    font-size: 14px;
+    opacity: 0.7;
+    margin-top: 5px;
+}
+
+.btn-easy {
+    background: #4caf50;
+}
+
+.btn-easy:hover {
+    background: #45a049;
+    transform: scale(1.05);
+}
+
+.btn-medium {
+    background: #ff9800;
+}
+
+.btn-medium:hover {
+    background: #e68900;
+    transform: scale(1.05);
+}
+
+.btn-hard {
+    background: #f44336;
+}
+
+.btn-hard:hover {
+    background: #da190b;
+    transform: scale(1.05);
+}
+
+/* Редактор доски */
+.editor-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.editor-pieces h4,
+.editor-play h4 {
+    margin-bottom: 10px;
+    color: #f0d9b5;
+}
+
+.piece-selector {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+}
+
+.piece-btn {
+    width: 50px;
+    height: 50px;
+    font-size: 32px;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.piece-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.1);
+}
+
+.piece-btn.active {
+    background: #2196F3;
+    border-color: #2196F3;
+}
+
+.piece-btn-remove {
+    background: #f44336;
+    color: white;
+    font-size: 24px;
+}
+
+.piece-btn-remove:hover {
+    background: #da190b;
+}
+
+.editor-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.turn-selector {
+    display: flex;
+    gap: 5px;
+}
+
+.btn-turn {
+    padding: 10px 15px;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.btn-turn.active {
+    background: #2196F3;
+}
+
+.editor-play {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.editor-play .btn {
+    width: 100%;
+}
+
+/* Кнопка редактора */
+.btn-editor {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.btn-editor:hover {
+    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+}
+
+/* Кнопка практики матов */
+.btn-practice {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.btn-practice:hover {
+    background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%);
+}
+
+/* Адаптивность для редактора */
+@media (max-width: 768px) {
+    .modal-large {
+        width: 95%;
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+
+    .piece-selector {
+        justify-content: center;
+    }
+
+    .editor-actions {
+        flex-direction: column;
+    }
+}
