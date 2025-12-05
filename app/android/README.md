@@ -54,10 +54,33 @@ download-libs.bat
 
 ## 📦 Сборка APK
 
-### Debug версия
+### Автоматически (рекомендуется):
 
 ```bash
 cd app/android
+build-apk.bat
+```
+
+### Вручную:
+
+**Windows (PowerShell):**
+```powershell
+cd app/android
+.\gradlew.bat clean
+.\gradlew.bat assembleDebug
+```
+
+**Windows (CMD):**
+```cmd
+cd app\android
+gradlew.bat clean
+gradlew.bat assembleDebug
+```
+
+**Linux/Mac:**
+```bash
+cd app/android
+./gradlew clean
 ./gradlew assembleDebug
 ```
 
@@ -66,7 +89,7 @@ APK: `app/build/outputs/apk/debug/app-debug.apk`
 ### Release версия
 
 ```bash
-./gradlew assembleRelease
+.\gradlew.bat assembleRelease
 ```
 
 APK: `app/build/outputs/apk/release/app-release.apk`

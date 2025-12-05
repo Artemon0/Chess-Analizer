@@ -81,9 +81,21 @@ assets/
 
 После добавления библиотек:
 
-```bash
-gradlew clean
-gradlew assembleDebug
+**PowerShell:**
+```powershell
+.\gradlew.bat clean
+.\gradlew.bat assembleDebug
+```
+
+**CMD:**
+```cmd
+gradlew.bat clean
+gradlew.bat assembleDebug
+```
+
+**Или просто:**
+```cmd
+build-apk.bat
 ```
 
 ## Что будет работать

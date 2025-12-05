@@ -68,11 +68,27 @@ sdk.dir=C\:\\Users\\ВашеИмя\\AppData\\Local\\Android\\Sdk
 
 ## Шаг 6: Сборка APK
 
-### Debug APK (для тестирования):
+### Автоматически:
 
 ```bash
 cd app/android
-gradlew assembleDebug
+build-apk.bat
+```
+
+### Вручную:
+
+**PowerShell:**
+```powershell
+cd app/android
+.\gradlew.bat clean
+.\gradlew.bat assembleDebug
+```
+
+**CMD:**
+```cmd
+cd app\android
+gradlew.bat clean
+gradlew.bat assembleDebug
 ```
 
 APK будет в: `app/build/outputs/apk/debug/app-debug.apk`
@@ -118,12 +134,19 @@ adb install app/build/outputs/apk/debug/app-debug.apk
 
 ### Gradle sync failed
 
-```bash
+**PowerShell:**
+```powershell
 # Очистите кэш
-gradlew clean
+.\gradlew.bat clean
 
 # Обновите Gradle wrapper (если нужно)
-gradlew wrapper --gradle-version 8.5
+.\gradlew.bat wrapper --gradle-version 8.5
+```
+
+**CMD:**
+```cmd
+gradlew.bat clean
+gradlew.bat wrapper --gradle-version 8.5
 ```
 
 ### Java version incompatible

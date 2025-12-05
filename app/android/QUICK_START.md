@@ -38,9 +38,22 @@ sdk.dir=C\:\\Users\\ВашеИмя\\AppData\\Local\\Android\\Sdk
 
 ## Сборка APK
 
+**Автоматически:**
 ```bash
 cd app/android
-gradlew assembleDebug
+build-apk.bat
+```
+
+**Вручную (PowerShell):**
+```powershell
+cd app/android
+.\gradlew.bat assembleDebug
+```
+
+**Вручную (CMD):**
+```cmd
+cd app\android
+gradlew.bat assembleDebug
 ```
 
 APK будет в: `app/build/outputs/apk/debug/app-debug.apk`
