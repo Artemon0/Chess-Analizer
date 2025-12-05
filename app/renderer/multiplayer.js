@@ -408,7 +408,7 @@ function initControls() {
             console.log('✅ Регистрация успешна:', currentUser);
         } catch (error) {
             console.error('Ошибка регистрации:', error);
-            alert('Ошибка регистрации: ' + error.message);
+            alert(t('registrationError') + ': ' + error.message);
         } finally {
             $btn.prop('disabled', false).text(t('registerBtn'));
         }
@@ -452,7 +452,7 @@ function initControls() {
             console.log('✅ Вход успешен:', currentUser);
         } catch (error) {
             console.error('Ошибка входа:', error);
-            alert('Ошибка входа: ' + error.message);
+            alert(t('loginError') + ': ' + error.message);
         } finally {
             $btn.prop('disabled', false).text(t('loginBtn'));
         }
@@ -497,10 +497,11 @@ function initControls() {
 }
 
 function resignGame() {
-    if (!confirm('Вы уверены что хотите сдаться?')) return;
+    if (!confirm(t('confirmResign'))) return;
 
-    const winner = myColor === 'white' ? 'Черные' : 'Белые';
-    gameOver(`🏳️ ${myColor === 'white' ? 'Белые' : 'Черные'} сдались. ${winner} победили!`);
+    const winner = myColor === 'white' ? t('black') : t('white');
+    const loser = myColor === 'white' ? t('white') : t('black');
+    gameOver(`🏳️ ${loser} ${t('resign')}. ${winner} ${t('whiteWins').includes('wins') ? 'wins' : 'победили'}!`);
 
     // Отправляем противнику
     if (isOnlineGame && connection && connection.open) {
@@ -534,9 +535,9 @@ function resetGame() {
     whiteTime = selectedTimeControl;
     blackTime = selectedTimeControl;
 
-    $('#gameStatus').html('Создайте или присоединитесь к игре');
-    $('#whitePlayer').text('Белые');
-    $('#blackPlayer').text('Черные');
+    $('#gameStatus').html(t('createOrJoin'));
+    $('#whitePlayer').text(t('white'));
+    $('#blackPlayer').text(t('black'));
     $('#movesList').empty();
     $('#moveQuality').text('').attr('class', 'move-quality');
     $('#gameLink').addClass('hidden').empty();
@@ -554,20 +555,20 @@ function createGame() {
 
     const gameUrl = `${window.location.origin}${window.location.pathname}?game=${gameId}`;
 
-    $('#gameStatus').html('🎮 Игра создана! Ждем противника...');
+    $('#gameStatus').html(t('gameCreated'));
     $('#gameLink').removeClass('hidden').html(`
-        <p>Отправьте ссылку противнику:</p>
+        <p>${t('sendLink')}</p>
         <a href="${gameUrl}" target="_blank">${gameUrl}</a>
-        <button onclick="navigator.clipboard.writeText('${gameUrl}')" class="btn" style="margin-top:10px;">📋 Копировать</button>
+        <button onclick="navigator.clipboard.writeText('${gameUrl}')" class="btn" style="margin-top:10px;">${t('copyLink')}</button>
     `);
 
     $('#whitePlayer').text('Вы');
-    $('#blackPlayer').text('Ожидание...');
+    $('#blackPlayer').text(t('waiting'));
 
     // Симуляция подключения противника через 3 секунды
     setTimeout(() => {
-        $('#blackPlayer').text('Противник');
-        $('#gameStatus').html('✅ Игра началась! Ваш ход (белые)');
+        $('#blackPlayer').text(t('opponent'));
+        $('#gameStatus').html(t('gameStarted'));
         addChatMessage('system', t('opponentJoined'));
     }, 3000);
 
@@ -583,14 +584,14 @@ function joinGame() {
         myColor = 'black';
         board.flip();
 
-        $('#gameStatus').html('✅ Вы присоединились! Ход белых');
-        $('#whitePlayer').text('Противник');
-        $('#blackPlayer').text('Вы');
+        $('#gameStatus').html(t('youJoined'));
+        $('#whitePlayer').text(t('opponent'));
+        $('#blackPlayer').text(t('you'));
 
-        addChatMessage('system', 'Вы присоединились к игре!');
+        addChatMessage('system', t('youJoined'));
         console.log('Присоединились к игре:', gameId);
     } else {
-        const inputGameId = prompt('Введите ID игры или вставьте ссылку:');
+        const inputGameId = prompt(t('enterGameId'));
         if (inputGameId) {
             // Извлекаем ID из ссылки
             const match = inputGameId.match(/game=([a-z0-9]+)/);
@@ -598,11 +599,11 @@ function joinGame() {
             myColor = 'black';
             board.flip();
 
-            $('#gameStatus').html('✅ Вы присоединились! Ход белых');
-            $('#whitePlayer').text('Противник');
-            $('#blackPlayer').text('Вы');
+            $('#gameStatus').html(t('youJoined'));
+            $('#whitePlayer').text(t('opponent'));
+            $('#blackPlayer').text(t('you'));
 
-            addChatMessage('system', 'Вы присоединились к игре!');
+            addChatMessage('system', t('youJoined'));
         }
     }
 }
@@ -909,12 +910,12 @@ function evaluateMadeMove(move, evalBefore, evalAfter) {
         annotation = '!?';
         icon = '!?';
     } else if (loss < 2.0) {
-        quality = 'Ошибка';
+        quality = t('mistake');
         className = 'mistake';
         annotation = '?';
         icon = '?';
     } else {
-        quality = 'Грубая ошибка';
+        quality = t('blunder');
         className = 'blunder';
         annotation = '??';
         icon = '??';
@@ -1046,7 +1047,7 @@ function updateStatus() {
     $('.square-in-check').removeClass('square-in-check');
 
     if (game.in_checkmate()) {
-        status = '🏆 Мат! ' + (game.turn() === 'w' ? 'Черные' : 'Белые') + ' победили!';
+        status = t('checkmate') + ' ' + (game.turn() === 'w' ? t('blackWins') : t('whiteWins'));
         stopTimer();
         $('#resignBtn').hide();
     } else if (game.in_draw()) {
@@ -1059,7 +1060,7 @@ function updateStatus() {
     } else if (myColor) {
         const isMyTurn = (game.turn() === 'w' && myColor === 'white') ||
             (game.turn() === 'b' && myColor === 'black');
-        status = isMyTurn ? '✅ Ваш ход' : '⏳ Ход противника';
+        status = isMyTurn ? t('yourTurn') : t('opponentTurn');
     }
 
     if (status) {
@@ -1164,9 +1165,9 @@ function addChatMessage(type, text) {
     const $msg = $('<div>').addClass('chat-message');
 
     if (type === 'own') {
-        $msg.addClass('own').text('Вы: ' + text);
+        $msg.addClass('own').text(t('you') + ': ' + text);
     } else if (type === 'opponent') {
-        $msg.text('Противник: ' + text);
+        $msg.text(t('opponent') + ': ' + text);
     } else {
         $msg.text('💬 ' + text);
     }
@@ -1227,7 +1228,7 @@ function getBotChatResponse(userMessage) {
 
     // Негатив
     if (msg.match(/плох|слаб|bad|weak/)) {
-        return ['Бывает!', 'Учусь на ошибках', 'Не всегда получается', 'Промах'][Math.floor(Math.random() * 4)];
+        return [t('goodLuck'), t('thanks'), t('niceMove'), t('goodGame')][Math.floor(Math.random() * 4)];
     }
 
     // Эмоции
@@ -1336,13 +1337,13 @@ function playWithBot() {
     myColor = 'white';
     gameId = 'bot_game';
 
-    $('#gameStatus').html('🤖 Игра с ботом началась! Ваш ход');
-    $('#whitePlayer').text('Вы');
-    $('#blackPlayer').text('🤖 Бот');
+    $('#gameStatus').html(t('gameStarted'));
+    $('#whitePlayer').text(t('you'));
+    $('#blackPlayer').text('🤖 ' + t('bot'));
     $('#resignBtn').show();
 
     startTimer();
-    addChatMessage('system', 'Игра с ботом началась!');
+    addChatMessage('system', t('gameStarted'));
 
     // Включаем анализ автоматически
     if (!autoAnalyze) {
@@ -1355,7 +1356,7 @@ function playWithBot() {
 async function makeBotMove() {
     if (!playingWithBot || game.turn() !== 'b') return;
 
-    $('#gameStatus').html('🤖 Бот думает...');
+    $('#gameStatus').html(t('botThinking'));
 
     // Сохраняем позицию ДО хода бота
     const fenBefore = game.fen();
@@ -1401,16 +1402,16 @@ async function makeBotMove() {
                     'Хм...',
                     'Неплохо',
                     'Не ожидал',
-                    'Сильно!',
-                    'Думаю...',
-                    'Интересная позиция',
-                    'Надо подумать'
+                    t('excellent'),
+                    t('botThinking'),
+                    t('analyzing'),
+                    t('botMove')
                 ];
                 addChatMessage('opponent', botMessages[Math.floor(Math.random() * botMessages.length)]);
             }
         }
 
-        $('#gameStatus').html('✅ Ваш ход');
+        $('#gameStatus').html(t('yourTurn'));
     }, 1000 + Math.random() * 2000); // Бот "думает" 1-3 секунды
 }
 
@@ -1439,13 +1440,13 @@ function startTimer() {
             whiteTime--;
             if (whiteTime <= 0) {
                 whiteTime = 0;
-                gameOver('⏱️ Время вышло! Черные победили');
+                gameOver('⏱️ ' + t('blackWins'));
             }
         } else {
             blackTime--;
             if (blackTime <= 0) {
                 blackTime = 0;
-                gameOver('⏱️ Время вышло! Белые победили');
+                gameOver('⏱️ ' + t('whiteWins'));
             }
         }
 
@@ -1551,8 +1552,8 @@ console.log('✅ Бот, таймер и аннотации готовы!');
 function connectWebSocket() {
     let wsUrl = `ws://${window.location.hostname}:8080`;
 
-    console.log('🔌 Подключение к:', wsUrl);
-    addChatMessage('system', '🔌 Подключение...');
+    console.log('🔌 Connecting to:', wsUrl);
+    addChatMessage('system', '🔌 ' + t('connecting') + '...');
 
     try {
         ws = new WebSocket(wsUrl);
@@ -1568,18 +1569,18 @@ function connectWebSocket() {
         };
 
         ws.onerror = (error) => {
-            console.error('❌ WebSocket ошибка:', error);
-            addChatMessage('system', '❌ Ошибка. Сервер запущен?');
+            console.error('❌ WebSocket error:', error);
+            addChatMessage('system', '❌ ' + t('connectionError'));
         };
 
         ws.onclose = () => {
-            console.log('❌ WebSocket отключен');
-            addChatMessage('system', '❌ Отключено');
+            console.log('❌ WebSocket disconnected');
+            addChatMessage('system', '❌ ' + t('disconnected'));
             ws = null;
         };
     } catch (error) {
-        console.error('❌ Ошибка:', error);
-        addChatMessage('system', '❌ Не удалось подключиться');
+        console.error('❌ Error:', error);
+        addChatMessage('system', '❌ ' + t('connectionFailed'));
     }
 }
 
@@ -1619,7 +1620,7 @@ function handleGameCreated(data) {
     const gameUrl = `${window.location.origin}${window.location.pathname}?game=${gameId}`;
     const timeText = unlimitedTime ? 'Без времени' : formatTime(selectedTimeControl);
 
-    $('#gameStatus').html(`🎮 Игра создана (${timeText})! Ждем противника...`);
+    $('#gameStatus').html(`${t('gameCreated')} (${timeText})`);
     showGameLink(gameUrl);
 
     $('#whitePlayer').text('Вы');
@@ -1635,20 +1636,20 @@ function handleGameJoined(data) {
 
     board.flip();
 
-    const timeText = unlimitedTime ? 'Без времени' : formatTime(data.timeControl);
-    $('#gameStatus').html(`✅ Вы присоединились (${timeText})! Ход белых`);
-    $('#whitePlayer').text('Противник');
-    $('#blackPlayer').text('Вы');
+    const timeText = unlimitedTime ? t('unlimited') : formatTime(data.timeControl);
+    $('#gameStatus').html(`${t('youJoined')} (${timeText})`);
+    $('#whitePlayer').text(t('opponent'));
+    $('#blackPlayer').text(t('you'));
 
     startTimer();
-    addChatMessage('system', 'Вы присоединились к игре!');
+    addChatMessage('system', t('youJoined'));
 
     console.log('🔗 Присоединились к игре:', gameId);
 }
 
 function handleOpponentJoined(data) {
-    $('#blackPlayer').text('Противник');
-    $('#gameStatus').html('✅ Игра началась! Ваш ход (белые)');
+    $('#blackPlayer').text(t('opponent'));
+    $('#gameStatus').html(t('gameStarted'));
 
     startTimer();
     addChatMessage('system', data.message);
@@ -1742,7 +1743,7 @@ joinGame = function () {
             }));
         }
     } else {
-        const inputGameId = prompt('Введите ID игры:');
+        const inputGameId = prompt(t('enterGameId'));
         if (inputGameId && ws && ws.readyState === WebSocket.OPEN) {
             ws.send(JSON.stringify({
                 type: 'join_game',
@@ -1789,7 +1790,7 @@ console.log('✅ WebSocket мультиплеер готов!');
 
 function showGameLink(gameUrl) {
     const $link = $('<div>').html(`
-        <p style="margin-bottom:10px;font-weight:bold;">📤 Отправьте ссылку противнику:</p>
+        <p style="margin-bottom:10px;font-weight:bold;">📤 ${t('sendLink')}</p>
         <input type="text" id="gameUrlInput" value="${gameUrl}" readonly 
                style="width:100%;padding:12px;margin:10px 0;border:2px solid #2196F3;border-radius:5px;font-size:14px;font-family:monospace;">
         <button id="copyLinkBtn" class="btn" style="width:100%;background:#2196F3;">📋 Копировать ссылку</button>

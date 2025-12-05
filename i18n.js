@@ -102,12 +102,19 @@ const translations = {
         'passwordShort': 'Пароль должен быть не менее 6 символов',
         'registering': 'Регистрация...',
         'loggingIn': 'Вход...',
+        'registrationError': 'Ошибка регистрации',
+        'loginError': 'Ошибка входа',
         'welcome': '✅ Добро пожаловать',
         'welcomeBack': '✅ С возвращением',
         'loggedOut': '👋 Вы вышли из аккаунта',
         'opponentJoined': 'Противник присоединился!',
         'cloudSync': '☁️ Синхронизация с облаком включена',
         'localStorage': '💾 Данные сохраняются локально',
+        'connecting': 'Подключение',
+        'connected': 'Подключено',
+        'disconnected': 'Отключено',
+        'connectionError': 'Ошибка подключения',
+        'connectionFailed': 'Не удалось подключиться',
 
         // Диалоги
         'confirmResign': 'Вы уверены что хотите сдаться?',
@@ -142,6 +149,7 @@ const translations = {
         'famous': '🏆 Знаменитые партии',
 
         // Бот
+        'bot': 'Бот',
         'botThinking': '🤖 Бот думает...',
         'botMove': '🤖 Ход бота',
         'selectDifficulty': 'Выберите сложность:',
@@ -251,12 +259,19 @@ const translations = {
         'passwordShort': 'Password must be at least 6 characters',
         'registering': 'Registering...',
         'loggingIn': 'Logging in...',
+        'registrationError': 'Registration error',
+        'loginError': 'Login error',
         'welcome': '✅ Welcome',
         'welcomeBack': '✅ Welcome back',
         'loggedOut': '👋 You logged out',
         'opponentJoined': 'Opponent joined!',
         'cloudSync': '☁️ Cloud sync enabled',
         'localStorage': '💾 Data saved locally',
+        'connecting': 'Connecting',
+        'connected': 'Connected',
+        'disconnected': 'Disconnected',
+        'connectionError': 'Connection error',
+        'connectionFailed': 'Connection failed',
 
         // Dialogs
         'confirmResign': 'Are you sure you want to resign?',
@@ -291,6 +306,7 @@ const translations = {
         'famous': '🏆 Famous Games',
 
         // Bot
+        'bot': 'Bot',
         'botThinking': '🤖 Bot thinking...',
         'botMove': '🤖 Bot move',
         'selectDifficulty': 'Select difficulty:',
@@ -400,12 +416,19 @@ const translations = {
         'passwordShort': 'Пароль має бути не менше 6 символів',
         'registering': 'Реєстрація...',
         'loggingIn': 'Вхід...',
+        'registrationError': 'Помилка реєстрації',
+        'loginError': 'Помилка входу',
         'welcome': '✅ Ласкаво просимо',
         'welcomeBack': '✅ З поверненням',
         'loggedOut': '👋 Ви вийшли з акаунта',
         'opponentJoined': 'Суперник приєднався!',
         'cloudSync': '☁️ Синхронізація з хмарою увімкнена',
         'localStorage': '💾 Дані зберігаються локально',
+        'connecting': 'Підключення',
+        'connected': 'Підключено',
+        'disconnected': 'Відключено',
+        'connectionError': 'Помилка підключення',
+        'connectionFailed': 'Не вдалося підключитися',
 
         // Діалоги
         'confirmResign': 'Ви впевнені, що хочете здатися?',
@@ -440,6 +463,7 @@ const translations = {
         'famous': '🏆 Знамениті партії',
 
         // Бот
+        'bot': 'Бот',
         'botThinking': '🤖 Бот думає...',
         'botMove': '🤖 Хід бота',
         'selectDifficulty': 'Оберіть складність:',
