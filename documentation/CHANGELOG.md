@@ -72,6 +72,6 @@
 
 **Разработчик:** AOGames Studios
 
-**Скачать:** [Releases](https://github.com/yourusername/chess-multiplayer/releases)
+**Скачать:** [Releases](https://github.com/artemon0/Chess-Analizer/releases)
 
-**Играть онлайн:** [GitHub Pages](https://yourusername.github.io/chess-multiplayer/)
+**Играть онлайн:** [GitHub Pages](https://artemon0.github.io/Chess-Analizer/)
