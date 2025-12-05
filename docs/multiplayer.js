@@ -38,10 +38,32 @@ let unlimitedTime = false;
 let ws = null;
 let isOnlineGame = false;
 
+// Система аккаунтов
+let currentUser = null;
+let useFirebase = false;
+
 // Инициализация
 $(document).ready(function () {
     initBoard();
     initControls();
+
+    // Инициализация Firebase
+    if (typeof initFirebase === 'function') {
+        try {
+            useFirebase = initFirebase();
+            if (useFirebase) {
+                console.log('✅ Firebase инициализирован успешно');
+            }
+        } catch (error) {
+            console.error('❌ Ошибка инициализации Firebase:', error);
+            useFirebase = false;
+        }
+    }
+
+    if (!useFirebase) {
+        console.log('💾 Используем localStorage');
+    }
+
     loadUser();
 
     // Проверяем статус Firebase
@@ -53,8 +75,7 @@ $(document).ready(function () {
         }
     }, 1000);
 
-    console.log('✅ Multiplayer готов');
-    console.log('✅ Система аккаунтов готова!');
+    console.log('✅ Multiplayer готов!');
 });
 
 // ===== ДОСКА =====
@@ -270,10 +291,12 @@ function initControls() {
     });
 
     // Выбор категории задач
-    $('.puzzle-category').on('click', function () {
+    $(document).on('click', '.puzzle-category', function () {
         const category = $(this).data('category');
         $('#puzzleMenu').addClass('hidden');
-        startPuzzle(category);
+        if (typeof startPuzzle === 'function') {
+            startPuzzle(category);
+        }
     });
     $('#clearBtn').on('click', resetGame);
     $('#analyzeBtn').on('click', toggleAnalysis);
@@ -692,7 +715,6 @@ async function analyzeMadeMove(move, fenBefore) {
             $('#analysisStatus').text(t('analysisComplete'));
         } else {
             $('#analysisStatus').text(t('analysisUnavailable'));
-            console.log('Нет данных анализа:', { evalBefore, evalAfter });
         }
     } catch (error) {
         $('#analysisStatus').text(t('analysisError'));
@@ -725,7 +747,10 @@ async function getCloudEval(fen) {
         const url = `https://lichess.org/api/cloud-eval?fen=${encodeURIComponent(fen)}&multiPv=3`;
         const response = await fetch(url);
 
-        if (!response.ok) return null;
+        if (!response.ok) {
+            console.log('⚠️ Cloud Eval недоступен для позиции');
+            return null;
+        }
 
         const data = await response.json();
 
@@ -741,7 +766,7 @@ async function getCloudEval(fen) {
             }))
         };
     } catch (error) {
-        console.error('Cloud Eval error:', error);
+        console.log('⚠️ Cloud Eval error:', error.message);
         return null;
     }
 }
@@ -1343,8 +1368,25 @@ $(document).on('fullscreenchange webkitfullscreenchange mozfullscreenchange msfu
     }
 });
 
-console.log('♟️ Multiplayer готов!');
+// Инициализация завершена
 
+
+// ===== ВЫБОР СЛОЖНОСТИ БОТА =====
+
+function showBotDifficultyModal() {
+    $('#botDifficultyModal').removeClass('hidden');
+}
+
+// Обработчики модального окна сложности
+$(document).on('click', '#botDifficultyModal .close', function () {
+    $('#botDifficultyModal').addClass('hidden');
+});
+
+$(document).on('click', '.btn-difficulty', function () {
+    botDifficulty = $(this).data('difficulty');
+    $('#botDifficultyModal').addClass('hidden');
+    playWithBot();
+});
 
 // ===== ИГРА С БОТОМ =====
 
@@ -1545,7 +1587,7 @@ async function gameOver(message) {
 
 // ===== УЛУЧШЕННЫЕ АННОТАЦИИ =====
 
-console.log('✅ Бот, таймер и аннотации готовы!');
+// Бот и аннотации готовы
 
 
 // ===== WEBSOCKET ДЛЯ РЕАЛЬНОГО МУЛЬТИПЛЕЕРА =====
@@ -1856,26 +1898,6 @@ function showGameLink(gameUrl) {
 
 // ===== СИСТЕМА АККАУНТОВ =====
 
-let currentUser = null;
-let useFirebase = false;
-
-// Инициализация БД при загрузке страницы
-if (typeof initFirebase === 'function') {
-    try {
-        useFirebase = initFirebase();
-        if (useFirebase) {
-            console.log('✅ Firebase инициализирован успешно');
-        }
-    } catch (error) {
-        console.error('❌ Ошибка инициализации Firebase:', error);
-        useFirebase = false;
-    }
-}
-
-if (!useFirebase) {
-    console.log('💾 Используем localStorage');
-}
-
 // Загрузка пользователя из localStorage
 function loadUser() {
     const savedUser = localStorage.getItem('chessUser');
@@ -2142,17 +2164,19 @@ const matePracticePositions = {
 let currentMatePractice = null;
 let matePracticeMoves = 0;
 
-// Обработчики меню практики матов
-$('#matePracticeBtn').on('click', function (e) {
-    e.stopPropagation();
-    $('#matePracticeMenu').toggleClass('hidden');
-    $('#puzzleMenu').addClass('hidden');
-});
+// Обработчики меню практики матов (инициализируются в $(document).ready)
+$(document).ready(function () {
+    $('#matePracticeBtn').on('click', function (e) {
+        e.stopPropagation();
+        $('#matePracticeMenu').toggleClass('hidden');
+        $('#puzzleMenu').addClass('hidden');
+    });
 
-$('.mate-practice-category').on('click', function () {
-    const mateType = $(this).data('mate');
-    startMatePractice(mateType);
-    $('#matePracticeMenu').addClass('hidden');
+    $(document).on('click', '.mate-practice-category', function () {
+        const mateType = $(this).data('mate');
+        startMatePractice(mateType);
+        $('#matePracticeMenu').addClass('hidden');
+    });
 });
 
 function startMatePractice(mateType) {
@@ -2238,4 +2262,4 @@ $(window).on('click', function (e) {
     }
 });
 
-console.log('✅ Редактор доски, выбор сложности бота и практика матов загружены');
+// Редактор и практика готовы
