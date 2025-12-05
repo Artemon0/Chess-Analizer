@@ -6,14 +6,32 @@
 2. Установите с настройками по умолчанию
 3. При первом запуске установите Android SDK
 
-## Шаг 2: Открытие проекта
+## Шаг 2: Настройка SDK
+
+1. Создайте файл `local.properties` в папке `app/android`:
+```properties
+sdk.dir=C\:\\Users\\ВашеИмя\\AppData\\Local\\Android\\Sdk
+```
+
+Или скопируйте `local.properties.example` в `local.properties` и укажите путь к SDK.
+
+**Где найти путь к SDK:**
+- Android Studio → File → Settings → Appearance & Behavior → System Settings → Android SDK
+- Скопируйте "Android SDK Location"
+
+## Шаг 3: Открытие проекта
 
 1. Запустите Android Studio
 2. Выберите **File → Open**
 3. Откройте папку `app/android`
 4. Дождитесь синхронизации Gradle (может занять 5-10 минут)
 
-## Шаг 3: Настройка эмулятора (опционально)
+**Если появляется ошибка "SDK not found":**
+- Убедитесь что `local.properties` создан
+- Проверьте путь к SDK
+- Перезапустите Android Studio
+
+## Шаг 4: Настройка эмулятора (опционально)
 
 Если нет физического устройства:
 
@@ -23,7 +41,7 @@
 4. Выберите **System Image**: Android 13 (API 33)
 5. Нажмите **Finish**
 
-## Шаг 4: Запуск приложения
+## Шаг 5: Запуск приложения
 
 ### На эмуляторе:
 
@@ -42,7 +60,7 @@
 4. Разрешите отладку на устройстве
 5. Нажмите **Run** (▶️)
 
-## Шаг 5: Сборка APK
+## Шаг 6: Сборка APK
 
 ### Debug APK (для тестирования):
 
@@ -75,7 +93,7 @@ gradlew assembleRelease
 
 APK будет в: `app/build/outputs/apk/release/app-release.apk`
 
-## Шаг 6: Установка APK на устройство
+## Шаг 7: Установка APK на устройство
 
 ### Через ADB:
 
@@ -104,9 +122,16 @@ gradlew wrapper --gradle-version 8.1
 
 ### SDK not found
 
-1. **File → Project Structure → SDK Location**
-2. Укажите путь к Android SDK
-3. Обычно: `C:\Users\ИМЯ\AppData\Local\Android\Sdk`
+1. Создайте `local.properties` с путем к SDK
+2. Или: **File → Project Structure → SDK Location**
+3. Укажите путь к Android SDK
+4. Обычно: `C:\Users\ИМЯ\AppData\Local\Android\Sdk`
+
+### Repository error
+
+Если ошибка "prefer settings repositories":
+- Убедитесь что используете Gradle 8.1+
+- Проверьте `settings.gradle` - там должен быть `dependencyResolutionManagement`
 
 ### Build failed
 
