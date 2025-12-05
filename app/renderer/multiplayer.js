@@ -1182,52 +1182,52 @@ function getBotChatResponse(userMessage) {
     const msg = userMessage.toLowerCase();
 
     // Приветствия
-    if (msg.match(/привет|здравствуй|hi|hello/)) {
-        return ['Привет!', 'Здравствуй!', 'Привет! Удачи в игре!'][Math.floor(Math.random() * 3)];
+    if (msg.match(/привет|здравствуй|hi|hello|привіт/)) {
+        return [t('botHello'), t('botHello'), t('botHelloLuck')][Math.floor(Math.random() * 3)];
     }
 
     // Благодарности
-    if (msg.match(/спасибо|thanks|thx/)) {
-        return ['Пожалуйста!', 'Не за что!', 'Всегда пожалуйста!'][Math.floor(Math.random() * 3)];
+    if (msg.match(/спасибо|thanks|thx|дякую/)) {
+        return [t('botYoureWelcome'), t('botNoWorries'), t('botAlwaysWelcome')][Math.floor(Math.random() * 3)];
     }
 
     // Комплименты
-    if (msg.match(/хорош|отлич|круто|молодец|красиво|сильно/)) {
-        return ['Спасибо!', 'Ты тоже хорошо играешь!', 'Взаимно!', 'Стараюсь!'][Math.floor(Math.random() * 4)];
+    if (msg.match(/хорош|отлич|круто|молодец|красиво|сильно|good|nice|great/)) {
+        return [t('botThankYou'), t('botYouToo'), t('botMutual'), t('botTrying')][Math.floor(Math.random() * 4)];
     }
 
     // Удача
-    if (msg.match(/удач|gl|good luck/)) {
-        return ['И тебе удачи!', 'Спасибо, взаимно!', 'Удачи!'][Math.floor(Math.random() * 3)];
+    if (msg.match(/удач|gl|good luck|удачі/)) {
+        return [t('botGoodLuckToo'), t('botThanksMutual'), t('botLuck')][Math.floor(Math.random() * 3)];
     }
 
     // Ничья
-    if (msg.match(/ничь|draw/)) {
+    if (msg.match(/ничь|draw|нічия/)) {
         if (game.history().length < 20) {
-            return 'Рано еще, давай поиграем!';
+            return t('botTooEarly');
         } else if (Math.abs(lastEval) < 0.5) {
-            return 'Согласен, позиция равная.';
+            return t('botAgreeEqual');
         } else {
-            return 'Давай доиграем, позиция интересная!';
+            return t('botLetsContinue');
         }
     }
 
     // Еще партию
-    if (msg.match(/еще|ещё|снова|реванш|again|rematch/)) {
+    if (msg.match(/еще|ещё|снова|реванш|again|rematch|ще/)) {
         if (game.game_over()) {
-            return ['Давай!', 'Конечно!', 'С удовольствием!', 'Поехали!'][Math.floor(Math.random() * 4)];
+            return [t('botLetsGo'), t('botSure'), t('botWithPleasure'), t('botLetsPlay')][Math.floor(Math.random() * 4)];
         } else {
-            return 'Давай сначала эту доиграем!';
+            return t('botFinishFirst');
         }
     }
 
     // Вопросы о ходе
-    if (msg.match(/почему|зачем|why/)) {
-        return ['Показалось лучшим ходом', 'Интуиция!', 'Стратегия!', 'Попробуем так'][Math.floor(Math.random() * 4)];
+    if (msg.match(/почему|зачем|why|чому/)) {
+        return [t('botBestMove'), t('botIntuition'), t('botStrategy'), t('botLetsTry')][Math.floor(Math.random() * 4)];
     }
 
     // Негатив
-    if (msg.match(/плох|слаб|bad|weak/)) {
+    if (msg.match(/плох|слаб|bad|weak|погано/)) {
         return [t('goodLuck'), t('thanks'), t('niceMove'), t('goodGame')][Math.floor(Math.random() * 4)];
     }
 
@@ -1237,25 +1237,25 @@ function getBotChatResponse(userMessage) {
     }
 
     if (msg.match(/😢|😞|☹️/)) {
-        return ['Не расстраивайся!', 'Все будет хорошо!', 'Держись!'][Math.floor(Math.random() * 3)];
+        return [t('botDontWorry'), t('botItllBeOk'), t('botHangInThere')][Math.floor(Math.random() * 3)];
     }
 
     // Вопросы о силе
-    if (msg.match(/сильн|уровень|рейтинг|rating|elo/)) {
-        return ['Средний уровень, наверное', 'Стараюсь играть хорошо!', 'Учусь постоянно'][Math.floor(Math.random() * 3)];
+    if (msg.match(/сильн|уровень|рейтинг|rating|elo|рівень/)) {
+        return [t('botMediumLevel'), t('botTryingWell'), t('botLearning')][Math.floor(Math.random() * 3)];
     }
 
     // Общие фразы
     const generalResponses = [
-        'Интересно!',
-        'Хм...',
-        'Понятно',
-        'Да, согласен',
-        'Может быть',
-        'Посмотрим!',
-        'Неплохо',
-        'Думаю...',
-        'Интересная мысль'
+        t('botInteresting'),
+        t('botHmm'),
+        t('botUnderstood'),
+        t('botAgree'),
+        t('botMaybe'),
+        t('botLetsSee'),
+        t('botNotBad'),
+        t('botThinkingDots'),
+        t('botInterestingThought')
     ];
 
     return generalResponses[Math.floor(Math.random() * generalResponses.length)];
